@@ -1,0 +1,43 @@
+//
+// Modal
+//
+
+// Fluid modal
+
+.modal-fluid {
+  .modal-dialog {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .modal-content {
+    border-radius: 0;
+  }
+}
+
+.modal-box {
+  margin: 20vh auto;
+
+  .form {
+    padding: 1vh;
+  }
+  .login-register {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 2vh;
+
+    .login-button {
+      background-color: none;
+      text-decoration: none;
+    }
+  }
+}
+
+// Background color variations
+
+// TODO deu algum erro com isso aqui
+// @each $color, $value in $theme-colors {
+//   .modal-#{$color} {
+//     @include modal-variant($value);
+//   }
+// }
