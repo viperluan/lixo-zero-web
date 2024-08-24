@@ -53,7 +53,7 @@ const PartnersCreateContainer = () => {
             celular: whatsapp.replace(/\D/g, ''),
             nome: nomePatrocionador,
             descricao: descricaoPatrocinador,
-            id_cota: parseInt(cotaPatrocinio),
+            id_cota: cotaPatrocinio,
             situacao: SituacaoPatrocinio.AguardandoConfirmacao,
         }
 

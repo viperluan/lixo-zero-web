@@ -86,7 +86,7 @@ const ActionContainer = () => {
             link_organizador: "teste",
             titulo_acao: activityTitle,
             descricao_acao: activityDescription,
-            id_categoria: parseInt(activityType),
+            id_categoria: activityType,
             data_acao: new Date(selectedDate._d),
             forma_realizacao_acao: realizationForm,
             local_acao: activityLocation,
