@@ -13,6 +13,9 @@ import {
   Col,
 } from "reactstrap";
 
+import semanaDoZero from '~assets/img/brand/argon-react-white.png'
+import reactArgo from '~assets/img/brand/argon-react.png'
+
 const AdminNavbar = () => {
   return (
       <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
@@ -20,7 +23,7 @@ const AdminNavbar = () => {
           <NavbarBrand to="/" tag={Link}>
             <img
               alt="..."
-              src={require("../../assets/img/brand/argon-react-white.png")}
+              src={semanaDoZero}
             />
           </NavbarBrand>
           <UncontrolledCollapse navbar toggler="#navbar-collapse-main">
@@ -30,7 +33,7 @@ const AdminNavbar = () => {
                   <Link to="/">
                     <img
                       alt="..."
-                      src={require("../../assets/img/brand/argon-react.png")}
+                      src={reactArgo}
                     />
                   </Link>
                 </Col>

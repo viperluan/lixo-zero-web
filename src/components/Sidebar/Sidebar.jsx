@@ -36,7 +36,7 @@ import {
   Col,
 } from "reactstrap";
 
-var ps;
+import image from '~assets/img/theme/team-1-800x800.jpg'
 
 const Sidebar = (props) => {
   const [collapseOpen, setCollapseOpen] = useState();
@@ -132,7 +132,7 @@ const Sidebar = (props) => {
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt="..."
-                    src={require("../../assets/img/theme/team-1-800x800.jpg")}
+                    src={image}
                   />
                 </span>
               </Media>

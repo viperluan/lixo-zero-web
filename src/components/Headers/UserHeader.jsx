@@ -1,7 +1,6 @@
-
-
 // reactstrap components
 import { Button, Container, Row, Col } from "reactstrap";
+import profileCover from '~assets/img/theme/profile-cover.jpg';
 
 const UserHeader = () => {
   return (
@@ -10,8 +9,7 @@ const UserHeader = () => {
         className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
         style={{
           minHeight: "600px",
-          backgroundImage:
-            "url(" + require("../../assets/img/theme/profile-cover.jpg") + ")",
+          backgroundImage: `url(${profileCover})`,
           backgroundSize: "cover",
           backgroundPosition: "center top",
         }}

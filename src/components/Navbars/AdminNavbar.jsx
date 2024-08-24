@@ -18,6 +18,8 @@ import {
   Media,
 } from "reactstrap";
 
+import adminImage from '~assets/img/theme/team-4-800x800.jpg'
+
 const AdminNavbar = (props) => {
   return (
     <>
@@ -48,7 +50,7 @@ const AdminNavbar = (props) => {
                   <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt="..."
-                      src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                      src={adminImage}
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">

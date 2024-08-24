@@ -2,6 +2,8 @@ import { useAuth } from "~context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { DropdownItem, DropdownMenu, DropdownToggle, Media, UncontrolledDropdown } from "reactstrap"
 
+import userImage from '~assets/img/theme/team-1-800x800.jpg';
+
 const UserLoggedDropDown = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate()
@@ -12,7 +14,7 @@ const UserLoggedDropDown = () => {
                     <span className="avatar avatar-sm rounded-circle">
                         <img
                             alt="..."
-                            src={require("../../assets/img/theme/team-1-800x800.jpg")}
+                            src={userImage}
                         />
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
