@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import api from "../../api/index";
 import { FaWhatsapp } from "react-icons/fa";
-import { SituacaoPatrocinio } from "Enumerados";
+import { SituacaoPatrocinio } from "~/Enumerados";
 
 const PartnersContainer = () => {
 

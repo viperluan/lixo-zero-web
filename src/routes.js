@@ -1,16 +1,16 @@
 
-import LoginContainer from 'views/login/index.js'
-import { RegisterContainer } from "views/register";
-import { CategoriesContainer } from "views/categories";
-import { EventsContainer } from "views/events";
-import { UsersContainer } from "views/users";
-import { PartnersContainer } from "views/partners";
-import { ActionContainer } from "views/events/create";
-import { ActionCalendar } from "views/events/schedule";
-import { AboutContainer } from 'views/about';
-import { PartnersCreateContainer } from 'views/partners/create';
-import { QuotasContainer } from 'views/quotas';
-import { MyEventsContainer } from 'views/events/my-events';
+import LoginContainer from '~views/login/index'
+import { RegisterContainer } from "~views/register";
+import { CategoriesContainer } from "~views/categories";
+import { EventsContainer } from "~views/events";
+import { UsersContainer } from "~views/users";
+import { PartnersContainer } from "~views/partners";
+import { ActionContainer } from "~views/events/create";
+import { ActionCalendar } from "~views/events/schedule";
+import { AboutContainer } from '~views/about';
+import { PartnersCreateContainer } from '~views/partners/create';
+import { QuotasContainer } from '~views/quotas';
+import { MyEventsContainer } from '~views/events/my-events';
 
 var routes = [
   {

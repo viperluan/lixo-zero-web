@@ -1,4 +1,4 @@
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "~context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { DropdownItem, DropdownMenu, DropdownToggle, Media, UncontrolledDropdown } from "reactstrap"
 

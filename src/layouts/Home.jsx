@@ -1,11 +1,11 @@
-import { HomeNavbar } from "components/Navbars/HomeNavbar";
+import { HomeNavbar } from "~components/Navbars/HomeNavbar";
 import { Fragment } from "react";
 import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, Jumbotron, Row } from "reactstrap";
 import imageEvento from '../assets/img/imagem-lixo-zero.webp'
 import imageAgenda from '../assets/img/eventos-semana-lixo-zero.png'
 import imagemPatrocinador from '../assets/img/patrocinador-lixo-zero.png'
 import { useNavigate } from "react-router-dom";
-import { Footer } from "components/Footers/Footer";
+import { Footer } from "~components/Footers/Footer";
 
 const HomeContainer = () => {
     const navigate = useNavigate()

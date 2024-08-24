@@ -11,7 +11,7 @@ import {
   Table,
 } from "reactstrap";
 import api from "../../api/index";
-import { LoadingOverlay } from "components/Loading";
+import { LoadingOverlay } from "~components/Loading";
 
 const UsersContainer = () => {
   const [isLoading, setIsLoading] = useState(false);

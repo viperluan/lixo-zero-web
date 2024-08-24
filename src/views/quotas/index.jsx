@@ -13,7 +13,7 @@ import {
     Button,
 } from "reactstrap";
 import { QuotasRegister } from "./register";
-import { LoadingOverlay } from "components/Loading";
+import { LoadingOverlay } from "~components/Loading";
 
 const QuotasContainer = () => {
     const [isLoading, setIsLoading] = useState(false);

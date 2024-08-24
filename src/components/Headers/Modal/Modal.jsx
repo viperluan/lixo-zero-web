@@ -17,8 +17,8 @@ import "../../../assets/scss/argon-dashboard/custom/modals/_modal.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import api from '../../../api';
-import { useAuth } from "context/AuthContext";
-import { LoadingOverlay } from "components/Loading";
+import { useAuth } from "~context/AuthContext";
+import { LoadingOverlay } from "~components/Loading";
 
 const ModalLogin = ({ isOpen, toggle }) => {
   const [isLoading, setIsLoading] = useState(false);

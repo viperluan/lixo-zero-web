@@ -5,11 +5,11 @@ import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 import { Container } from "reactstrap";
 // core components
 
-import routes from "routes.js";
-import { HomeNavbar } from "components/Navbars/HomeNavbar";
-import { Footer } from "components/Footers/Footer";
-import { useAuth } from "context/AuthContext";
-import { TipoUsuario } from "Enumerados";
+import routes from "~/routes.js";
+import { HomeNavbar } from "~components/Navbars/HomeNavbar";
+import { Footer } from "~components/Footers/Footer";
+import { useAuth } from "~context/AuthContext";
+import { TipoUsuario } from "~/Enumerados";
 
 const Admin = (props) => {
   const { loading, user } = useAuth();

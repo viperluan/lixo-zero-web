@@ -17,10 +17,10 @@ import {
     Col,
 } from "reactstrap";
 import { toast } from 'react-toastify';
-import { TipoUsuario } from 'Enumerados';
+import { TipoUsuario } from '~/Enumerados';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from 'context/AuthContext';
-import { InputCpfCnpj } from 'components/Inputs/InputCpfCnpj';
+import { useAuth } from '~context/AuthContext';
+import { InputCpfCnpj } from '~components/Inputs/InputCpfCnpj';
 
 const RegisterContainer = () => {
     const navigate = useNavigate()

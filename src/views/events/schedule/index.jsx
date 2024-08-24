@@ -4,12 +4,12 @@ import moment from 'moment';
 import 'moment/locale/pt-br';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Input, FormGroup, Label, Row, Col, Card, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, Button, Badge, CardHeader } from 'reactstrap';
-import { listarEnumerados, FormaRealizacaoAcao, SituacaoAcao } from 'Enumerados';
+import { listar~/Enumerados, FormaRealizacaoAcao, SituacaoAcao } from '~/Enumerados';
 import api from 'api';
 import messages from './locales'; // Importar mensagens traduzidas
-import { LoadingOverlay } from 'components/Loading';
-import { TipoUsuario } from 'Enumerados';
-import { useAuth } from 'context/AuthContext';
+import { LoadingOverlay } from '~components/Loading';
+import { TipoUsuario } from '~/Enumerados';
+import { useAuth } from '~context/AuthContext';
 
 // Configurando o localizador para o calendário com locale pt-br
 moment.locale('pt-br');
@@ -24,8 +24,8 @@ const ActionCalendar = () => {
     const [filterCategory, setFilterCategory] = useState('');
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
-    const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
+    const listaFormaAcao = listar~/Enumerados(FormaRealizacaoAcao);
+    const listaSituacaoAcao = listar~/Enumerados(SituacaoAcao);
     const [situacaoFiltro, setSituacaoFiltro] = useState('');
     const [search, setSearch] = useState('');
     const [listUsers, setListUsers] = useState([]);

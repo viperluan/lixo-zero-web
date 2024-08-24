@@ -18,8 +18,8 @@ import {
     Col,
 } from "reactstrap";
 import { FaWhatsapp } from 'react-icons/fa';
-import { LoadingOverlay } from "components/Loading";
-import { listarEnumerados, SituacaoAcao } from "Enumerados";
+import { LoadingOverlay } from "~components/Loading";
+import { listar~/Enumerados, SituacaoAcao } from "~/Enumerados";
 import { useParams } from "react-router-dom";
 
 const MyEventsContainer = () => {
@@ -29,7 +29,7 @@ const MyEventsContainer = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [listCategories, setListCategories] = useState([]);
     const [activityType, setActivityType] = useState('');
-    const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
+    const listaSituacaoAcao = listar~/Enumerados(SituacaoAcao);
     const [situacaoFiltro, setSituacaoFiltro] = useState('');
     const [search, setSearch] = useState('');
     const { id } = useParams()

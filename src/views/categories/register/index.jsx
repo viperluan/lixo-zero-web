@@ -1,5 +1,5 @@
 import api from "api"
-import { LoadingOverlay } from "components/Loading"
+import { LoadingOverlay } from "~components/Loading"
 import { Fragment, useState } from "react"
 import { toast } from "react-toastify"
 import { Button, Card, CardBody, CardFooter, FormGroup, Input, Modal, ModalHeader, Form } from "reactstrap"

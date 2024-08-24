@@ -1,12 +1,12 @@
 import api from "api";
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "~context/AuthContext";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Card, CardBody, CardFooter, CardHeader, FormGroup, Input, Form, Label, Button, CardTitle } from "reactstrap";
 import InputMask from 'react-input-mask';
-import { SituacaoPatrocinio } from "Enumerados";
+import { SituacaoPatrocinio } from "~/Enumerados";
 import { useNavigate } from "react-router-dom";
-import { LoadingOverlay } from "components/Loading";
+import { LoadingOverlay } from "~components/Loading";
 
 
 const PartnersCreateContainer = () => {

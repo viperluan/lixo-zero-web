@@ -18,10 +18,10 @@ import {
     Col,
 } from "reactstrap";
 import { FaCheck, FaTrash, FaWhatsapp } from 'react-icons/fa';
-import { LoadingOverlay } from "components/Loading";
-import { useAuth } from "context/AuthContext";
-import { listarEnumerados, SituacaoAcao } from "Enumerados";
-import { FormaRealizacaoAcao } from "Enumerados";
+import { LoadingOverlay } from "~components/Loading";
+import { useAuth } from "~context/AuthContext";
+import { listar~/Enumerados, SituacaoAcao } from "~/Enumerados";
+import { FormaRealizacaoAcao } from "~/Enumerados";
 
 const EventsContainer = () => {
     const { user } = useAuth();
@@ -33,11 +33,11 @@ const EventsContainer = () => {
     const [listUsers, setListUsers] = useState([]);
     const [userFilter, setUserFilter] = useState(null)
     const [activityType, setActivityType] = useState(null);
-    const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
+    const listaSituacaoAcao = listar~/Enumerados(SituacaoAcao);
     const [situacaoFiltro, setSituacaoFiltro] = useState('');
     const [search, setSearch] = useState('');
     const [filterType, setFilterType] = useState('');
-    const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
+    const listaFormaAcao = listar~/Enumerados(FormaRealizacaoAcao);
 
     const fetchCategories = () => {
         api.get(`/categorias?page=1&limit=150`).then((res) => {

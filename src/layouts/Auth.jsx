@@ -4,11 +4,11 @@ import { useLocation, Route, Routes } from "react-router-dom";
 import { Container } from "reactstrap";
 
 // core components
-import routes from "routes.js";
-import { HomeNavbar } from "components/Navbars/HomeNavbar";
-import { Footer } from "components/Footers/Footer";
-import { useAuth } from "context/AuthContext";
-import { ModalLogin } from "components/Headers/Modal/Modal";
+import routes from "~/routes.js";
+import { HomeNavbar } from "~components/Navbars/HomeNavbar";
+import { Footer } from "~components/Footers/Footer";
+import { useAuth } from "~context/AuthContext";
+import { ModalLogin } from "~components/Headers/Modal/Modal";
 
 const Auth = (props) => {
   const { loading, user } = useAuth();

@@ -13,7 +13,7 @@ import {
     Button,
 } from "reactstrap";
 import { CategoriesRegister } from "./register";
-import { LoadingOverlay } from "components/Loading";
+import { LoadingOverlay } from "~components/Loading";
 
 const CategoriesContainer = () => {
     const [isLoading, setIsLoading] = useState(false);

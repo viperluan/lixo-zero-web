@@ -1,15 +1,15 @@
-import { FormaRealizacaoAcao } from "Enumerados";
-import { listarEnumerados } from "Enumerados";
+import { FormaRealizacaoAcao } from "~/Enumerados";
+import { listar~/Enumerados } from "~/Enumerados";
 import api from "api";
-import { DateTimePicker } from "components/DatePicker";
-import { useAuth } from "context/AuthContext";
+import { DateTimePicker } from "~components/DatePicker";
+import { useAuth } from "~context/AuthContext";
 import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Card, CardBody, CardFooter, CardHeader, FormGroup, Input, Form, Label, Button, CardTitle } from "reactstrap";
 import InputMask from 'react-input-mask';
-import { SituacaoAcao } from "Enumerados";
-import { LoadingOverlay } from "components/Loading";
+import { SituacaoAcao } from "~/Enumerados";
+import { LoadingOverlay } from "~components/Loading";
 import { useNavigate } from "react-router-dom";
 
 const ActionContainer = () => {
@@ -106,7 +106,7 @@ const ActionContainer = () => {
 
     };
 
-    const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
+    const listaFormaAcao = listar~/Enumerados(FormaRealizacaoAcao);
 
     const renderLocalAcaoPlaceHolder = () => {
         switch (realizationForm) {
