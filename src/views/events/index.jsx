@@ -1,4 +1,4 @@
-import api from "api"
+import api from "~api"
 import { Fragment, useEffect, useState } from "react"
 import {
     Card,
@@ -20,7 +20,7 @@ import {
 import { FaCheck, FaTrash, FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from "~components/Loading";
 import { useAuth } from "~context/AuthContext";
-import { listar~/Enumerados, SituacaoAcao } from "~/Enumerados";
+import { listarEnumerados, SituacaoAcao } from "~/Enumerados";
 import { FormaRealizacaoAcao } from "~/Enumerados";
 
 const EventsContainer = () => {
@@ -33,11 +33,11 @@ const EventsContainer = () => {
     const [listUsers, setListUsers] = useState([]);
     const [userFilter, setUserFilter] = useState(null)
     const [activityType, setActivityType] = useState(null);
-    const listaSituacaoAcao = listar~/Enumerados(SituacaoAcao);
+    const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
     const [situacaoFiltro, setSituacaoFiltro] = useState('');
     const [search, setSearch] = useState('');
     const [filterType, setFilterType] = useState('');
-    const listaFormaAcao = listar~/Enumerados(FormaRealizacaoAcao);
+    const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
 
     const fetchCategories = () => {
         api.get(`/categorias?page=1&limit=150`).then((res) => {

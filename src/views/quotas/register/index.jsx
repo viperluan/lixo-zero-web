@@ -1,4 +1,4 @@
-import api from "api"
+import api from "~api"
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { Button, Card, CardBody, CardFooter, FormGroup, Input, Modal, ModalHeader, Form } from "reactstrap"

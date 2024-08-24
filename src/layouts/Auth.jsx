@@ -4,7 +4,7 @@ import { useLocation, Route, Routes } from "react-router-dom";
 import { Container } from "reactstrap";
 
 // core components
-import routes from "~/routes.js";
+import routes from "~/routes";
 import { HomeNavbar } from "~components/Navbars/HomeNavbar";
 import { Footer } from "~components/Footers/Footer";
 import { useAuth } from "~context/AuthContext";

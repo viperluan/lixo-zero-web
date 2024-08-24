@@ -1,6 +1,6 @@
 import { FormaRealizacaoAcao } from "~/Enumerados";
-import { listar~/Enumerados } from "~/Enumerados";
-import api from "api";
+import { listarEnumerados } from "~/Enumerados";
+import api from "~api";
 import { DateTimePicker } from "~components/DatePicker";
 import { useAuth } from "~context/AuthContext";
 import moment from "moment";
@@ -106,7 +106,7 @@ const ActionContainer = () => {
 
     };
 
-    const listaFormaAcao = listar~/Enumerados(FormaRealizacaoAcao);
+    const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
 
     const renderLocalAcaoPlaceHolder = () => {
         switch (realizationForm) {

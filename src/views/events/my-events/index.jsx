@@ -1,4 +1,4 @@
-import api from "api"
+import api from "~api"
 import { Fragment, useEffect, useState } from "react"
 import {
     Card,
@@ -19,7 +19,7 @@ import {
 } from "reactstrap";
 import { FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from "~components/Loading";
-import { listar~/Enumerados, SituacaoAcao } from "~/Enumerados";
+import { listarEnumerados, SituacaoAcao } from "~/Enumerados";
 import { useParams } from "react-router-dom";
 
 const MyEventsContainer = () => {
@@ -29,7 +29,7 @@ const MyEventsContainer = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [listCategories, setListCategories] = useState([]);
     const [activityType, setActivityType] = useState('');
-    const listaSituacaoAcao = listar~/Enumerados(SituacaoAcao);
+    const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
     const [situacaoFiltro, setSituacaoFiltro] = useState('');
     const [search, setSearch] = useState('');
     const { id } = useParams()
