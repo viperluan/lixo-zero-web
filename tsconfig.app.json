@@ -31,6 +31,7 @@
       "~context/*": ["./src/context/*"],
       "~layouts/*": ["./src/layouts/*"],
       "~views/*": ["./src/views/*"],
+      "~bootstrap/*": ["./node_modules/bootstrap/*"],
     }
   },
   "include": [
