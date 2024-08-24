@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": [
@@ -20,7 +22,16 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "~/*": ["./src/*"],
+      "~api/*": ["./src/api/*"],
+      "~assets/*": ["./src/assets/*"],
+      "~components/*": ["./src/components/*"],
+      "~context/*": ["./src/context/*"],
+      "~layouts/*": ["./src/layouts/*"],
+      "~views/*": ["./src/views/*"],
+    }
   },
   "include": [
     "src"
