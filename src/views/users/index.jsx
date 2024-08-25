@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -9,9 +9,9 @@ import {
   PaginationLink,
   Row,
   Table,
-} from "reactstrap";
-import api from "../../api/index";
-import { LoadingOverlay } from "~components/Loading";
+} from 'reactstrap';
+import api from '../../api/index';
+import { LoadingOverlay } from '~components/Loading';
 
 const UsersContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,11 +20,14 @@ const UsersContainer = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchUsers = (page) => {
-    setIsLoading(true)
-    api.get(`/usuarios?page=${page}&limit=10`).then((res) => {
-      setListUsers(res.data.users || []);
-      setTotalPages(res.data.totalPages || 1);
-    }).finally(() => setIsLoading(false));
+    setIsLoading(true);
+    api
+      .get(`/usuarios?page=${page}&limit=10`)
+      .then((res) => {
+        setListUsers(res.data.users || []);
+        setTotalPages(res.data.totalPages || 1);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   // USE EFECT
@@ -120,7 +123,7 @@ const UsersContainer = () => {
         </CardBody>
       </Card>
     </Fragment>
-  )
+  );
 };
 
 export { UsersContainer };

@@ -1,11 +1,20 @@
-import { NavbarBrand, Navbar, NavItem, NavLink, Nav, Button, Collapse, NavbarToggler } from "reactstrap";
-import { ModalLogin } from "~components/Headers/Modal/Modal";
-import { useState } from "react";
-import "../../assets/scss/argon-dashboard/custom/navs/_nav.scss";
-import { useAuth } from "~context/AuthContext";
-import { UserLoggedDropDown } from "~components/UserComponent";
-import { TipoUsuario } from "~/Enumerados";
-import { Link } from "react-router-dom";
+import {
+  NavbarBrand,
+  Navbar,
+  NavItem,
+  NavLink,
+  Nav,
+  Button,
+  Collapse,
+  NavbarToggler,
+} from 'reactstrap';
+import { ModalLogin } from '~components/Headers/Modal/Modal';
+import { useState } from 'react';
+import '../../assets/scss/argon-dashboard/custom/navs/_nav.scss';
+import { useAuth } from '~context/AuthContext';
+import { UserLoggedDropDown } from '~components/UserComponent';
+import { TipoUsuario } from '~/Enumerados';
+import { Link } from 'react-router-dom';
 
 const HomeNavbar = () => {
   const { user } = useAuth();

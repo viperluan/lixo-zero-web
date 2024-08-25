@@ -1,5 +1,5 @@
 // reactstrap components
-import { Button, Container, Row, Col } from "reactstrap";
+import { Button, Container, Row, Col } from 'reactstrap';
 import profileCover from '~assets/img/theme/profile-cover.jpg';
 
 const UserHeader = () => {
@@ -8,10 +8,10 @@ const UserHeader = () => {
       <div
         className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
         style={{
-          minHeight: "600px",
+          minHeight: '600px',
           backgroundImage: `url(${profileCover})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
         }}
       >
         {/* Mask */}
@@ -22,13 +22,10 @@ const UserHeader = () => {
             <Col lg="7" md="10">
               <h1 className="display-2 text-white">Hello Jesse</h1>
               <p className="text-white mt-0 mb-5">
-                This is your profile page. You can see the progress you've made
-                with your work and manage your projects or assigned tasks
+                This is your profile page. You can see the progress you've made with your work and
+                manage your projects or assigned tasks
               </p>
-              <Button
-                color="info"
-                onClick={(e) => e.preventDefault()}
-              >
+              <Button color="info" onClick={(e) => e.preventDefault()}>
                 Edit profile
               </Button>
             </Col>

@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,6 +15,6 @@ export default defineConfig({
       '~layouts': path.resolve(__dirname, './src/layouts'),
       '~views': path.resolve(__dirname, './src/views'),
       '~bootstrap': path.resolve(__dirname, './node_modules/bootstrap'),
-    }
+    },
   },
-})
+});
