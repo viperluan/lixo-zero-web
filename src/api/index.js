@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 const api = axios.create({
   baseURL:
-    process.env.NODE_ENV === 'production'
+    import.meta.env.NODE_ENV === 'production'
       ? 'https://backend-tematico.vercel.app'
       : 'http://localhost:5000',
   timeout: 10000, // 10 segundos de timeout
