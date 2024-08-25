@@ -55,6 +55,7 @@ const RegisterContainer = () => {
           tipo: TipoUsuario.Usuario,
           cpf_cnpj: cpfCnpj,
         })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .then(async (res) => {
           toast.success('Usuário criado com sucesso, realizando o login.');
           try {
@@ -64,13 +65,19 @@ const RegisterContainer = () => {
                 toast.success(`Usuario ${res.data.nome} autenticado!`);
               }
             });
-          } catch (error) {}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          } catch (error) {
+            /* empty */
+          }
 
           navigate('/');
         })
         .catch()
         .finally();
-    } catch (error) {}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      /* empty */
+    }
   };
 
   return (

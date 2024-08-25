@@ -109,6 +109,7 @@ const EventsContainer = () => {
     setIsLoading(true);
     api
       .put(`/acoes/${id}`, { situacao_acao: situacao, id_usuario_alteracao: user.id })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .then((res) => {
         // Atualize a lista de ações localmente após a atualização bem-sucedida
         setlistActions((prevActions) =>

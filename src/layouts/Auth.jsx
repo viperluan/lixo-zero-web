@@ -10,6 +10,7 @@ import { Footer } from '~components/Footers/Footer';
 import { useAuth } from '~context/AuthContext';
 import { ModalLogin } from '~components/Headers/Modal/Modal';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Auth = (props) => {
   const { loading, user } = useAuth();
   const mainContent = React.useRef(null);

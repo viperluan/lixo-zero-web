@@ -139,8 +139,8 @@ const ActionContainer = () => {
             <FormGroup>
               <Label for="organizerName">Nome do Organizador da ação</Label>
               <span className="form-text text-muted small">
-                Empresa/Instituição/Grupo que você representa. Se for 'pessoa física' insira seu
-                nome
+                {`Empresa/Instituição/Grupo que você representa. Se for 'pessoa física' insira seu
+                nome`}
               </span>
               <Input
                 id="organizerName"

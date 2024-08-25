@@ -10,6 +10,7 @@ import { Footer } from '~components/Footers/Footer';
 import { useAuth } from '~context/AuthContext';
 import { TipoUsuario } from '~/Enumerados';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Admin = (props) => {
   const { loading, user } = useAuth();
   const mainContent = React.useRef(null);

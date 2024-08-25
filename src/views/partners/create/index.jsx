@@ -92,8 +92,8 @@ const PartnersCreateContainer = () => {
             <FormGroup>
               <Label for="nomePatrocionador">Nome do Patrocionador</Label>
               <span className="form-text text-muted small">
-                Empresa/Instituição/Grupo que irá fornecer o patrocínio. Se for 'pessoa física'
-                insira seu nome
+                {`Empresa/Instituição/Grupo que irá fornecer o patrocínio. Se for 'pessoa física'
+                insira seu nome`}
               </span>
               <Input
                 id="nomePatrocionador"

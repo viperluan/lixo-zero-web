@@ -53,7 +53,10 @@ const ModalLogin = ({ isOpen, toggle }) => {
           }
         })
         .finally(() => setIsLoading(false));
-    } catch (error) {}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      /* empty */
+    }
   };
 
   return (
