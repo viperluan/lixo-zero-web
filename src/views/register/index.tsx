@@ -19,6 +19,17 @@ import { TipoUsuario } from '~/Enumerados';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~context/AuthContext';
 import { InputCpfCnpj } from '~components/Inputs/InputCpfCnpj';
+import { AxiosResponse } from 'axios';
+
+type UserAuthenticateResponseType = {
+  token: string;
+  usuario: {
+    id: string;
+    nome: string;
+    email: string;
+    tipo: string;
+  };
+};
 
 const RegisterContainer = () => {
   const navigate = useNavigate();
@@ -29,54 +40,48 @@ const RegisterContainer = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const { login } = useAuth();
 
-  const handleCpfCnpjChange = (value) => {
+  const handleCpfCnpjChange = (value: string) => {
     setCpfCnpj(value);
   };
 
   const handleRegister = async () => {
-    try {
-      if (!name) return toast.error('Informe o nome!');
+    if (!name) return toast.error('Informe o nome!');
 
-      if (!cpfCnpj) return toast.error('Informe o documento!');
+    if (!cpfCnpj) return toast.error('Informe o documento!');
 
-      if (!email) return toast.error('Informe o email!');
+    if (!email) return toast.error('Informe o email!');
 
-      if (!password) return toast.error('Informe a senha!');
+    if (!password) return toast.error('Informe a senha!');
 
-      if (!confirmPassword) return toast.error('Informe a confirmação da senha!');
+    if (!confirmPassword) return toast.error('Informe a confirmação da senha!');
 
-      if (confirmPassword !== password) return toast.error('As senhas não coincidem!');
+    if (confirmPassword !== password) return toast.error('As senhas não coincidem!');
 
-      await api
-        .post('/usuarios', {
-          nome: name,
-          email: email,
-          senha: password,
-          tipo: TipoUsuario.Usuario,
-          cpf_cnpj: cpfCnpj,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .then(async (res) => {
-          toast.success('Usuário criado com sucesso, realizando o login.');
-          try {
-            await api.post('/usuarios/autenticar', { email, senha: password }).then((res) => {
-              if (res.data.id) {
-                login(res.data);
-                toast.success(`Usuario ${res.data.nome} autenticado!`);
-              }
-            });
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          } catch (error) {
-            /* empty */
-          }
+    const registerUser = await api.post('/usuarios', {
+      nome: name,
+      email: email,
+      senha: password,
+      tipo: TipoUsuario.Usuario,
+      cpf_cnpj: cpfCnpj,
+    });
 
-          navigate('/');
-        })
-        .catch()
-        .finally();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      /* empty */
+    if (registerUser.status !== 201) return;
+
+    toast.success('Usuário criado com sucesso, realizando o login.');
+
+    await handleAuthenticate();
+  };
+
+  const handleAuthenticate = async () => {
+    const authenticateUser: AxiosResponse<UserAuthenticateResponseType> = await api.post(
+      '/usuarios/autenticar',
+      { email, senha: password }
+    );
+
+    if (authenticateUser.data.token) {
+      login(authenticateUser.data.token);
+      toast.success(`Usuario ${authenticateUser.data.usuario.nome} autenticado!`);
+      navigate('/');
     }
   };
 

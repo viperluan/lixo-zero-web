@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, PropsWithChildren, useState } from 'react';
 import {
   Modal,
   Form,
@@ -19,8 +19,24 @@ import { toast } from 'react-toastify';
 import api from '../../../api';
 import { useAuth } from '~context/AuthContext';
 import { LoadingOverlay } from '~components/Loading';
+import { AxiosResponse } from 'axios';
 
-const ModalLogin = ({ isOpen, toggle }) => {
+type UserAuthenticateResponseType = {
+  token: string;
+  usuario: {
+    id: string;
+    nome: string;
+    email: string;
+    tipo: string;
+  };
+};
+
+interface IModalLoginProps extends PropsWithChildren {
+  isOpen: boolean;
+  toggle: () => void;
+}
+
+const ModalLogin = ({ isOpen, toggle }: IModalLoginProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const { login } = useAuth();
@@ -41,13 +57,15 @@ const ModalLogin = ({ isOpen, toggle }) => {
       if (!emailRegex.test(email)) return toast.error('Informe um e-mail válido.');
 
       if (!password) return toast.error('Informe a senha!');
+
       setIsLoading(true);
+
       await api
         .post('/usuarios/autenticar', { email, senha: password })
-        .then((res) => {
-          if (res.data.id) {
-            login(res.data);
-            toast.success(`Usuario ${res.data.nome} autenticado!`);
+        .then((response: AxiosResponse<UserAuthenticateResponseType>) => {
+          if (response.data.token) {
+            login(response.data.token);
+            toast.success(`Usuario ${response.data.usuario?.nome} autenticado!`);
             navigate(location.pathname);
             toggle();
           }
