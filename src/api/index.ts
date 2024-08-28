@@ -6,10 +6,11 @@ type ErrorResponseType = {
   error?: string;
 };
 
-const environment: string = import.meta.env.NODE_ENV || '';
+const isDevelopment = import.meta.env.MODE;
+const baseURL = isDevelopment ? `http://localhost:5000` : ``;
 
 const api = axios.create({
-  baseURL: environment,
+  baseURL,
   timeout: 10000, // 10 segundos
   headers: {
     'Content-Type': 'application/json',
@@ -17,7 +18,7 @@ const api = axios.create({
   validateStatus: (status) => status < 500,
 });
 
-const responseSuccessInterceptor = (response: AxiosResponse) => response;
+const responseSuccessInterceptor = (response: AxiosResponse) => Promise.resolve(response);
 
 const responseErrorInterceptor = (error: AxiosError<ErrorResponseType>) => {
   if (error.response) {
