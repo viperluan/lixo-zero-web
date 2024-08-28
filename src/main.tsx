@@ -13,29 +13,32 @@ import HomeLayout from '~layouts/Home';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from '~context/AuthContext';
+import { CookiesProvider } from 'react-cookie';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/admin/*" element={<AdminLayout />} />
-          <Route path="/auth/*" element={<AuthLayout />} />
-          <Route path="*" element={<Navigate to="/admin/index" replace />} />
-          <Route path="/" element={<HomeLayout />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <CookiesProvider>
+      <AuthProvider>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/admin/*" element={<AdminLayout />} />
+            <Route path="/auth/*" element={<AuthLayout />} />
+            <Route path="*" element={<Navigate to="/admin/index" replace />} />
+            <Route path="/" element={<HomeLayout />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </CookiesProvider>
   </StrictMode>
 );
