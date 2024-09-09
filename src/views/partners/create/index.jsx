@@ -65,7 +65,7 @@ const PartnersCreateContainer = () => {
     await api
       .post(`/patrocinio`, payload)
       .then((res) => {
-        if (res.data.id) {
+        if (res.status === 201) {
           toast.success(
             'Seu formulário foi enviado com sucesso. Em breve a nossa equipe entrará em contato.',
             {
@@ -73,6 +73,10 @@ const PartnersCreateContainer = () => {
             }
           );
           navigate('/');
+        }
+
+        if (res.data.error) {
+          toast.error(res.data.error);
         }
       })
       .finally(() => {
