@@ -29,6 +29,7 @@ type UserAuthenticateResponseType = {
     email: string;
     tipo: string;
   };
+  error?: string;
 };
 
 interface IModalLoginProps extends PropsWithChildren {
@@ -69,6 +70,8 @@ const ModalLogin = ({ isOpen, toggle }: IModalLoginProps) => {
             navigate(location.pathname);
             toggle();
           }
+
+          if (response.data.error) toast.error(response.data.error);
         })
         .finally(() => setIsLoading(false));
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

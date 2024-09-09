@@ -95,6 +95,7 @@ const ActionContainer = () => {
     };
 
     setIsLoading(true);
+
     await api
       .post(`/acoes`, payload)
       .then((res) => {
@@ -107,6 +108,8 @@ const ActionContainer = () => {
           );
           navigate(`/auth/events/my-events/${user.id}`);
         }
+
+        if (res.data.error) toast.error(res.data.error);
       })
       .finally(() => setIsLoading(false));
   };
