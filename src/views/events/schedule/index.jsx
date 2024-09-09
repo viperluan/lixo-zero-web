@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -144,7 +144,7 @@ const ActionCalendar = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <LoadingOverlay isLoading={isLoading} />
       <Card>
         <CardHeader className="border-0">
@@ -183,7 +183,7 @@ const ActionCalendar = () => {
                 </FormGroup>
               </Col>
               {user?.tipo === TipoUsuario.Admin && (
-                <Fragment>
+                <>
                   <Col lg="2">
                     <FormGroup>
                       <Label for="tipo_atividade">Situação</Label>
@@ -221,7 +221,7 @@ const ActionCalendar = () => {
                       </Input>
                     </FormGroup>
                   </Col>
-                </Fragment>
+                </>
               )}
               <Col lg="2" xl="2">
                 <FormGroup>
@@ -243,11 +243,11 @@ const ActionCalendar = () => {
               </Col>
             </Row>
             <Button color="primary" onClick={() => fetchActions()}>
-              {' '}
               Filtrar
             </Button>
           </div>
         </CardHeader>
+
         <CardBody>
           <Calendar
             localizer={localizer}
@@ -264,6 +264,7 @@ const ActionCalendar = () => {
             eventPropGetter={eventPropGetter}
           />
         </CardBody>
+
         {user?.tipo === TipoUsuario.Admin && (
           <Row className="mt-4">
             <Col>
@@ -287,7 +288,7 @@ const ActionCalendar = () => {
 
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         {selectedEvent && (
-          <Fragment>
+          <>
             <ModalHeader toggle={toggleModal}>{selectedEvent.title}</ModalHeader>
             <ModalBody>
               <h3>
@@ -315,10 +316,10 @@ const ActionCalendar = () => {
                 Fechar
               </Button>
             </ModalFooter>
-          </Fragment>
+          </>
         )}
       </Modal>
-    </Fragment>
+    </>
   );
 };
 
