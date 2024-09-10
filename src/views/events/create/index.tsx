@@ -2,8 +2,8 @@ import { FormaRealizacaoAcao } from '~/Enumerados';
 import { listarEnumerados } from '~/Enumerados';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
-import moment from 'moment';
-import { Fragment, useEffect, useState } from 'react';
+import moment, { Moment } from 'moment';
+import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   Card,
@@ -17,7 +17,7 @@ import {
   Button,
   CardTitle,
 } from 'reactstrap';
-import InputMask from 'react-input-mask';
+import InputMask, { Props } from 'react-input-mask';
 import { SituacaoAcao } from '~/Enumerados';
 import { LoadingOverlay } from '~components/Loading';
 import { useNavigate } from 'react-router-dom';
@@ -47,7 +47,7 @@ const ActionContainer = () => {
   const [realizationForm, setRealizationForm] = useState(FormaRealizacaoAcao.Online);
   const [activityLocation, setActivityLocation] = useState('');
   const [organizerCount, setOrganizerCount] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
   const [whatsapp, setWhatsapp] = useState('');
 
   const fetchCategories = async () => {
@@ -65,12 +65,12 @@ const ActionContainer = () => {
     fetchCategories();
   }, []);
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: Moment) => {
     setSelectedDate(date);
   };
 
   const handleSubmitAction = async () => {
-    if (!user.id) return toast.warn('Faça login antes de continuar!');
+    if (!user || !user.id) return toast.warn('Faça login antes de continuar!');
 
     if (!organizerName) return toast.warn('Informe o nome do organizador da ação!');
 
@@ -101,7 +101,7 @@ const ActionContainer = () => {
       titulo_acao: activityTitle,
       descricao_acao: activityDescription,
       id_categoria: activityType,
-      data_acao: new Date(selectedDate._d),
+      data_acao: new Date(selectedDate.toDate()),
       forma_realizacao_acao: realizationForm,
       local_acao: activityLocation,
       numero_organizadores_acao: organizerCount,
@@ -186,15 +186,17 @@ const ActionContainer = () => {
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
               >
-                {(inputProps) => (
-                  <Input
-                    {...inputProps}
-                    id="whatsapp"
-                    name="whatsapp"
-                    type="text"
-                    placeholder="(99) 99999-9999"
-                  />
-                )}
+                {
+                  ((inputProps: Props) => (
+                    <Input
+                      {...inputProps}
+                      id="whatsapp"
+                      name="whatsapp"
+                      type="text"
+                      placeholder="(99) 99999-9999"
+                    />
+                  )) as unknown as ReactNode
+                }
               </InputMask>
             </FormGroup>
 
