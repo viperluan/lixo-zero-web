@@ -14,7 +14,7 @@ const DateTimePicker = ({ onDateChange }) => {
   const currentYear = moment().year();
 
   const isValidDate = (current) => {
-    const start = moment(`${currentYear}-10-19`);
+    const start = moment(`${currentYear}-10-18`);
     const end = moment(`${currentYear}-10-26`);
     return current.isBetween(start, end, 'day', '[]');
   };
