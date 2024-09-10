@@ -46,7 +46,7 @@ const ActionContainer = () => {
   const [activityType, setActivityType] = useState('');
   const [realizationForm, setRealizationForm] = useState(FormaRealizacaoAcao.Online);
   const [activityLocation, setActivityLocation] = useState('');
-  const [organizerCount, setOrganizerCount] = useState(0);
+  const [organizerCount, setOrganizerCount] = useState<number>();
   const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
   const [whatsapp, setWhatsapp] = useState('');
 
@@ -266,7 +266,7 @@ const ActionContainer = () => {
 
             <FormGroup>
               <Label for="dateTime">
-                Data e horário que a atividade será realizada (datas entre 21 e 30/10/
+                Data e horário que a atividade será realizada (datas entre 18 e 26/10/
                 {moment().year()})
               </Label>
               <DateTimePicker onDateChange={handleDateChange} />
