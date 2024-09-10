@@ -4,38 +4,40 @@ import moment from 'moment';
 import InputMask from 'react-input-mask';
 import { Input } from 'reactstrap';
 import 'moment/locale/pt-br';
-import 'react-datetime/css/react-datetime.css';
 
 // Definindo o locale para pt-br
 moment.locale('pt-br');
 
 const DateTimePicker = ({ onDateChange }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState();
   const [inputValue, setInputValue] = useState('');
   const currentYear = moment().year();
 
   const isValidDate = (current) => {
-    const start = moment(`${currentYear}-10-21`);
-    const end = moment(`${currentYear}-10-30`);
+    const start = moment(`${currentYear}-10-19`);
+    const end = moment(`${currentYear}-10-26`);
     return current.isBetween(start, end, 'day', '[]');
   };
 
   useEffect(() => {
-    if (selectedDate) {
-      setInputValue(selectedDate.format('DD/MM/YYYY HH:mm'));
-    } else {
+    if (!selectedDate) {
       setInputValue('');
+      return;
     }
+
+    setInputValue(selectedDate.format('DD/MM/YYYY HH:mm'));
   }, [selectedDate]);
 
   const handleDateChange = (date) => {
     if (moment.isMoment(date) && isValidDate(date)) {
       setSelectedDate(date);
+
       if (onDateChange) {
         onDateChange(date);
       }
     } else {
       setSelectedDate(null);
+
       if (onDateChange) {
         onDateChange(null);
       }
@@ -44,13 +46,18 @@ const DateTimePicker = ({ onDateChange }) => {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
+
+    if (!value) {
+      handleDateChange(null);
+      return;
+    }
+
     setInputValue(value);
 
     const formattedDate = moment(value, 'DD/MM/YYYY HH:mm', true);
+
     if (formattedDate.isValid() && isValidDate(formattedDate)) {
       handleDateChange(formattedDate);
-    } else if (value === '') {
-      handleDateChange(null);
     }
   };
 
@@ -68,15 +75,17 @@ const DateTimePicker = ({ onDateChange }) => {
 
   return (
     <Datetime
+      closeOnSelect
+      closeOnClickOutside
+      renderInput={renderInput}
       value={selectedDate}
       inputProps={{ id: 'dateTime' }}
       isValidDate={isValidDate}
+      initialViewDate={moment(`${currentYear}-10-19`)}
       onChange={handleDateChange}
       locale="pt-br"
       dateFormat="DD/MM/YYYY"
       timeFormat="HH:mm"
-      renderInput={renderInput}
-      initialViewDate={moment(`${currentYear}-10-21`)}
       className="w-100"
     />
   );
