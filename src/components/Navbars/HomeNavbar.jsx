@@ -45,9 +45,9 @@ const HomeNavbar = () => {
             <NavItem>
               <NavLink href="/auth/about">Sobre</NavLink>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <NavLink href="/auth/partner/create">Apoie o projeto</NavLink>
-            </NavItem>
+            </NavItem> */}
             {!user ? (
               <NavItem>
                 <Button onClick={toggleModal} className="login-button">
@@ -75,9 +75,9 @@ const HomeNavbar = () => {
           <Link to="/admin/categories">
             <Button size="sm">Tipo de Atividades</Button>
           </Link>
-          <Link to="/admin/quotas">
+          {/* <Link to="/admin/quotas">
             <Button size="sm">Cotas de Patrocínio</Button>
-          </Link>
+          </Link> */}
         </div>
       )}
       {user?.tipo === TipoUsuario.Usuario && (
