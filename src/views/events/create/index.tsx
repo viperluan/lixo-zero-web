@@ -1,6 +1,5 @@
 import { FormaRealizacaoAcao } from '~/Enumerados';
 import { listarEnumerados } from '~/Enumerados';
-import api from '~api';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
 import moment from 'moment';
@@ -22,29 +21,44 @@ import InputMask from 'react-input-mask';
 import { SituacaoAcao } from '~/Enumerados';
 import { LoadingOverlay } from '~components/Loading';
 import { useNavigate } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
+import api from '~/api';
+
+type Category = {
+  id: string;
+  descricao: string;
+};
+
+type CategoriesResponseData = {
+  categories: Category[];
+  totalPages: number;
+  currentPage: number;
+};
 
 const ActionContainer = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [listCategories, setListCategories] = useState([]);
+  const [listCategories, setListCategories] = useState<Category[]>([]);
   const [organizerName, setOrganizerName] = useState('');
   const [activityTitle, setActivityTitle] = useState('');
   const [activityDescription, setActivityDescription] = useState('');
-  const [activityType, setActivityType] = useState(null);
+  const [activityType, setActivityType] = useState('');
   const [realizationForm, setRealizationForm] = useState(FormaRealizacaoAcao.Online);
   const [activityLocation, setActivityLocation] = useState('');
   const [organizerCount, setOrganizerCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState(null);
   const [whatsapp, setWhatsapp] = useState('');
 
-  const fetchCategories = () => {
-    api.get(`/categorias?page=1&limit=150`).then((res) => {
-      setListCategories(res.data.categories || []);
-      if (res.data.categories) {
-        setActivityType(res.data.categories[0].id);
-      }
-    });
+  const fetchCategories = async () => {
+    const { data }: AxiosResponse<CategoriesResponseData> = await api.get(
+      `/categorias?page=1&limit=150`
+    );
+
+    if (data.categories) {
+      setListCategories(data.categories);
+      setActivityType(data.categories[0].id);
+    }
   };
 
   useEffect(() => {
@@ -128,6 +142,16 @@ const ActionContainer = () => {
       default:
         return 'Local de realização da ação';
     }
+  };
+
+  const renderCategoriesOptions = () => {
+    if (!listCategories.length) return <option>Sem tipo de ação</option>;
+
+    return listCategories.map((categorie) => (
+      <option key={categorie.id} value={categorie.id}>
+        {categorie.descricao}
+      </option>
+    ));
   };
 
   return (
@@ -216,11 +240,7 @@ const ActionContainer = () => {
                 value={activityType}
                 onChange={(e) => setActivityType(e.target.value)}
               >
-                {listCategories.map((categorie) => (
-                  <option key={categorie.id} value={categorie.id}>
-                    {categorie.descricao}
-                  </option>
-                ))}
+                {renderCategoriesOptions()}
               </Input>
             </FormGroup>
 
