@@ -65,11 +65,14 @@ const RegisterContainer = () => {
       cpf_cnpj: cpfCnpj,
     });
 
-    if (registerUser.status !== 201) return;
+    if (registerUser.status === 201) {
+      toast.success('Usuário criado com sucesso, realizando o login.');
+      await handleAuthenticate();
+    }
 
-    toast.success('Usuário criado com sucesso, realizando o login.');
-
-    await handleAuthenticate();
+    if (registerUser.data.error) {
+      toast.error(registerUser.data.error);
+    }
   };
 
   const handleAuthenticate = async () => {

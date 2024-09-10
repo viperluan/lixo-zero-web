@@ -26,11 +26,15 @@ const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
         descricao: description,
       })
       .then((res) => {
-        if (res.data.id) {
-          setDescription();
+        if (res.status === 201) {
+          setDescription('');
           toast.success('Categoria cadastrada com sucesso');
           toogleModal();
           callBack();
+        }
+
+        if (res.data.error) {
+          toast.error(res.data.error);
         }
       })
       .finally(() => setIsLoading(false));

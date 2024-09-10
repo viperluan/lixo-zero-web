@@ -30,6 +30,8 @@ const QuotasRegister = ({ isOpen, toogleModal, callBack }) => {
           toogleModal();
           callBack();
         }
+
+        if (res.data.error) toast.error(res.data.error);
       });
   };
 
