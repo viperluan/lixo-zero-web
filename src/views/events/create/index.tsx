@@ -70,28 +70,47 @@ const ActionContainer = () => {
   };
 
   const handleSubmitAction = async () => {
-    if (!user || !user.id) return toast.warn('Faça login antes de continuar!');
+    if (!user || !user.id)
+      return toast.warn('É necessário realizar o login antes de cadastrar uma ação!');
 
-    if (!organizerName) return toast.warn('Informe o nome do organizador da ação!');
+    if (!organizerName)
+      return toast.warn('É necessário informar um nome para o organizador da ação!');
 
-    if (!whatsapp) return toast.warn('Informe o número do WhatsApp do responsável pela ação!');
+    if (!whatsapp)
+      return toast.warn('É necessário informar um número de whatsapp para o responsável da ação!');
 
-    if (!activityTitle) return toast.warn('Informe o título da ação!');
+    if (!activityTitle) return toast.warn('É necessário informar um título para atividade!');
 
-    if (!activityDescription) return toast.warn('Informe a descrição da ação!');
+    if (!activityDescription)
+      return toast.warn('É necessário informar uma descrição para atividade!');
 
-    if (!activityType) return toast.warn('Informe o tipo da ação!');
+    if (!activityType) return toast.warn('É necessário informar um tipo de atividade!');
 
-    if (!realizationForm) return toast.warn('Informe a forma de realização da ação!');
+    if (!selectedDate)
+      return toast.warn(
+        'É necessário informar uma data de horário que a atividade será realizada!'
+      );
 
-    if (!activityLocation) return toast.warn('Informe o local de realização da ação!');
+    if (!realizationForm)
+      return toast.warn('É necessário informar a forma de realização da atividade!');
 
-    if (!selectedDate) return toast.warn('Informe a data de realização da ação!');
+    if (!activityLocation) {
+      if (activityLocation === FormaRealizacaoAcao.Online)
+        return toast.warn('É necessário informar um link com informações ou acesso ao evento!');
 
-    if (organizerCount <= 0 || !organizerCount)
-      return toast.warn('Informe o número previsto de organizadores da ação!');
+      if (activityLocation === FormaRealizacaoAcao.Hibrida)
+        return toast.warn(
+          'É necessário informar um nome e endereço do local para realização do evento!'
+        );
 
-    // Adicionar lógica para enviar dados ao servidor
+      if (activityLocation === FormaRealizacaoAcao.Presencial)
+        return toast.warn('É necessário informar dados sobre onde e como acontecerá o evento!');
+    }
+
+    if (!organizerCount || organizerCount < 1)
+      return toast.warn(
+        'É necessário informar um número referente a quantidade de pessoas que estão organizando o evento!'
+      );
 
     const payload = {
       id_usuario_responsavel: user.id,
@@ -110,22 +129,21 @@ const ActionContainer = () => {
 
     setIsLoading(true);
 
-    await api
-      .post(`/acoes`, payload)
-      .then((res) => {
-        if (res.data.id) {
-          toast.success(
-            'Recebemos a solicitação da sua ação em breve nossa equipe entrará em contato para confirmar os detalhes.',
-            {
-              autoClose: 10000,
-            }
-          );
-          navigate(`/auth/events/my-events/${user.id}`);
-        }
+    const { data } = await api.post(`/acoes`, payload);
 
-        if (res.data.error) toast.error(res.data.error);
-      })
-      .finally(() => setIsLoading(false));
+    if (data.id) {
+      toast.success(
+        'Recebemos a solicitação de cadastro da sua ação. Em breve você receberá mais informações para confirmar os detalhes.',
+        {
+          autoClose: 10 * 1000, // 10 segundos
+        }
+      );
+
+      setIsLoading(false);
+      navigate(`/auth/events/my-events/${user.id}`);
+    }
+
+    if (data.error) toast.error(data.error);
   };
 
   const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
