@@ -1,10 +1,10 @@
-import { Col, Row, Card, CardBody } from 'reactstrap';
+import { Card, CardBody, Container } from 'reactstrap';
 
 const AboutContainer = () => {
   return (
     <Card>
-      <Row style={{ backgroundColor: 'rgb(23 114 146)' }} className="p-5">
-        <Col>
+      <div style={{ backgroundColor: 'rgb(23 114 146)' }} className="p-5">
+        <Container>
           <h1
             style={{ fontSize: '50px', fontWeight: 'bold', fontFamily: 'Barlow, sans-serif' }}
             className="text-default"
@@ -23,10 +23,10 @@ const AboutContainer = () => {
               reciclagem
             </li>
           </ul>
-        </Col>
-      </Row>
-      <Row className="my-4 text-center">
-        <Col>
+        </Container>
+      </div>
+      <div className="my-4 text-center">
+        <Container>
           <Card className="bg-secondary shadow border-0">
             <CardBody>
               <h3 style={{ fontSize: '57px', textAlign: 'center', color: '#17a2b8' }}>
@@ -42,10 +42,10 @@ const AboutContainer = () => {
               </p>
             </CardBody>
           </Card>
-        </Col>
-      </Row>
-      <Row className="bg-default">
-        <Col>
+        </Container>
+      </div>
+      <div className="bg-default p-4">
+        <Container>
           <ul style={{ color: '#fff', fontSize: '18px' }}>
             <li>
               <b>Máximo aproveitamento e correto encaminhamento</b> dos resíduos;
@@ -57,8 +57,8 @@ const AboutContainer = () => {
               Todos os materiais descartados devem tornar-se <b>recursos</b>.
             </li>
           </ul>
-        </Col>
-      </Row>
+        </Container>
+      </div>
     </Card>
   );
 };
