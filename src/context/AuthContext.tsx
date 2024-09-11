@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       const token = cookies['token'];
 
       if (token) {
-        login(token);
+        loginWithCookie(token);
       }
 
       setLoading(false);
@@ -38,13 +38,19 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     loadUserData();
   }, []);
 
-  const login = (token: string) => {
-    setCookie('token', token);
+  const loginWithCookie = (token: string) => {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const userPayloadFromToken = decodeToken(token);
     setUser(userPayloadFromToken);
+  };
 
+  const login = (token: string) => {
+    setCookie('token', token, { path: '/' });
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    const userPayloadFromToken = decodeToken(token);
+    setUser(userPayloadFromToken);
   };
 
   const logout = () => {
