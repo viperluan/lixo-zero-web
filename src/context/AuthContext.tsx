@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const login = (token: string) => {
-    setCookie('token', token, { path: '/' });
+    setCookie('token', token);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const userPayloadFromToken = decodeToken(token);
