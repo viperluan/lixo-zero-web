@@ -29,6 +29,38 @@ const HomeNavbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const renderAdminButtons = () => {
+    return (
+      <div className="admin-buttons">
+        <Link to="/admin/events">
+          <Button size="sm">Ações</Button>
+        </Link>
+        <Link to="/admin/partners">
+          <Button size="sm">Patrocinadores</Button>
+        </Link>
+        <Link to="/admin/users">
+          <Button size="sm">Usuários</Button>
+        </Link>
+        <Link to="/admin/categories">
+          <Button size="sm">Tipo de Atividades</Button>
+        </Link>
+        {/* <Link to="/admin/quotas">
+          <Button size="sm">Cotas de Patrocínio</Button>
+        </Link> */}
+      </div>
+    );
+  };
+
+  const renderUserButtons = () => {
+    return (
+      <div className="admin-buttons">
+        <Link to={`/auth/events/my-events/${user.id}`}>
+          <Button size="sm">Minhas Ações</Button>
+        </Link>
+      </div>
+    );
+  };
+
   return (
     <div>
       <Navbar className="navbar-horizontal navbar-dark bg-default" expand="md">
@@ -70,32 +102,10 @@ const HomeNavbar = () => {
         </Collapse>
         <ModalLogin isOpen={modalVisible} toggle={toggleModal} />
       </Navbar>
-      {user?.tipo === TipoUsuario.Admin && (
-        <div className="admin-buttons">
-          <Link to="/admin/events">
-            <Button size="sm">Ações</Button>
-          </Link>
-          <Link to="/admin/partners">
-            <Button size="sm">Patrocinadores</Button>
-          </Link>
-          <Link to="/admin/users">
-            <Button size="sm">Usuários</Button>
-          </Link>
-          <Link to="/admin/categories">
-            <Button size="sm">Tipo de Atividades</Button>
-          </Link>
-          {/* <Link to="/admin/quotas">
-            <Button size="sm">Cotas de Patrocínio</Button>
-          </Link> */}
-        </div>
-      )}
-      {user?.tipo === TipoUsuario.Usuario && (
-        <div className="admin-buttons">
-          <Link to={`/auth/events/my-events/${user.id}`}>
-            <Button size="sm">Minhas Ações</Button>
-          </Link>
-        </div>
-      )}
+
+      {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
+
+      {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
     </div>
   );
 };
