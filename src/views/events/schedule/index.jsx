@@ -143,9 +143,8 @@ const ActionCalendar = () => {
     return forma ? forma.label : 'Desconhecida';
   };
 
-  return (
-    <>
-      <LoadingOverlay isLoading={isLoading} />
+  const renderCardContainer = () => {
+    return (
       <Card>
         <CardHeader className="border-0">
           <div>
@@ -285,6 +284,14 @@ const ActionCalendar = () => {
           </Row>
         )}
       </Card>
+    );
+  };
+
+  return (
+    <>
+      <LoadingOverlay isLoading={isLoading} />
+
+      {renderCardContainer()}
 
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         {selectedEvent && (
