@@ -43,7 +43,7 @@ const HomeNavbar = () => {
               <NavLink href="/auth/schedule">Agenda</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/auth/about">Sobre</NavLink>
+              <NavLink href="/about">Sobre</NavLink>
             </NavItem>
             {/* <NavItem>
               <NavLink href="/auth/partner/create">Apoie o projeto</NavLink>
