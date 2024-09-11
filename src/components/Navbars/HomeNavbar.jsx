@@ -61,6 +61,16 @@ const HomeNavbar = () => {
     );
   };
 
+  const renderUnauthenticatedButtons = () => {
+    return (
+      <NavItem>
+        <Button onClick={toggleModal} className="login-button">
+          Login
+        </Button>
+      </NavItem>
+    );
+  };
+
   return (
     <div>
       <Navbar className="navbar-horizontal navbar-dark bg-default" expand="md">
@@ -69,37 +79,35 @@ const HomeNavbar = () => {
         </NavbarBrand>
 
         <NavbarToggler onClick={toggleNavbar} />
+
         <Collapse isOpen={isOpen} navbar>
-          <Nav className="ml-auto" navbar>
+          <Nav className="ml-auto d-flex align-items-center" navbar>
             <NavItem>
               <NavLink tag={Link} to="/auth/events/create">
                 Criar ação
               </NavLink>
             </NavItem>
+
             <NavItem>
               <NavLink tag={Link} to="/auth/schedule">
                 Agenda
               </NavLink>
             </NavItem>
+
             <NavItem>
               <NavLink tag={Link} to="/about">
                 Sobre
               </NavLink>
             </NavItem>
+
             {/* <NavItem>
               <NavLink tag={Link} to="/auth/partner/create">Apoie o projeto</NavLink>
             </NavItem> */}
-            {!user ? (
-              <NavItem>
-                <Button onClick={toggleModal} className="login-button">
-                  Login
-                </Button>
-              </NavItem>
-            ) : (
-              <UserLoggedDropDown />
-            )}
+
+            {!user ? renderUnauthenticatedButtons() : <UserLoggedDropDown />}
           </Nav>
         </Collapse>
+
         <ModalLogin isOpen={modalVisible} toggle={toggleModal} />
       </Navbar>
 
