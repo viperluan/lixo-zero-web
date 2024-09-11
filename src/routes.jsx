@@ -6,7 +6,6 @@ import { UsersContainer } from '~views/users';
 import { PartnersContainer } from '~views/partners';
 import { ActionContainer } from '~views/events/create';
 import { ActionCalendar } from '~views/events/schedule';
-import { AboutContainer } from '~views/about';
 import { PartnersCreateContainer } from '~views/partners/create';
 import { QuotasContainer } from '~views/quotas';
 import { MyEventsContainer } from '~views/events/my-events';
@@ -45,13 +44,6 @@ const routes = [
     name: 'Register',
     icon: 'ni ni-circle-08 text-pink',
     component: <ActionCalendar />,
-    layout: '/auth',
-  },
-  {
-    path: '/about',
-    name: 'Register',
-    icon: 'ni ni-circle-08 text-pink',
-    component: <AboutContainer />,
     layout: '/auth',
   },
   {
