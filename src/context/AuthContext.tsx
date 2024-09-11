@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const logout = () => {
     removeCookie('token');
+    api.defaults.headers.common['Authorization'] = '';
     setUser(null);
   };
 
