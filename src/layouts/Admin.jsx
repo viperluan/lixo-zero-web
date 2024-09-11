@@ -1,22 +1,20 @@
-import React from 'react';
-import { useLocation, Route, Routes, Navigate } from 'react-router-dom';
-// reactstrap components
+import { useEffect, useRef } from 'react';
 import { Container } from 'reactstrap';
-// core components
-
+import { useLocation, Route, Routes, Navigate } from 'react-router-dom';
 import routes from '~/routes';
+
 import { HomeNavbar } from '~components/Navbars/HomeNavbar';
 import { Footer } from '~components/Footers/Footer';
 import { useAuth } from '~context/AuthContext';
 import { TipoUsuario } from '~/Enumerados';
+import PageNotFound from '~/views/page-not-found';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Admin = (props) => {
+const Admin = () => {
   const { loading, user } = useAuth();
-  const mainContent = React.useRef(null);
+  const mainContent = useRef(null);
   const location = useLocation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
@@ -37,20 +35,22 @@ const Admin = (props) => {
   };
 
   return (
-    <div className="main-content" ref={mainContent}>
+    <div className="main-content d-flex flex-column h-100" ref={mainContent}>
       {loading ? (
         <h1>Carregando</h1>
       ) : (
-        <div>
+        <>
           <HomeNavbar />
+
           <Routes>
             {getRoutes(routes)}
-            <Route path="*" element={<Navigate to="/admin/index" replace />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
+
           <Container fluid>
             <Footer />
           </Container>
-        </div>
+        </>
       )}
     </div>
   );

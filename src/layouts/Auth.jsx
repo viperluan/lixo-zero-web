@@ -1,19 +1,17 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, Route, Routes } from 'react-router-dom';
-// reactstrap components
 import { Container } from 'reactstrap';
 
-// core components
 import routes from '~/routes';
 import { HomeNavbar } from '~components/Navbars/HomeNavbar';
 import { Footer } from '~components/Footers/Footer';
 import { useAuth } from '~context/AuthContext';
 import { ModalLogin } from '~components/Headers/Modal/Modal';
+import PageNotFound from '~/views/page-not-found';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Auth = (props) => {
+const Auth = () => {
   const { loading, user } = useAuth();
-  const mainContent = React.useRef(null);
+  const mainContent = useRef(null);
   const location = useLocation();
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
@@ -48,22 +46,28 @@ const Auth = (props) => {
   };
 
   return (
-    <Fragment>
+    <>
       <ModalLogin isOpen={isLoginModalOpen} toggle={toggleLoginModal} />
-      <div className="main-content" ref={mainContent}>
+
+      <div className="main-content d-flex flex-column h-100" ref={mainContent}>
         {loading ? (
           <h1>Carregando</h1>
         ) : (
-          <div>
+          <>
             <HomeNavbar />
-            <Routes>{getRoutes(routes)}</Routes>
+
+            <Routes>
+              {getRoutes(routes)}
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+
             <Container fluid>
               <Footer />
             </Container>
-          </div>
+          </>
         )}
       </div>
-    </Fragment>
+    </>
   );
 };
 
