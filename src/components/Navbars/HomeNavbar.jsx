@@ -32,21 +32,30 @@ const HomeNavbar = () => {
   return (
     <div>
       <Navbar className="navbar-horizontal navbar-dark bg-default" expand="md">
-        <NavbarBrand href="/">Instituto Lixo Zero</NavbarBrand>
+        <NavbarBrand tag={Link} to="/">
+          Instituto Lixo Zero
+        </NavbarBrand>
+
         <NavbarToggler onClick={toggleNavbar} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="/auth/events/create">Criar ação</NavLink>
+              <NavLink tag={Link} to="/auth/events/create">
+                Criar ação
+              </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/auth/schedule">Agenda</NavLink>
+              <NavLink tag={Link} to="/auth/schedule">
+                Agenda
+              </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/about">Sobre</NavLink>
+              <NavLink tag={Link} to="/about">
+                Sobre
+              </NavLink>
             </NavItem>
             {/* <NavItem>
-              <NavLink href="/auth/partner/create">Apoie o projeto</NavLink>
+              <NavLink tag={Link} to="/auth/partner/create">Apoie o projeto</NavLink>
             </NavItem> */}
             {!user ? (
               <NavItem>
