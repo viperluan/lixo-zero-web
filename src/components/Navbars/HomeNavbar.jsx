@@ -35,9 +35,9 @@ const HomeNavbar = () => {
         <Link to="/admin/events">
           <Button size="sm">Ações</Button>
         </Link>
-        <Link to="/admin/partners">
+        {/* <Link to="/admin/partners">
           <Button size="sm">Patrocinadores</Button>
-        </Link>
+        </Link> */}
         <Link to="/admin/users">
           <Button size="sm">Usuários</Button>
         </Link>
