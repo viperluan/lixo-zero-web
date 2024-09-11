@@ -51,8 +51,8 @@ const MyEventsContainer = () => {
       filters.situacao = situacaoFiltro;
     }
 
-    if (parseInt(id)) {
-      filters.id_usuario = parseInt(id);
+    if (id) {
+      filters.id_usuario = id;
     }
 
     if (search) {
