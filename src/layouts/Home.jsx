@@ -5,6 +5,7 @@ import { Container } from 'reactstrap';
 import { Route, Routes } from 'react-router-dom';
 import Home from '~/views/home';
 import PageNotFound from '~/views/page-not-found';
+import { AboutContainer } from '~/views/about';
 
 const HomeContainer = () => {
   return (
@@ -13,6 +14,7 @@ const HomeContainer = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutContainer />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
 
