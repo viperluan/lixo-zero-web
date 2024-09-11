@@ -11,7 +11,7 @@ import { PartnersCreateContainer } from '~views/partners/create';
 import { QuotasContainer } from '~views/quotas';
 import { MyEventsContainer } from '~views/events/my-events';
 
-var routes = [
+const routes = [
   {
     path: '/login',
     name: 'login',
@@ -24,6 +24,41 @@ var routes = [
     name: 'Register',
     icon: 'ni ni-circle-08 text-pink',
     component: <RegisterContainer />,
+    layout: '/auth',
+  },
+  {
+    path: '/events/create',
+    name: 'Ações',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: <ActionContainer />,
+    layout: '/auth',
+  },
+  {
+    path: '/events/my-events/:id',
+    name: 'Ações',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: <MyEventsContainer />,
+    layout: '/auth',
+  },
+  {
+    path: '/schedule',
+    name: 'Register',
+    icon: 'ni ni-circle-08 text-pink',
+    component: <ActionCalendar />,
+    layout: '/auth',
+  },
+  {
+    path: '/about',
+    name: 'Register',
+    icon: 'ni ni-circle-08 text-pink',
+    component: <AboutContainer />,
+    layout: '/auth',
+  },
+  {
+    path: '/partner/create',
+    name: 'Register',
+    icon: 'ni ni-circle-08 text-pink',
+    component: <PartnersCreateContainer />,
     layout: '/auth',
   },
   {
@@ -48,20 +83,6 @@ var routes = [
     layout: '/admin',
   },
   {
-    path: '/events/create',
-    name: 'Ações',
-    icon: 'ni ni-bullet-list-67 text-red',
-    component: <ActionContainer />,
-    layout: '/auth',
-  },
-  {
-    path: '/events/my-events/:id',
-    name: 'Ações',
-    icon: 'ni ni-bullet-list-67 text-red',
-    component: <MyEventsContainer />,
-    layout: '/auth',
-  },
-  {
     path: '/users',
     name: 'Eventos',
     icon: 'ni ni-bullet-list-67 text-red',
@@ -75,26 +96,6 @@ var routes = [
     component: <PartnersContainer />,
     layout: '/admin',
   },
-  {
-    path: '/schedule',
-    name: 'Register',
-    icon: 'ni ni-circle-08 text-pink',
-    component: <ActionCalendar />,
-    layout: '/auth',
-  },
-  {
-    path: '/about',
-    name: 'Register',
-    icon: 'ni ni-circle-08 text-pink',
-    component: <AboutContainer />,
-    layout: '/auth',
-  },
-  {
-    path: '/partner/create',
-    name: 'Register',
-    icon: 'ni ni-circle-08 text-pink',
-    component: <PartnersCreateContainer />,
-    layout: '/auth',
-  },
 ];
+
 export default routes;
