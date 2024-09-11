@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Col, Container, Row } from 'reactstrap';
 
 const Footer = () => {
   const iconStyle = { color: '#c9d75b' };
 
   return (
-    <Fragment>
-      <Container>
+    <>
+      <Container fluid className="p-4">
         <Row>
           <Col>
             <h2>Nosso Objetivo</h2>
@@ -23,6 +23,7 @@ const Footer = () => {
             </p>
           </Col>
         </Row>
+
         <Row className="text-center mt-4">
           <Col>
             <a
@@ -60,10 +61,11 @@ const Footer = () => {
           </Col>
         </Row>
       </Container>
-      <footer className="text-center mt-4 mb-4">
+
+      <footer className="text-center">
         <p>© 2024 Instituto Lixo Zero. Todos os direitos reservados.</p>
       </footer>
-    </Fragment>
+    </>
   );
 };
 
