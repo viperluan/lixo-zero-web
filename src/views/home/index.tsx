@@ -60,19 +60,6 @@ const Home = () => {
             </Card>
           </Col>
         </Row>
-        <Row className="d-flex justify-content-center mt-4 cursor-pointer">
-          <Col md="6">
-            <Card onClick={() => navigate('auth/partner/create')}>
-              <CardBody>
-                <CardTitle tag="h2">Seja um patrocinador</CardTitle>
-                <CardText>
-                  Apoie o nosso evento, contribuindo para um mundo com menos lixo.
-                </CardText>
-                <CardImg bottom width="100%" src={imagemPatrocinador} alt="Instituto Lixo Zero" />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
       </Container>
     </Jumbotron>
   );
