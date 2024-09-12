@@ -11,7 +11,6 @@ import {
 } from 'reactstrap';
 import imageEvento from '~assets/img/imagem-lixo-zero.webp';
 import imageAgenda from '~assets/img/eventos-semana-lixo-zero.png';
-import imagemPatrocinador from '~assets/img/patrocinador-lixo-zero.png';
 
 import { useNavigate } from 'react-router-dom';
 
