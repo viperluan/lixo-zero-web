@@ -7,6 +7,7 @@ import {
   Button,
   Collapse,
   NavbarToggler,
+  Container,
 } from 'reactstrap';
 import { ModalLogin } from '~components/Headers/Modal/Modal';
 import { useState } from 'react';
@@ -38,10 +39,10 @@ const HomeNavbar = () => {
         {/* <Link to="/admin/partners">
           <Button size="sm">Patrocinadores</Button>
         </Link> */}
-        <Link to="/admin/users">
+        <Link className="ml-2" to="/admin/users">
           <Button size="sm">Usuários</Button>
         </Link>
-        <Link to="/admin/categories">
+        <Link className="ml-2" to="/admin/categories">
           <Button size="sm">Tipo de Atividades</Button>
         </Link>
         {/* <Link to="/admin/quotas">
@@ -72,49 +73,55 @@ const HomeNavbar = () => {
   };
 
   return (
-    <div>
-      <Navbar className="navbar-horizontal navbar-dark bg-default" expand="md">
-        <NavbarBrand tag={Link} to="/">
-          Instituto Lixo Zero
-        </NavbarBrand>
+    <>
+      <header className="navbar-horizontal navbar-dark bg-default">
+        <Container>
+          <Navbar expand="md">
+            <NavbarBrand tag={Link} to="/">
+              Instituto Lixo Zero
+            </NavbarBrand>
 
-        <NavbarToggler onClick={toggleNavbar} />
+            <NavbarToggler onClick={toggleNavbar} />
 
-        <Collapse isOpen={isOpen} navbar>
-          <Nav className="ml-auto d-flex align-items-center" navbar>
-            <NavItem>
-              <NavLink tag={Link} to="/auth/events/create">
-                Criar ação
-              </NavLink>
-            </NavItem>
+            <Collapse isOpen={isOpen} navbar>
+              <Nav className="ml-auto d-flex align-items-center" navbar>
+                <NavItem>
+                  <NavLink tag={Link} to="/auth/events/create">
+                    Criar ação
+                  </NavLink>
+                </NavItem>
 
-            <NavItem>
-              <NavLink tag={Link} to="/auth/schedule">
-                Agenda
-              </NavLink>
-            </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/auth/schedule">
+                    Agenda
+                  </NavLink>
+                </NavItem>
 
-            <NavItem>
-              <NavLink tag={Link} to="/about">
-                Sobre
-              </NavLink>
-            </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/about">
+                    Sobre
+                  </NavLink>
+                </NavItem>
 
-            {/* <NavItem>
+                {/* <NavItem>
               <NavLink tag={Link} to="/auth/partner/create">Apoie o projeto</NavLink>
             </NavItem> */}
 
-            {!user ? renderUnauthenticatedButtons() : <UserLoggedDropDown />}
-          </Nav>
-        </Collapse>
+                {!user ? renderUnauthenticatedButtons() : <UserLoggedDropDown />}
+              </Nav>
+            </Collapse>
 
-        <ModalLogin isOpen={modalVisible} toggle={toggleModal} />
-      </Navbar>
+            <ModalLogin isOpen={modalVisible} toggle={toggleModal} />
+          </Navbar>
+        </Container>
+      </header>
 
-      {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
+      <Container className="py-3">
+        {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
 
-      {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
-    </div>
+        {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
+      </Container>
+    </>
   );
 };
 
