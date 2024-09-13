@@ -44,7 +44,7 @@ const AdditionalInfoEventCreate = ({
               style={{ backgroundColor: '#fffb11' }}
               className="text-uppercase font-weight-bold"
             >
-              ATÉ O DIA 27 DE SETEMBRO
+              ATÉ O DIA 30 DE SETEMBRO
             </span>
           </p>
 
