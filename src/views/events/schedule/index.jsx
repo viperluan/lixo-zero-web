@@ -18,6 +18,7 @@ import {
   Button,
   Badge,
   CardHeader,
+  Container,
 } from 'reactstrap';
 import { listarEnumerados, FormaRealizacaoAcao, SituacaoAcao } from '~/Enumerados';
 import api from '~api';
@@ -291,7 +292,7 @@ const ActionCalendar = () => {
     <>
       <LoadingOverlay isLoading={isLoading} />
 
-      {renderCardContainer()}
+      <Container>{renderCardContainer()}</Container>
 
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         {selectedEvent && (

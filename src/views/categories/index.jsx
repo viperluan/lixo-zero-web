@@ -1,5 +1,5 @@
 import api from '~api';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -11,6 +11,7 @@ import {
   Row,
   CardBody,
   Button,
+  Container,
 } from 'reactstrap';
 import { CategoriesRegister } from './register';
 import { LoadingOverlay } from '~components/Loading';
@@ -49,8 +50,9 @@ const CategoriesContainer = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <LoadingOverlay isLoading={isLoading} />
+
       <CategoriesRegister
         isOpen={openModal}
         toogleModal={toogleModal}
@@ -58,84 +60,87 @@ const CategoriesContainer = () => {
           fetchCategories(1);
         }}
       />
-      <Card>
-        <CardBody>
-          <Row>
-            <div className="col">
-              <Card className="shadow">
-                <CardHeader className="border-0 d-flex justify-content-between">
-                  <h3 className="mb-0">Lista de Categorias</h3>
-                  <Button onClick={() => setOpenModal(!openModal)} color="primary">
-                    Nova Categoria
-                  </Button>
-                </CardHeader>
-                <Table className="align-items-center table-flush" responsive>
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Descrição</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listCategories.map((category) => (
-                      <tr key={category.id}>
-                        <th scope="row">{category.descricao}</th>
+
+      <Container>
+        <Card>
+          <CardBody>
+            <Row>
+              <div className="col">
+                <Card className="shadow">
+                  <CardHeader className="border-0 d-flex justify-content-between">
+                    <h3 className="mb-0">Lista de Categorias</h3>
+                    <Button onClick={() => setOpenModal(!openModal)} color="primary">
+                      Nova Categoria
+                    </Button>
+                  </CardHeader>
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Descrição</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </Table>
-                <CardFooter className="py-4 d-flex justify-content-center">
-                  <nav aria-label="...">
-                    <Pagination
-                      className="pagination justify-content-end mb-0"
-                      listClassName="justify-content-end mb-0"
-                    >
-                      <PaginationItem disabled={currentPage <= 1}>
-                        <PaginationLink
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePageChange(currentPage - 1);
-                          }}
-                          tabIndex="-1"
-                        >
-                          <i className="fas fa-angle-left" />
-                          <span className="sr-only">Anterior</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                      {[...Array(totalPages)].map((_, index) => (
-                        <PaginationItem key={index} active={index + 1 === currentPage}>
+                    </thead>
+                    <tbody>
+                      {listCategories.map((category) => (
+                        <tr key={category.id}>
+                          <th scope="row">{category.descricao}</th>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                  <CardFooter className="py-4 d-flex justify-content-center">
+                    <nav aria-label="...">
+                      <Pagination
+                        className="pagination justify-content-end mb-0"
+                        listClassName="justify-content-end mb-0"
+                      >
+                        <PaginationItem disabled={currentPage <= 1}>
                           <PaginationLink
                             href="#"
                             onClick={(e) => {
                               e.preventDefault();
-                              handlePageChange(index + 1);
+                              handlePageChange(currentPage - 1);
                             }}
+                            tabIndex="-1"
                           >
-                            {index + 1}
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Anterior</span>
                           </PaginationLink>
                         </PaginationItem>
-                      ))}
-                      <PaginationItem disabled={currentPage >= totalPages}>
-                        <PaginationLink
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePageChange(currentPage + 1);
-                          }}
-                        >
-                          <i className="fas fa-angle-right" />
-                          <span className="sr-only">Próximo</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                    </Pagination>
-                  </nav>
-                </CardFooter>
-              </Card>
-            </div>
-          </Row>
-        </CardBody>
-      </Card>
-    </Fragment>
+                        {[...Array(totalPages)].map((_, index) => (
+                          <PaginationItem key={index} active={index + 1 === currentPage}>
+                            <PaginationLink
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handlePageChange(index + 1);
+                              }}
+                            >
+                              {index + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        <PaginationItem disabled={currentPage >= totalPages}>
+                          <PaginationLink
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handlePageChange(currentPage + 1);
+                            }}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Próximo</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      </Pagination>
+                    </nav>
+                  </CardFooter>
+                </Card>
+              </div>
+            </Row>
+          </CardBody>
+        </Card>
+      </Container>
+    </>
   );
 };
 
