@@ -151,11 +151,11 @@ const ActionContainer = () => {
   const renderLocalAcaoPlaceHolder = () => {
     switch (realizationForm) {
       case FormaRealizacaoAcao.Online:
-        return 'Insira o LINK de onde será divulgado o acesso ao evento.';
+        return 'Insira o link de onde será divulgado o evento.';
       case FormaRealizacaoAcao.Presencial:
         return 'Insira o NOME E O ENDEREÇO do local de realização do evento.';
       case FormaRealizacaoAcao.Hibrida:
-        return 'Insira informações de onde acontecerá o evento';
+        return 'Insira as informações de onde acontecerá o evento e o link de divulgação.';
 
       default:
         return 'Local de realização da ação';
