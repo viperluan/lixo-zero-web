@@ -1,9 +1,9 @@
-import { FormaRealizacaoAcao } from '~/Enumerados';
+import { FormaRealizacaoAcao, TipoPublico } from '~/Enumerados';
 import { listarEnumerados } from '~/Enumerados';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
 import moment, { Moment } from 'moment';
-import { Fragment, ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   Card,
@@ -45,6 +45,8 @@ const ActionContainer = () => {
   const [activityDescription, setActivityDescription] = useState('');
   const [activityType, setActivityType] = useState('');
   const [realizationForm, setRealizationForm] = useState(FormaRealizacaoAcao.Online);
+  const [publicType, setPublicType] = useState(TipoPublico.Interno);
+  const [eventPublicity, setEventPublicity] = useState('');
   const [activityLocation, setActivityLocation] = useState('');
   const [organizerCount, setOrganizerCount] = useState<number>();
   const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
@@ -69,7 +71,9 @@ const ActionContainer = () => {
     setSelectedDate(date);
   };
 
-  const handleSubmitAction = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!user || !user.id)
       return toast.warn('É necessário realizar o login antes de cadastrar uma ação!');
 
@@ -107,6 +111,14 @@ const ActionContainer = () => {
         return toast.warn('É necessário informar dados sobre onde e como acontecerá o evento!');
     }
 
+    if (!publicType)
+      return toast.warn('É necessário informar o foco de público, interno ou externo!');
+
+    if (!eventPublicity)
+      return toast.warn(
+        'É necessário informar a descrição com orientações de como você irá divulgar o evento!'
+      );
+
     if (!organizerCount || organizerCount < 1)
       return toast.warn(
         'É necessário informar um número referente a quantidade de pessoas que estão organizando o evento!'
@@ -125,6 +137,8 @@ const ActionContainer = () => {
       local_acao: activityLocation,
       numero_organizadores_acao: organizerCount,
       situacao_acao: SituacaoAcao.AguardandoConfirmacao,
+      tipo_publico: publicType,
+      orientacao_divulgacao: eventPublicity,
     };
 
     setIsLoading(true);
@@ -139,14 +153,16 @@ const ActionContainer = () => {
         }
       );
 
-      setIsLoading(false);
       navigate(`/auth/events/my-events/${user.id}`);
     }
 
     if (data.error) toast.error(data.error);
+
+    setIsLoading(false);
   };
 
   const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
+  const listaTipoPublico = listarEnumerados(TipoPublico);
 
   const renderLocalAcaoPlaceHolder = () => {
     switch (realizationForm) {
@@ -173,16 +189,18 @@ const ActionContainer = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <LoadingOverlay isLoading={isLoading} />
-      <Card>
-        <CardHeader>
-          <CardTitle>INSCRIÇÃO DE AÇÃO - SEMANA LIXO ZERO CAXIAS DO SUL</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Form className="form">
+
+      <Form className="form" onSubmit={handleSubmit}>
+        <Card>
+          <CardHeader>
+            <CardTitle>INSCRIÇÃO DE AÇÃO - SEMANA LIXO ZERO CAXIAS DO SUL</CardTitle>
+          </CardHeader>
+
+          <CardBody>
             <FormGroup>
-              <Label for="organizerName">Nome do Organizador da ação</Label>
+              <Label for="organizerName">Nome do organizador da ação</Label>
               <span className="form-text text-muted small">
                 {`Empresa/Instituição/Grupo que você representa. Se for 'pessoa física' insira seu
                 nome`}
@@ -198,7 +216,7 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="whatsapp">WhatsApp do responsável pela ação</Label>
+              <Label for="whatsapp">Whatsapp do responsável pela ação</Label>
               <InputMask
                 mask="(99) 99999-9999"
                 value={whatsapp}
@@ -219,7 +237,9 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label>Título da atividade - para divulgação na programação</Label>
+              <Label for="activityTitle">
+                Título da atividade - para divulgação na programação
+              </Label>
               <span className="form-text text-muted small">
                 Ex: Webinar sobre coleta seletiva / Live: Compostagem na Prática / Oficina de
                 receitas....
@@ -235,7 +255,9 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label>Descrição resumida da atividade (o que será falado / feito?)</Label>
+              <Label for="activityDescription">
+                Descrição resumida da atividade (o que será falado / feito?)
+              </Label>
               <span className="form-text text-muted small">
                 Se houver necessidade de INSCRIÇÃO de participantes para acesso ao seu evento, por
                 favor informe aqui como deve acontecer.
@@ -252,9 +274,9 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="tipo_atividade">Tipo da Atividade</Label>
+              <Label for="activityType">Tipo da atividade</Label>
               <Input
-                id="tipo_atividade"
+                id="activityType"
                 name="activityType"
                 type="select"
                 value={activityType}
@@ -273,9 +295,9 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="forma_realizacao_acao">Forma de realização da atividade</Label>
+              <Label for="realizationForm">Forma de realização da atividade</Label>
               <Input
-                id="forma_realizacao_acao"
+                id="realizationForm"
                 name="realizationForm"
                 type="select"
                 value={realizationForm}
@@ -290,9 +312,9 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="local_acao">{renderLocalAcaoPlaceHolder()}</Label>
+              <Label for="activityLocation">{renderLocalAcaoPlaceHolder()}</Label>
               <Input
-                id="local_acao"
+                id="activityLocation"
                 name="activityLocation"
                 type="text"
                 placeholder={renderLocalAcaoPlaceHolder()}
@@ -302,7 +324,41 @@ const ActionContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label>Quantas pessoas irão organizar essa ação? (Incluindo você)</Label>
+              <Label for="publicType">Evento será para o público externo ou interno?</Label>
+              <Input
+                id="publicType"
+                name="publicType"
+                type="select"
+                value={publicType}
+                onChange={(e) => setPublicType(e.target.value)}
+              >
+                {listaTipoPublico.map((forma) => (
+                  <option key={forma.value} value={forma.value}>
+                    {forma.label}
+                  </option>
+                ))}
+              </Input>
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="eventPublicity">
+                Descrição resumida de como você pretende divulgar o evento
+              </Label>
+              <Input
+                id="eventPublicity"
+                name="eventPublicity"
+                type="textarea"
+                placeholder="Descrição resumida de como você pretende divulgar o evento"
+                rows={3}
+                value={eventPublicity}
+                onChange={(e) => setEventPublicity(e.target.value)}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="organizerCount">
+                Quantas pessoas irão organizar essa ação? (Incluindo você)
+              </Label>
               <span className="form-text text-muted small">
                 Se não tiver certeza, insira uma média
               </span>
@@ -310,20 +366,21 @@ const ActionContainer = () => {
                 id="organizerCount"
                 name="organizerCount"
                 type="number"
-                placeholder="Nº participantes"
+                placeholder="Número de participantes"
                 value={organizerCount}
                 onChange={(e) => setOrganizerCount(parseInt(e.target.value))}
               />
             </FormGroup>
-          </Form>
-        </CardBody>
-        <CardFooter className="d-flex justify-content-center">
-          <Button onClick={() => handleSubmitAction()} color="primary">
-            Enviar
-          </Button>
-        </CardFooter>
-      </Card>
-    </Fragment>
+          </CardBody>
+
+          <CardFooter className="d-flex justify-content-center">
+            <Button type="submit" color="primary">
+              Enviar
+            </Button>
+          </CardFooter>
+        </Card>
+      </Form>
+    </>
   );
 };
 
