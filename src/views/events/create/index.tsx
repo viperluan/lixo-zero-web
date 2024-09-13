@@ -16,6 +16,7 @@ import {
   Label,
   Button,
   CardTitle,
+  Container,
 } from 'reactstrap';
 import InputMask, { Props } from 'react-input-mask';
 import { SituacaoAcao } from '~/Enumerados';
@@ -23,6 +24,7 @@ import { LoadingOverlay } from '~components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import api from '~/api';
+import AdditionalInfoEventCreate from '~/components/AdditionalInfoEventCreate';
 
 type Category = {
   id: string;
@@ -51,6 +53,8 @@ const ActionContainer = () => {
   const [organizerCount, setOrganizerCount] = useState<number>();
   const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
   const [whatsapp, setWhatsapp] = useState('');
+
+  const [additionalInfoState, setAdditionalInfoState] = useState(true);
 
   const fetchCategories = async () => {
     const { data }: AxiosResponse<CategoriesResponseData> = await api.get(
@@ -189,13 +193,18 @@ const ActionContainer = () => {
   };
 
   return (
-    <>
+    <Container>
       <LoadingOverlay isLoading={isLoading} />
 
       <Form className="form" onSubmit={handleSubmit}>
         <Card>
           <CardHeader>
             <CardTitle>INSCRIÇÃO DE AÇÃO - SEMANA LIXO ZERO CAXIAS DO SUL</CardTitle>
+
+            <AdditionalInfoEventCreate
+              collapseState={additionalInfoState}
+              handleChangeCollapseState={() => setAdditionalInfoState((prevState) => !prevState)}
+            />
           </CardHeader>
 
           <CardBody>
@@ -380,7 +389,7 @@ const ActionContainer = () => {
           </CardFooter>
         </Card>
       </Form>
-    </>
+    </Container>
   );
 };
 
