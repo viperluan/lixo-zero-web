@@ -266,19 +266,23 @@ const ActionCalendar = () => {
         </CardBody>
 
         {user?.tipo === TipoUsuario.Admin && (
-          <Row className="mt-4">
+          <Row className="mt-4 pl-4">
             <Col>
               <h5>Legenda</h5>
               <ul className="list-unstyled">
-                <li>
-                  <Badge style={{ backgroundColor: 'orange' }}>Pendente</Badge> Aguardando
-                  Confirmação
+                <li className="d-flex align-items-baseline">
+                  <Badge style={{ backgroundColor: 'orange' }}>Pendente</Badge>
+                  <p className="ml-2">Aguardando Confirmação</p>
                 </li>
-                <li>
-                  <Badge style={{ backgroundColor: 'green' }}>Aprovada</Badge> Confirmada
+
+                <li className="d-flex align-items-baseline">
+                  <Badge style={{ backgroundColor: 'green' }}>Aprovada</Badge>
+                  <p className="ml-2">Confirmada</p>
                 </li>
-                <li>
-                  <Badge style={{ backgroundColor: 'red' }}>Rejeitada</Badge> Cancelada
+
+                <li className="d-flex align-items-baseline">
+                  <Badge style={{ backgroundColor: 'red' }}>Rejeitada</Badge>
+                  <p className="ml-2">Cancelada</p>
                 </li>
               </ul>
             </Col>
