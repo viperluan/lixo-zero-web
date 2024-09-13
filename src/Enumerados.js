@@ -58,6 +58,22 @@ const SituacaoPatrocinio = {
   Cancelado: '2',
 };
 
+const TipoPublico = {
+  Interno: '0',
+  Externo: '1',
+
+  description(val) {
+    switch (val) {
+      case this.Interno:
+        return 'Interno';
+      case this.Externo:
+        return 'Externo';
+      default:
+        return 'enum not found';
+    }
+  },
+};
+
 const listarEnumerados = (object) => {
   let list = [];
 
@@ -81,6 +97,7 @@ const listarEnumerados = (object) => {
 
 export {
   TipoUsuario,
+  TipoPublico,
   Situacao,
   FormaRealizacaoAcao,
   listarEnumerados,
