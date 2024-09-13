@@ -8,7 +8,7 @@ import {
   UncontrolledDropdown,
 } from 'reactstrap';
 
-import userImage from '~assets/img/theme/team-1-800x800.jpg';
+import userImage from '~assets/img/theme/lixo-zero.png';
 
 const UserLoggedDropDown = () => {
   const { user, logout } = useAuth();
@@ -18,7 +18,7 @@ const UserLoggedDropDown = () => {
       <DropdownToggle className="pr-0" nav>
         <Media className="align-items-center">
           <span className="avatar avatar-sm rounded-circle">
-            <img alt="..." src={userImage} />
+            <img className="img-fluid" alt="Imagem de usuário" src={userImage} />
           </span>
           <Media className="ml-2 d-none d-lg-block">
             <span className="mb-0 text-sm font-weight-bold">{user?.nome}</span>
