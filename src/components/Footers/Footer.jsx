@@ -5,8 +5,8 @@ const Footer = () => {
   const iconStyle = { color: '#c9d75b' };
 
   return (
-    <>
-      <Container fluid className="p-4">
+    <footer>
+      <Container className="p-4">
         <Row>
           <Col>
             <h2>Nosso Objetivo</h2>
@@ -62,10 +62,8 @@ const Footer = () => {
         </Row>
       </Container>
 
-      <footer className="text-center">
-        <p>© 2024 Instituto Lixo Zero. Todos os direitos reservados.</p>
-      </footer>
-    </>
+      <p className="text-center">© 2024 Instituto Lixo Zero. Todos os direitos reservados.</p>
+    </footer>
   );
 };
 
