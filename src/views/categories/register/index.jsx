@@ -1,6 +1,6 @@
 import api from '~api';
 import { LoadingOverlay } from '~components/Loading';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   Button,
@@ -18,36 +18,41 @@ const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [description, setDescription] = useState('');
 
-  const handleClick = () => {
-    if (!description) return toast.error('Informe uma descrição para a categoria');
-    setIsLoading(true);
-    api
-      .post(`/categorias`, {
-        descricao: description,
-      })
-      .then((res) => {
-        if (res.status === 201) {
-          setDescription('');
-          toast.success('Categoria cadastrada com sucesso');
-          toogleModal();
-          callBack();
-        }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-        if (res.data.error) {
-          toast.error(res.data.error);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    if (!description) return toast.error('Informe uma descrição para a categoria');
+
+    setIsLoading(true);
+
+    const { data, status } = await api.post(`/categorias`, {
+      descricao: description,
+    });
+
+    if (status === 201) {
+      setDescription('');
+      toast.success('Categoria cadastrada com sucesso');
+      toogleModal();
+      callBack();
+    }
+
+    if (data.error) {
+      toast.error(data.error);
+    }
+
+    setIsLoading(false);
   };
 
   return (
-    <Fragment>
+    <>
       <LoadingOverlay isLoading={isLoading} />
-      <Modal isOpen={isOpen} toggle={toogleModal} className="modal-box">
-        <ModalHeader toggle={toogleModal}>Cadastro de Categoria</ModalHeader>
-        <Card className="bg-secondary shadow border-0">
-          <CardBody>
-            <Form className="form">
+
+      <Modal autoFocus={false} isOpen={isOpen} toggle={toogleModal} className="modal-box">
+        <Form autoFocus className="form" onSubmit={handleSubmit}>
+          <ModalHeader toggle={toogleModal}>Cadastro de Categoria</ModalHeader>
+
+          <Card className="bg-secondary shadow border-0">
+            <CardBody>
               <FormGroup className="mb-3">
                 <Input
                   id="text"
@@ -56,18 +61,20 @@ const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
                   placeholder="Descrição"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  autoFocus
                 />
               </FormGroup>
-            </Form>
-          </CardBody>
-          <CardFooter className="d-flex justify-content-center">
-            <Button onClick={handleClick} color="primary">
-              Cadastrar
-            </Button>
-          </CardFooter>
-        </Card>
+            </CardBody>
+
+            <CardFooter className="d-flex justify-content-center">
+              <Button type="submit" color="primary">
+                Cadastrar
+              </Button>
+            </CardFooter>
+          </Card>
+        </Form>
       </Modal>
-    </Fragment>
+    </>
   );
 };
 
