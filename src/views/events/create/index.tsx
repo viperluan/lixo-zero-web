@@ -132,7 +132,7 @@ const ActionContainer = () => {
       id_usuario_responsavel: user.id,
       celular: whatsapp.replace(/\D/g, ''),
       nome_organizador: organizerName,
-      link_organizador: 'teste',
+      link_organizador: 'https://www.google.com.br',
       titulo_acao: activityTitle,
       descricao_acao: activityDescription,
       id_categoria: activityType,
@@ -341,9 +341,9 @@ const ActionContainer = () => {
                 value={publicType}
                 onChange={(e) => setPublicType(e.target.value)}
               >
-                {listaTipoPublico.map((forma) => (
-                  <option key={forma.value} value={forma.value}>
-                    {forma.label}
+                {listaTipoPublico.map((tipoPublico) => (
+                  <option key={tipoPublico.value} value={tipoPublico.value}>
+                    {tipoPublico.label}
                   </option>
                 ))}
               </Input>
