@@ -27,7 +27,7 @@ const AboutContainer = () => {
       </div>
       <div className="my-4 text-center">
         <Container>
-          <Card className="bg-secondary shadow border-0">
+          <Card className="border-0">
             <CardBody>
               <h3 style={{ fontSize: '57px', textAlign: 'center', color: '#17a2b8' }}>
                 Conceito <span style={{ color: '#343a40' }}>Lixo Zero</span>
