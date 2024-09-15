@@ -22,6 +22,7 @@
     "@fortawesome/fontawesome-free": "6.5.1",
     "axios": "^1.6.8",
     "bootstrap": "4.6.2",
+    "formik": "^2.4.6",
     "jose": "^5.8.0",
     "moment": "^2.29.4",
     "nouislider": "15.4.0",
@@ -34,7 +35,8 @@
     "react-input-mask": "^2.0.4",
     "react-router-dom": "6.21.1",
     "react-toastify": "^10.0.5",
-    "reactstrap": "8.10.0"
+    "reactstrap": "8.10.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
