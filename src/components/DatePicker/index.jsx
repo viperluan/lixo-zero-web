@@ -5,14 +5,15 @@ import InputMask from 'react-input-mask';
 import { Input } from 'reactstrap';
 import 'moment/locale/pt-br';
 
-// Definindo o locale para pt-br
 moment.locale('pt-br');
 
-const DateTimePicker = ({ onDateChange }) => {
-  const [selectedDate, setSelectedDate] = useState();
+const DateTimePicker = ({ field, form }) => {
   const [inputValue, setInputValue] = useState('');
   const currentYear = moment().year();
+  const { name, value } = field;
+  const { setFieldValue, errors, touched } = form;
 
+  // Função para verificar se a data está no intervalo permitido
   const isValidDate = (current) => {
     const start = moment(`${currentYear}-10-18`);
     const end = moment(`${currentYear}-10-26`);
@@ -20,44 +21,30 @@ const DateTimePicker = ({ onDateChange }) => {
   };
 
   useEffect(() => {
-    if (!selectedDate) {
+    if (value) {
+      setInputValue(moment(value).format('DD/MM/YYYY HH:mm'));
+    } else {
       setInputValue('');
-      return;
     }
-
-    setInputValue(selectedDate.format('DD/MM/YYYY HH:mm'));
-  }, [selectedDate]);
+  }, [value]);
 
   const handleDateChange = (date) => {
     if (moment.isMoment(date) && isValidDate(date)) {
-      setSelectedDate(date);
-
-      if (onDateChange) {
-        onDateChange(date);
-      }
+      setFieldValue(name, date);
     } else {
-      setSelectedDate(null);
-
-      if (onDateChange) {
-        onDateChange(null);
-      }
+      setFieldValue(name, null);
     }
   };
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-
-    if (!value) {
-      handleDateChange(null);
-      return;
-    }
-
     setInputValue(value);
 
     const formattedDate = moment(value, 'DD/MM/YYYY HH:mm', true);
-
     if (formattedDate.isValid() && isValidDate(formattedDate)) {
-      handleDateChange(formattedDate);
+      setFieldValue(name, formattedDate);
+    } else {
+      setFieldValue(name, null);
     }
   };
 
@@ -69,7 +56,7 @@ const DateTimePicker = ({ onDateChange }) => {
       onFocus={openCalendar}
       placeholder="DD/MM/YYYY HH:mm"
     >
-      {(inputProps) => <Input {...inputProps} />}
+      {(inputProps) => <Input {...inputProps} invalid={touched[name] && !!errors[name]} />}
     </InputMask>
   );
 
@@ -78,10 +65,10 @@ const DateTimePicker = ({ onDateChange }) => {
       closeOnSelect
       closeOnClickOutside
       renderInput={renderInput}
-      value={selectedDate}
-      inputProps={{ id: 'dateTime' }}
+      value={value}
+      inputProps={{ id: 'dataDaAcao' }}
       isValidDate={isValidDate}
-      initialViewDate={moment(`${currentYear}-10-19`)}
+      initialViewDate={moment(`${currentYear}-10-18`)}
       onChange={handleDateChange}
       locale="pt-br"
       dateFormat="DD/MM/YYYY"
