@@ -65,7 +65,7 @@ const HomeNavbar = () => {
   const renderUnauthenticatedButtons = () => {
     return (
       <NavItem>
-        <Button onClick={toggleModal} className="login-button">
+        <Button color="primary" className="ml-3 text-uppercase text-lg" onClick={toggleModal}>
           Login
         </Button>
       </NavItem>
@@ -77,7 +77,7 @@ const HomeNavbar = () => {
       <header className="navbar-horizontal navbar-dark bg-default">
         <Container>
           <Navbar expand="md">
-            <NavbarBrand tag={Link} to="/">
+            <NavbarBrand className="text-lg" tag={Link} to="/">
               Instituto Lixo Zero
             </NavbarBrand>
 
@@ -85,20 +85,41 @@ const HomeNavbar = () => {
 
             <Collapse isOpen={isOpen} navbar>
               <Nav className="ml-auto d-flex align-items-center" navbar>
+                <NavItem className="d-md-none">
+                  <Button color="secondary" onClick={toggleNavbar}>
+                    X
+                  </Button>
+                </NavItem>
+
                 <NavItem>
-                  <NavLink tag={Link} to="/auth/events/create">
+                  <NavLink
+                    className="text-uppercase font-weight-bold text-lg"
+                    tag={Link}
+                    to="/auth/events/create"
+                    onClick={() => toggleNavbar()}
+                  >
                     Criar ação
                   </NavLink>
                 </NavItem>
 
                 <NavItem>
-                  <NavLink tag={Link} to="/auth/schedule">
+                  <NavLink
+                    tag={Link}
+                    to="/auth/schedule"
+                    className="text-uppercase font-weight-bold text-lg"
+                    onClick={() => toggleNavbar()}
+                  >
                     Agenda
                   </NavLink>
                 </NavItem>
 
                 <NavItem>
-                  <NavLink tag={Link} to="/about">
+                  <NavLink
+                    tag={Link}
+                    to="/about"
+                    className="text-uppercase font-weight-bold text-lg"
+                    onClick={() => toggleNavbar()}
+                  >
                     Sobre
                   </NavLink>
                 </NavItem>
