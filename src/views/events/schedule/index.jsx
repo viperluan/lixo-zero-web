@@ -47,6 +47,8 @@ const ActionCalendar = () => {
   const [listUsers, setListUsers] = useState([]);
   const [userFilter, setUserFilter] = useState(null);
 
+  const paddingContainer = user ? '0' : '24px 0 ';
+
   const fetchActions = () => {
     setIsLoading(true);
 
@@ -296,7 +298,7 @@ const ActionCalendar = () => {
     <>
       <LoadingOverlay isLoading={isLoading} />
 
-      <Container>{renderCardContainer()}</Container>
+      <Container style={{ padding: paddingContainer }}>{renderCardContainer()}</Container>
 
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         {selectedEvent && (
