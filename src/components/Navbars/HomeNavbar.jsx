@@ -116,11 +116,13 @@ const HomeNavbar = () => {
         </Container>
       </header>
 
-      <Container className="py-3">
-        {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
+      {user && (
+        <Container className="py-3">
+          {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
 
-        {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
-      </Container>
+          {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
+        </Container>
+      )}
     </>
   );
 };
