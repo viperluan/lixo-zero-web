@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   Button,
-  Card,
-  CardBody,
-  CardFooter,
   FormGroup,
   Input,
   Modal,
   ModalHeader,
   Form,
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 
 const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
@@ -51,27 +50,25 @@ const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
         <Form autoFocus className="form" onSubmit={handleSubmit}>
           <ModalHeader toggle={toogleModal}>Cadastro de Categoria</ModalHeader>
 
-          <Card className="bg-secondary shadow border-0">
-            <CardBody>
-              <FormGroup className="mb-3">
-                <Input
-                  id="text"
-                  name="text"
-                  type="text"
-                  placeholder="Descrição"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  autoFocus
-                />
-              </FormGroup>
-            </CardBody>
+          <ModalBody>
+            <FormGroup className="mb-3">
+              <Input
+                id="text"
+                name="text"
+                type="text"
+                placeholder="Descrição"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                autoFocus
+              />
+            </FormGroup>
+          </ModalBody>
 
-            <CardFooter className="d-flex justify-content-center">
-              <Button type="submit" color="primary">
-                Cadastrar
-              </Button>
-            </CardFooter>
-          </Card>
+          <ModalFooter>
+            <Button className="m-auto" type="submit" color="primary">
+              Cadastrar
+            </Button>
+          </ModalFooter>
         </Form>
       </Modal>
     </>
