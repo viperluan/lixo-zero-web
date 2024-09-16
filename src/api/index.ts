@@ -6,7 +6,7 @@ type ErrorResponseType = {
   error?: string;
 };
 
-const isDevelopment = import.meta.env.MODE;
+const isDevelopment = import.meta.env.MODE === 'development';
 const baseURL = isDevelopment ? `http://localhost:5000` : import.meta.env.API_URL;
 
 const api = axios.create({
