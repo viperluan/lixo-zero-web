@@ -89,101 +89,115 @@ const RegisterContainer = () => {
   };
 
   return (
-    <Fragment>
-      <div className="d-flex justify-content-center align-items-center">
+    <>
+      <div className="py-4 d-flex justify-content-center align-items-center">
         <Col lg="6" md="8">
-          <CardHeader className="d-flex justify-content-center">Crie sua conta!</CardHeader>
-          <Card className="bg-secondary shadow border-0">
-            <CardBody className="px-lg-5 py-lg-5">
-              <Form role="form">
-                <FormGroup>
-                  <InputGroup className="input-group-alternative mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-hat-3" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Nome"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-email-83" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <InputCpfCnpj
-                      placeholder="CPF/CNPJ"
-                      value={cpfCnpj}
-                      onChange={handleCpfCnpjChange}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-email-83" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Email"
-                      type="email"
-                      autoComplete="new-email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Senha"
-                      type="password"
-                      autoComplete="new-password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Confirme a Senha"
-                      type="password"
-                      autoComplete="new-password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <div className="text-center">
-                  <Button className="mt-4" color="primary" type="button" onClick={handleRegister}>
-                    Criar Conta
-                  </Button>
-                </div>
-              </Form>
-            </CardBody>
-          </Card>
+          <h1 className="text-center">Crie sua conta!</h1>
+
+          <Form role="form">
+            <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-hat-3" />
+                  </InputGroupText>
+                </InputGroupAddon>
+
+                <Input
+                  id="nome"
+                  name="nome"
+                  placeholder="Digite seu nome"
+                  type="text"
+                  style={{ paddingLeft: '12px' }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
+                </InputGroupAddon>
+
+                <InputCpfCnpj
+                  placeholder="Digite seu CPF ou CNPJ"
+                  value={cpfCnpj}
+                  onChange={handleCpfCnpjChange}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup className="input-group-alternative mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
+                </InputGroupAddon>
+
+                <Input
+                  name="email"
+                  placeholder="Digite seu email"
+                  type="email"
+                  autoComplete="email"
+                  style={{ paddingLeft: '12px' }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-lock-circle-open" />
+                  </InputGroupText>
+                </InputGroupAddon>
+
+                <Input
+                  placeholder="Digite sua senha"
+                  type="password"
+                  autoComplete="new-password"
+                  style={{ paddingLeft: '12px' }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-lock-circle-open" />
+                  </InputGroupText>
+                </InputGroupAddon>
+
+                <Input
+                  placeholder="Confirme sua senha"
+                  type="password"
+                  autoComplete="new-password"
+                  style={{ paddingLeft: '12px' }}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup className="text-center">
+              <Button className="px-4 py-2" color="primary" type="button" onClick={handleRegister}>
+                Criar Conta
+              </Button>
+            </FormGroup>
+          </Form>
         </Col>
       </div>
-    </Fragment>
+    </>
   );
 };
 

@@ -24,7 +24,15 @@ const InputCpfCnpj = ({ value, onChange, ...props }) => {
     onChange(nonMaskedValue); // Passa apenas números para o handler externo
   };
 
-  return <Input {...props} type="text" value={applyDisplayMask(value)} onChange={handleChange} />;
+  return (
+    <Input
+      {...props}
+      type="text"
+      style={{ paddingLeft: '12px' }}
+      value={applyDisplayMask(value)}
+      onChange={handleChange}
+    />
+  );
 };
 
 export { InputCpfCnpj };
