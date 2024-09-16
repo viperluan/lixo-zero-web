@@ -1,9 +1,8 @@
-import React from 'react'
+import React from 'react';
 
 export const Regex = () => {
-    const validadeEmail = new RegExp()
-    
-  return (
-    <div>Regex</div>
-  )
-}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const validadeEmail = new RegExp();
+
+  return <div>Regex</div>;
+};

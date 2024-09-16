@@ -76,8 +76,12 @@
   text-align: center;
   padding: 10px;
   border-radius: 4px;
-  visibility: hidden;
   position: relative;
+
+  &:hover {
+    background-color: #eeeeee;
+  }
+
   &:before {
     visibility: visible;
     width: 100%;
@@ -171,7 +175,6 @@
 .rdtPicker td.rdtSecond:hover,
 .rdtPicker .rdtTimeToggle:hover,
 .rdtPicker .rdtTimeToggle:hover:before {
-  background: #eeeeee;
   cursor: pointer;
 }
 .rdtPicker td.rdtToday {
