@@ -1,5 +1,5 @@
 import api from '~api';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -16,6 +16,7 @@ import {
   Label,
   FormGroup,
   Col,
+  Container,
 } from 'reactstrap';
 import { FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from '~components/Loading';
@@ -118,7 +119,7 @@ const MyEventsContainer = () => {
   };
 
   return (
-    <Fragment>
+    <Container>
       <LoadingOverlay isLoading={isLoading} />
       <Card>
         <CardBody>
@@ -292,7 +293,7 @@ const MyEventsContainer = () => {
           </Row>
         </CardBody>
       </Card>
-    </Fragment>
+    </Container>
   );
 };
 
