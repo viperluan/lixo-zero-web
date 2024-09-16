@@ -17,6 +17,10 @@ import {
   FormGroup,
   Col,
   Container,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 import { FaCheck, FaTrash, FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from '~components/Loading';
@@ -38,6 +42,17 @@ const EventsContainer = () => {
   const [situacaoFiltro, setSituacaoFiltro] = useState('');
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('');
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInfo, setModalInfo] = useState({
+    header: 'Mudança de status',
+    body: 'Você confirma a mudança de status?',
+    action: '',
+    situation: '',
+  });
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
   const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
 
   const fetchCategories = () => {
@@ -105,23 +120,26 @@ const EventsContainer = () => {
     }
   };
 
-  const editRow = (situacao, id) => {
-    // Atualizar na API
+  const handleChangeActionStatus = async () => {
     setIsLoading(true);
-    api
-      .put(`/acoes/${id}`, { situacao_acao: situacao, id_usuario_alteracao: user.id })
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .then((res) => {
-        // Atualize a lista de ações localmente após a atualização bem-sucedida
-        setlistActions((prevActions) =>
-          prevActions.map((action) =>
-            action.id === id ? { ...action, situacao_acao: situacao } : action
-          )
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+
+    const { status } = await api.put(`/acoes/${modalInfo.action}`, {
+      situacao_acao: modalInfo.situation,
+      id_usuario_alteracao: user.id,
+    });
+
+    if (status === 200) {
+      setlistActions((prevActions) =>
+        prevActions.map((action) =>
+          action.id === modalInfo.action
+            ? { ...action, situacao_acao: modalInfo.situation }
+            : action
+        )
+      );
+    }
+
+    toggleModal();
+    setIsLoading(false);
   };
 
   const exportToCSV = () => {
@@ -198,9 +216,53 @@ const EventsContainer = () => {
     }
   };
 
+  const handleActionSituation = (situation, action) => {
+    const confirmacao = situation === SituacaoAcao.Confirmada;
+    const reprovacao = situation === SituacaoAcao.Cancelada;
+
+    if (confirmacao) {
+      setModalInfo((prevState) => ({
+        ...prevState,
+        body: `Você confirma a aprovação da ação ${action.titulo_acao}?`,
+        action: action.id,
+        situation,
+      }));
+    }
+
+    if (reprovacao) {
+      setModalInfo((prevState) => ({
+        ...prevState,
+        body: `Você confirma a reprovação da ação ${action.titulo_acao}?`,
+        action: action.id,
+        situation,
+      }));
+    }
+
+    toggleModal();
+  };
+
   return (
     <>
       <LoadingOverlay isLoading={isLoading} />
+
+      <Modal isOpen={isModalOpen} className="modal-box">
+        <ModalHeader className="text-uppercase">{modalInfo['header']}</ModalHeader>
+
+        <ModalBody className="d-flex flex-column text-center">
+          {modalInfo['body']}
+          <p>Será enviado um email informando o usuário!</p>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button onClick={handleChangeActionStatus} color="danger">
+            Sim
+          </Button>
+
+          <Button onClick={toggleModal} color="secondary">
+            Não
+          </Button>
+        </ModalFooter>
+      </Modal>
 
       <Container>
         <Card>
@@ -333,23 +395,42 @@ const EventsContainer = () => {
                       {listActions.map((action) => (
                         <tr key={action.id}>
                           <td>
-                            {action.situacao_acao !== SituacaoAcao.Confirmada && (
+                            <Button
+                              disabled={action.situacao_acao === SituacaoAcao.Confirmada}
+                              color="transparent"
+                              style={{
+                                cursor:
+                                  action.situacao_acao !== SituacaoAcao.Confirmada
+                                    ? 'pointer'
+                                    : 'default',
+                              }}
+                              onClick={() => handleActionSituation(SituacaoAcao.Confirmada, action)}
+                            >
                               <FaCheck
                                 size={20}
-                                color="green"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => editRow(SituacaoAcao.Confirmada, action.id)}
+                                color={
+                                  action.situacao_acao === SituacaoAcao.Confirmada
+                                    ? 'grey'
+                                    : 'green'
+                                }
                               />
-                            )}
+                            </Button>
 
-                            {action.situacao_acao !== SituacaoAcao.Cancelada && (
+                            <Button
+                              disabled={action.situacao_acao === SituacaoAcao.Cancelada}
+                              color="transparent"
+                              style={{ cursor: 'pointer', marginLeft: '10px' }}
+                              onClick={() => handleActionSituation(SituacaoAcao.Cancelada, action)}
+                            >
                               <FaTrash
                                 size={20}
-                                color="orange"
-                                style={{ cursor: 'pointer', marginLeft: '10px' }}
-                                onClick={() => editRow(SituacaoAcao.Cancelada, action.id)}
+                                color={
+                                  action.situacao_acao === SituacaoAcao.Cancelada
+                                    ? 'grey'
+                                    : 'orange'
+                                }
                               />
-                            )}
+                            </Button>
                           </td>
                           <th scope="row">{action.titulo_acao}</th>
                           <td>{getStatusBadge(action.situacao_acao)}</td>
