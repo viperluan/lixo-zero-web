@@ -93,7 +93,7 @@ const RegisterContainer = () => {
 
           <Form role="form">
             <FormGroup>
-              <InputGroup className="input-group-alternative mb-3">
+              <InputGroup className="mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-hat-3" />
@@ -113,7 +113,7 @@ const RegisterContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="input-group-alternative mb-3">
+              <InputGroup className="mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-email-83" />
@@ -129,7 +129,7 @@ const RegisterContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="input-group-alternative mb-3">
+              <InputGroup className="mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-email-83" />
@@ -149,7 +149,7 @@ const RegisterContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="input-group-alternative">
+              <InputGroup className="">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-lock-circle-open" />
@@ -168,7 +168,7 @@ const RegisterContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="input-group-alternative">
+              <InputGroup className="">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i className="ni ni-lock-circle-open" />
