@@ -378,19 +378,26 @@ const EventsContainer = () => {
                     <thead className="thead-light">
                       <tr>
                         <th scope="col"></th>
-                        <th scope="col">Título da Ação</th>
-                        <th scope="col">Situação</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Nome do Organizador</th>
-                        <th scope="col">Celular</th>
-                        <th scope="col">Data da Ação</th>
-                        <th scope="col">Local da Ação</th>
-                        <th scope="col">Número de Organizadores</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Responsável</th>
-                        <th scope="col">Usuário Alteração</th>
+                        <th scope="col">Título da ação</th>
+                        <th scope="col">Situação da ação</th>
+                        <th scope="col">Nome do organizador</th>
+                        <th scope="col">WhatsApp do responsável</th>
+                        <th scope="col">Descrição ação</th>
+                        <th scope="col">Tipo da atividade</th>
+                        <th scope="col">Data da ação</th>
+                        <th scope="col">Forma de realização</th>
+                        <th scope="col">Link de divulgação</th>
+                        <th scope="col">Nome do local</th>
+                        <th scope="col">Endereço do local</th>
+                        <th scope="col">Informações ação</th>
+                        <th scope="col">Link para inscrição</th>
+                        <th scope="col">Público</th>
+                        <th scope="col">Descrição divulgação</th>
+                        <th scope="col">Usuário Responsável</th>
+                        <th scope="col">Admin Alteração</th>
                       </tr>
                     </thead>
+
                     <tbody>
                       {listActions.map((action) => (
                         <tr key={action.id}>
@@ -434,7 +441,6 @@ const EventsContainer = () => {
                           </td>
                           <th scope="row">{action.titulo_acao}</th>
                           <td>{getStatusBadge(action.situacao_acao)}</td>
-                          <td>{action.descricao_acao}</td>
                           <td>{action.nome_organizador}</td>
                           <td>
                             {action.celular}
@@ -447,6 +453,8 @@ const EventsContainer = () => {
                               <FaWhatsapp size={20} color="#25D366" />
                             </a>
                           </td>
+                          <td>{action.descricao_acao}</td>
+                          <td>{action.categoria.descricao}</td>
                           <td>
                             {new Date(action.data_acao).toLocaleString('pt-BR', {
                               day: '2-digit',
@@ -457,9 +465,14 @@ const EventsContainer = () => {
                               hour12: false,
                             })}
                           </td>
-                          <td>{action.local_acao}</td>
-                          <td>{action.numero_organizadores_acao}</td>
-                          <td>{action.categoria.descricao}</td>
+                          <td>{action.forma_realizacao_acao}</td>
+                          <td>{action.link_divulgacao_acesso_acao}</td>
+                          <td>{action.nome_local_acao}</td>
+                          <td>{action.endereco_local_acao}</td>
+                          <td>{action.informacoes_acao}</td>
+                          <td>{action.link_para_inscricao_acao}</td>
+                          <td>{action.tipo_publico_acao}</td>
+                          <td>{action.orientacao_divulgacao_acao}</td>
                           <td>
                             {action.usuario_responsavel.nome}
                             <br />
