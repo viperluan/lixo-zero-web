@@ -393,8 +393,8 @@ const EventsContainer = () => {
                         <th scope="col">Link para inscrição</th>
                         <th scope="col">Público</th>
                         <th scope="col">Descrição divulgação</th>
-                        <th scope="col">Usuário Responsável</th>
-                        <th scope="col">Admin Alteração</th>
+                        <th scope="col">Usuário responsável</th>
+                        <th scope="col">Usuário alteração</th>
                       </tr>
                     </thead>
 
