@@ -280,6 +280,7 @@ const ActionContainer = () => {
                     id="nomeDoOrganizador"
                     name="nomeDoOrganizador"
                     placeholder="Nome do responsável pela ação"
+                    autoComplete="on"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     invalid={touched.nomeDoOrganizador && !!errors.nomeDoOrganizador}
@@ -301,6 +302,7 @@ const ActionContainer = () => {
                           type="text"
                           id="numeroDoWhatsapp"
                           name="numeroDoWhatsapp"
+                          autoComplete="tel"
                           placeholder="(99) 99999-9999"
                           invalid={touched.numeroDoWhatsapp && !!errors.numeroDoWhatsapp}
                         />
