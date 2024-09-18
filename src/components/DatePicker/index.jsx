@@ -62,7 +62,6 @@ const DateTimePicker = ({ field, form }) => {
 
   return (
     <Datetime
-      closeOnSelect
       closeOnClickOutside
       renderInput={renderInput}
       value={value}
