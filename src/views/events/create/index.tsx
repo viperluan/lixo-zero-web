@@ -195,6 +195,11 @@ const ActionContainer = () => {
         }
       );
 
+      if (user.tipo === '0') {
+        navigate('/admin/events');
+        return;
+      }
+
       navigate(`/auth/events/my-events/${user.id}`);
     }
 
