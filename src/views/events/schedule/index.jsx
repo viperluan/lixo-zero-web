@@ -127,13 +127,13 @@ const ActionCalendar = () => {
     let backgroundColor = '#3174ad'; // Default color
 
     switch (event.situacao_acao) {
-      case SituacaoAcao.AguardandoConfirmacao:
+      case 'Pendente':
         backgroundColor = 'orange';
         break;
-      case SituacaoAcao.Confirmada:
+      case 'Aprovada':
         backgroundColor = 'green';
         break;
-      case SituacaoAcao.Cancelada:
+      case 'Reprovada':
         backgroundColor = 'red';
         break;
       default:

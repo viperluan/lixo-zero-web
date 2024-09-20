@@ -91,22 +91,22 @@ const MyEventsContainer = () => {
 
   const getStatusBadge = (situacao) => {
     switch (situacao) {
-      case SituacaoAcao.AguardandoConfirmacao:
+      case 'Pendente':
         return (
           <Badge pill color="warning">
             Pendente
           </Badge>
         );
-      case SituacaoAcao.Confirmada:
+      case 'Aprovada':
         return (
           <Badge pill color="success">
             Aprovada
           </Badge>
         );
-      case SituacaoAcao.Cancelada:
+      case 'Reprovada':
         return (
           <Badge pill color="danger">
-            Rejeitada
+            Reprovada
           </Badge>
         );
       default:

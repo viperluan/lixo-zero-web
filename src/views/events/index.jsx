@@ -123,7 +123,7 @@ const EventsContainer = () => {
   const handleChangeActionStatus = async () => {
     setIsLoading(true);
 
-    const { status } = await api.put(`/acoes/${modalInfo.action}`, {
+    const { status, data } = await api.put(`/acoes/${modalInfo.action}`, {
       situacao_acao: modalInfo.situation,
       id_usuario_alteracao: user.id,
     });
@@ -131,9 +131,7 @@ const EventsContainer = () => {
     if (status === 200) {
       setlistActions((prevActions) =>
         prevActions.map((action) =>
-          action.id === modalInfo.action
-            ? { ...action, situacao_acao: modalInfo.situation }
-            : action
+          action.id === modalInfo.action ? { ...action, situacao_acao: data.situacao_acao } : action
         )
       );
     }
@@ -144,29 +142,43 @@ const EventsContainer = () => {
 
   const exportToCSV = () => {
     const headers = [
-      'Título da Ação',
-      'Descrição',
-      'Nome do Organizador',
-      'Data da Ação',
-      'Local da Ação',
-      'Número de Organizadores',
-      'Categoria',
-      'Celular',
+      'Título da ação',
       'Situação',
-      'Responsável',
-      'Email do Responsável',
+      'Nome do Organizador',
+      'Celular',
+      'Descrição da atividade',
+      'Tipo da atividade',
+      'Data da ação',
+      'Forma de realização',
+      'Link de divulgação',
+      'Nome do local',
+      'Endereço do local',
+      'Informações',
+      'Link para inscrição',
+      'Tipo de público',
+      'Descrição sobre divulgação',
+      'Número de participantes',
+      'Nome usuário responsável',
+      'Email usuário responsável',
     ];
 
     const rows = listActions.map((action) => [
       action.titulo_acao,
-      action.descricao_acao,
+      action.situacao_acao,
       action.nome_organizador,
-      new Date(action.data_acao).toLocaleDateString('pt-BR'),
-      action.local_acao,
-      action.numero_organizadores_acao,
-      action.categoria.descricao,
       action.celular,
-      getStatusBadge(action.situacao_acao).props.children,
+      action.descricao_acao,
+      action.categoria.descricao,
+      new Date(action.data_acao).toLocaleDateString('pt-BR'),
+      action.forma_realizacao_acao,
+      action.link_divulgacao_acesso_acao,
+      action.nome_local_acao,
+      action.endereco_local_acao,
+      action.informacoes_acao,
+      action.link_para_inscricao_acao,
+      action.tipo_publico_acao,
+      action.orientacao_divulgacao_acao,
+      action.numero_organizadores_acao,
       action.usuario_responsavel.nome,
       action.usuario_responsavel.email,
     ]);
@@ -189,22 +201,22 @@ const EventsContainer = () => {
 
   const getStatusBadge = (situacao) => {
     switch (situacao) {
-      case SituacaoAcao.AguardandoConfirmacao:
+      case 'Pendente':
         return (
           <Badge pill color="warning">
             Pendente
           </Badge>
         );
-      case SituacaoAcao.Confirmada:
+      case 'Aprovada':
         return (
           <Badge pill color="success">
             Aprovada
           </Badge>
         );
-      case SituacaoAcao.Cancelada:
+      case 'Reprovada':
         return (
           <Badge pill color="danger">
-            Rejeitada
+            Reprovada
           </Badge>
         );
       default:
@@ -403,39 +415,28 @@ const EventsContainer = () => {
                         <tr key={action.id}>
                           <td>
                             <Button
-                              disabled={action.situacao_acao === SituacaoAcao.Confirmada}
+                              disabled={action.situacao_acao === 'Aprovada'}
                               color="transparent"
                               style={{
-                                cursor:
-                                  action.situacao_acao !== SituacaoAcao.Confirmada
-                                    ? 'pointer'
-                                    : 'default',
+                                cursor: action.situacao_acao !== 'Aprovada' ? 'pointer' : 'default',
                               }}
                               onClick={() => handleActionSituation(SituacaoAcao.Confirmada, action)}
                             >
                               <FaCheck
                                 size={20}
-                                color={
-                                  action.situacao_acao === SituacaoAcao.Confirmada
-                                    ? 'grey'
-                                    : 'green'
-                                }
+                                color={action.situacao_acao === 'Aprovada' ? 'grey' : 'green'}
                               />
                             </Button>
 
                             <Button
-                              disabled={action.situacao_acao === SituacaoAcao.Cancelada}
+                              disabled={action.situacao_acao === 'Reprovada'}
                               color="transparent"
                               style={{ cursor: 'pointer', marginLeft: '10px' }}
                               onClick={() => handleActionSituation(SituacaoAcao.Cancelada, action)}
                             >
                               <FaTrash
                                 size={20}
-                                color={
-                                  action.situacao_acao === SituacaoAcao.Cancelada
-                                    ? 'grey'
-                                    : 'orange'
-                                }
+                                color={action.situacao_acao === 'Reprovada' ? 'grey' : 'orange'}
                               />
                             </Button>
                           </td>
