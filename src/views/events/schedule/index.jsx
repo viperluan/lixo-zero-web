@@ -49,7 +49,7 @@ const ActionCalendar = () => {
 
   const paddingContainer = user ? '0' : '24px 0 ';
 
-  const fetchActions = () => {
+  const fetchActions = async () => {
     setIsLoading(true);
 
     const filters = {};
@@ -78,21 +78,26 @@ const ActionCalendar = () => {
 
     const queryString = new URLSearchParams(filters).toString();
 
-    api
-      .get(`/acoes?page=1&limit=5000&${queryString}`)
-      .then((res) => {
-        const formattedEvents = res.data.actions.map((action) => ({
-          title: action.titulo_acao,
-          start: new Date(action.data_acao),
-          end: new Date(action.data_acao),
-          description: action.descricao_acao,
-          situacao: action.situacao_acao,
-          ...action,
-        }));
+    const { data } = await api.get(`/acoes?page=1&limit=5000&${queryString}`);
 
-        setFilteredEvents(formattedEvents);
-      })
-      .finally(() => setIsLoading(false));
+    if (!data) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (data.actions) {
+      const formattedEvents = data.actions.map((action) => ({
+        ...action,
+        title: action.titulo_acao,
+        description: action.descricao_acao,
+        start: moment(action.data_acao).toDate(),
+        end: moment(action.data_acao).toDate(),
+      }));
+
+      setFilteredEvents(formattedEvents);
+    }
+
+    setIsLoading(false);
   };
 
   const fetchCategories = () => {
@@ -120,7 +125,8 @@ const ActionCalendar = () => {
 
   const eventPropGetter = (event) => {
     let backgroundColor = '#3174ad'; // Default color
-    switch (event.situacao) {
+
+    switch (event.situacao_acao) {
       case SituacaoAcao.AguardandoConfirmacao:
         backgroundColor = 'orange';
         break;
@@ -139,11 +145,6 @@ const ActionCalendar = () => {
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
     toggleModal();
-  };
-
-  const renderRealizacaoAcao = (formaRealizacaoAcao) => {
-    const forma = listaFormaAcao.find((forma) => forma.value === formaRealizacaoAcao);
-    return forma ? forma.label : 'Desconhecida';
   };
 
   const renderCardContainer = () => {
@@ -261,7 +262,7 @@ const ActionCalendar = () => {
             onSelectEvent={handleSelectEvent}
             defaultView="week"
             views={['month', 'week', 'day']}
-            defaultDate={new Date('2024-10-21')}
+            defaultDate={new Date('2024-10-18')}
             messages={messages}
             eventPropGetter={eventPropGetter}
           />
@@ -303,28 +304,35 @@ const ActionCalendar = () => {
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         {selectedEvent && (
           <>
-            <ModalHeader toggle={toggleModal}>{selectedEvent.title}</ModalHeader>
+            <ModalHeader toggle={toggleModal}>
+              <h3>{selectedEvent.titulo_acao}</h3>
+            </ModalHeader>
+
             <ModalBody>
-              <h3>
-                <strong>Título:</strong> {selectedEvent.title}
-              </h3>
-              <p>
-                <strong>Data:</strong> {moment(selectedEvent.data_acao).format('DD/MM/YYYY HH:mm')}
-              </p>
-              <p>
-                <strong>Forma de Realização:</strong>{' '}
-                {renderRealizacaoAcao(selectedEvent.forma_realizacao_acao)}
-              </p>
-              <p>
-                <strong>Local:</strong> {selectedEvent.local_acao}
-              </p>
-              <p>
-                <strong>Organizador:</strong> {selectedEvent.nome_organizador}
-              </p>
-              <p>
-                <strong>Descrição:</strong> {selectedEvent.description}
-              </p>
+              <p>Nome do organizador: {selectedEvent.nome_organizador}</p>
+              <p>Celular organizador: {selectedEvent.celular}</p>
+              <p>Data: {moment(selectedEvent.data_acao).format('DD/MM/YYYY')}</p>
+              <p>Horário: {moment(selectedEvent.data_acao).format('HH:mm')}</p>
+              <p>Forma de Realização: {selectedEvent.forma_realizacao_acao}</p>
+              <p>Atividade: {selectedEvent.categoria.descricao}</p>
+
+              {selectedEvent.nome_local_acao && (
+                <p>Nome do local: {selectedEvent.nome_local_acao}</p>
+              )}
+
+              {selectedEvent.endereco_local_acao && (
+                <p>Endereço do local: {selectedEvent.endereco_local_acao}</p>
+              )}
+
+              {selectedEvent.link_para_inscricao_acao && (
+                <p>Link para inscrição: {selectedEvent.link_para_inscricao_acao}</p>
+              )}
+
+              <p>Link para divulgação: {selectedEvent.link_divulgacao_acesso_acao}</p>
+              <p>Número de organizador: {selectedEvent.numero_organizadores_acao}</p>
+              <p>Descrição: {selectedEvent.descricao_acao}</p>
             </ModalBody>
+
             <ModalFooter>
               <Button color="secondary" onClick={toggleModal}>
                 Fechar
