@@ -24,10 +24,10 @@ const Home = () => {
           <Col md="6">
             <Card className="cursor-pointer" onClick={() => navigate('auth/events/create')}>
               <CardBody>
-                <CardTitle tag="h2">Criar uma Ação</CardTitle>
+                <CardTitle tag="h2">Criar uma ação</CardTitle>
                 <CardText>
-                  Envie uma solicitação para ministrar workshops e atividades para contribuir para
-                  um mundo ecologicamente melhor.
+                  Envie uma solicitação para ministrar workshops e atividades para contribuir à um
+                  mundo ecologicamente melhor.
                 </CardText>
               </CardBody>
               <CardImg
@@ -45,8 +45,8 @@ const Home = () => {
                 <CardTitle tag="h2">Agenda de Ações</CardTitle>
 
                 <CardText>
-                  Veifique toda a progamação da Semana do Lixo Zero. Confira os eventos já
-                  programadas e salve em sua agenda.
+                  Verifique toda a programação da Semana do Lixo Zero. Confira os eventos já
+                  programados e salve em sua agenda.
                 </CardText>
               </CardBody>
               <CardImg
