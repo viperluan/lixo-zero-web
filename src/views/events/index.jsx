@@ -167,7 +167,6 @@ const EventsContainer = () => {
       action.situacao_acao,
       action.nome_organizador,
       action.celular,
-      // action.descricao_acao,
       `"${action.descricao_acao}"`,
       action.categoria.descricao,
       new Date(action.data_acao).toLocaleDateString('pt-BR'),
@@ -175,11 +174,9 @@ const EventsContainer = () => {
       action.link_divulgacao_acesso_acao,
       action.nome_local_acao,
       action.endereco_local_acao,
-      // action.informacoes_acao,
       `"${action.informacoes_acao}"`,
       action.link_para_inscricao_acao,
       action.tipo_publico_acao,
-      // action.orientacao_divulgacao_acao,
       `"${action.orientacao_divulgacao_acao}"`,
       action.numero_organizadores_acao,
       action.usuario_responsavel.nome,
@@ -457,7 +454,16 @@ const EventsContainer = () => {
                               <FaWhatsapp size={20} color="#25D366" />
                             </a>
                           </td>
-                          <td>{action.descricao_acao}</td>
+                          <td
+                            title={action.descricao_acao}
+                            style={{
+                              maxWidth: '400px',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {action.descricao_acao}
+                          </td>
                           <td>{action.categoria.descricao}</td>
                           <td>
                             {new Date(action.data_acao).toLocaleString('pt-BR', {
@@ -473,10 +479,28 @@ const EventsContainer = () => {
                           <td>{action.link_divulgacao_acesso_acao}</td>
                           <td>{action.nome_local_acao}</td>
                           <td>{action.endereco_local_acao}</td>
-                          <td>{action.informacoes_acao}</td>
+                          <td
+                            title={action.informacoes_acao}
+                            style={{
+                              maxWidth: '400px',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {action.informacoes_acao}
+                          </td>
                           <td>{action.link_para_inscricao_acao}</td>
                           <td>{action.tipo_publico_acao}</td>
-                          <td>{action.orientacao_divulgacao_acao}</td>
+                          <td
+                            title={action.orientacao_divulgacao_acao}
+                            style={{
+                              maxWidth: '400px',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {action.orientacao_divulgacao_acao}
+                          </td>
                           <td>
                             {action.usuario_responsavel.nome}
                             <br />
