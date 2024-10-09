@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -48,6 +48,13 @@ const ActionCalendar = () => {
   const [userFilter, setUserFilter] = useState(null);
 
   const paddingContainer = user ? '0' : '24px 0 ';
+
+  const { defaultDate } = useMemo(
+    () => ({
+      defaultDate: new Date('2024-10-18'),
+    }),
+    []
+  );
 
   const fetchActions = async () => {
     setIsLoading(true);
@@ -260,9 +267,9 @@ const ActionCalendar = () => {
             style={{ height: 500 }}
             popup
             onSelectEvent={handleSelectEvent}
-            defaultView="week"
-            views={['month', 'week', 'day']}
-            defaultDate={new Date('2024-10-18')}
+            defaultView="month"
+            views={['month', 'day']}
+            defaultDate={defaultDate}
             messages={messages}
             eventPropGetter={eventPropGetter}
           />
