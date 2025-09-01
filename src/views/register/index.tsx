@@ -38,7 +38,11 @@ const RegisterContainer = () => {
   const { login } = useAuth();
 
   const handleCpfCnpjChange = (value: string) => {
-    setCpfCnpj(value);
+    const onlyNumbers = value.replace(/\D/g, '');
+
+    const limitedValue = onlyNumbers.slice(0, 14);
+
+    setCpfCnpj(limitedValue);
   };
 
   const handleRegister = async () => {
