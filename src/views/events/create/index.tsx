@@ -55,6 +55,7 @@ type DadosFormik = {
   tipoDePublicoEvento: string;
   descricaoDivulgacaoEvento: string;
   numeroDeOrganizadores: string;
+  termoDeCompromisso: boolean;
 };
 
 const ActionContainer = () => {
@@ -81,6 +82,7 @@ const ActionContainer = () => {
     tipoDePublicoEvento: '',
     descricaoDivulgacaoEvento: '',
     numeroDeOrganizadores: '',
+    termoDeCompromisso: false,
   };
 
   const schema = yup.object().shape({
@@ -147,6 +149,9 @@ const ActionContainer = () => {
       .number()
       .min(1, 'Você precisa incluir no mínimo 1 (um) organizador.')
       .required('É necessário incluir o número de organizadores do evento, incluindo você.'),
+    termoDeCompromisso: yup
+      .boolean()
+      .oneOf([true], 'Você deve aceitar o termo de compromisso para cadastrar a ação.'),
   });
 
   const fetchCategories = async () => {
@@ -606,11 +611,31 @@ const ActionContainer = () => {
                     <ErrorMessage name="numeroDeOrganizadores" />
                   </FormFeedback>
                 </FormGroup>
+
+                <FormGroup check className="mb-3">
+                  <Input
+                    type="checkbox"
+                    id="termoDeCompromisso"
+                    name="termoDeCompromisso"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    invalid={touched.termoDeCompromisso && !!errors.termoDeCompromisso}
+                  />
+
+                  <Label for="termoDeCompromisso" check>
+                    Eu me comprometo a preencher o relatório de indicadores da atividade que
+                    desenvolvi ao final da SLZ. Você receberá um email com o formulário.
+                  </Label>
+
+                  <FormFeedback>
+                    <ErrorMessage name="termoDeCompromisso" />
+                  </FormFeedback>
+                </FormGroup>
               </CardBody>
 
               <CardFooter className="d-flex justify-content-center">
                 <Button type="submit" color="primary">
-                  Enviar
+                  Cadastrar ação
                 </Button>
               </CardFooter>
             </Card>
