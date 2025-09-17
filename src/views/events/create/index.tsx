@@ -104,7 +104,7 @@ const ActionContainer = () => {
       .date()
       .required('É necessário selecionar uma data e hora para realização da atividade.')
       .test('is-valid-date', 'Data fora do intervalo permitido', (value) => {
-        const minDate = moment(`${moment().year()}-10-18`).format('YYYY-MM-DD');
+        const minDate = moment(`${moment().year()}-10-17`).format('YYYY-MM-DD');
         const maxDate = moment(`${moment().year()}-10-26`).format('YYYY-MM-DD');
         const recievedDate = moment(value).format('YYYY-MM-DD');
 
