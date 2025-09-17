@@ -30,7 +30,7 @@ const AdditionalInfoEventCreate = ({
       <Collapse isOpen={collapseState}>
         <div className="d-flex flex-column pt-4">
           <h2 className="py-4">
-            Vamos juntos construir a a 5ª edição da Semana Lixo Zero de Caxias do Sul? :){' '}
+            Vamos juntos construir a a 6ª edição da Semana Lixo Zero de Caxias do Sul? :){' '}
           </h2>
 
           <p className="font-weight-bold">
@@ -38,8 +38,8 @@ const AdditionalInfoEventCreate = ({
           </p>
 
           <p>
-            Mobilize sua empresa, escritório, estabelecimento, grupo de amigos e familiares e
-            cadastre sua ação{' '}
+            Mobilize sua empresa, escritório, estabelecimento, escola, grupo de amigos e familiares
+            e cadastre sua ação{' '}
             <span
               style={{ backgroundColor: '#fffb11' }}
               className="text-uppercase font-weight-bold"
@@ -58,7 +58,7 @@ const AdditionalInfoEventCreate = ({
 
             <ol>
               <li className="mb-4">
-                As atividades cadastradas deverão ocorrer entre os dias 18 à 26 de outubro de 2024.
+                As atividades cadastradas deverão ocorrer entre os dias 17 à 26 de outubro de 2025.
                 Todas as ações devem ser GRATUITAS, porém não precisam ser necessariamente abertas
                 ao público.
               </li>
@@ -69,7 +69,7 @@ const AdditionalInfoEventCreate = ({
               </li>
 
               <li className="mb-4">
-                A 5ª Semana Lixo Zero ocorrerá de forma híbrida, ou seja, as ações poderão ser
+                A 6ª Semana Lixo Zero ocorrerá de forma híbrida, ou seja, as ações poderão ser
                 presenciais ou online.
               </li>
 
@@ -98,8 +98,10 @@ const AdditionalInfoEventCreate = ({
               </li>
 
               <li>
-                Dúvidas ou esclarecimentos, contate-nos através do e-mail caxiaslixozero@gmail.com
-                OU do Instagram @caxiaslixozero Muito obrigado!
+                Dúvidas ou esclarecimentos, contate-nos através do e-mail{' '}
+                <a href="mailto:caxiaslixozero@gmail.com">caxiaslixozero@gmail.com</a>
+                <br />
+                Muito obrigado!
               </li>
             </ol>
           </div>
