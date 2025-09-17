@@ -397,7 +397,7 @@ const ActionContainer = () => {
                 {/* Data da ação */}
                 <FormGroup>
                   <Label for="dataDaAcao">
-                    Data e horário que a atividade será realizada (datas entre 18/10/
+                    Data e horário que a atividade será realizada (datas entre 17/10/
                     {moment().year()} e 26/10/{moment().year()})
                   </Label>
 

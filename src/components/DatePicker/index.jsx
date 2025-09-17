@@ -15,7 +15,7 @@ const DateTimePicker = ({ field, form }) => {
 
   // Função para verificar se a data está no intervalo permitido
   const isValidDate = (current) => {
-    const start = moment(`${currentYear}-10-18`);
+    const start = moment(`${currentYear}-10-17`);
     const end = moment(`${currentYear}-10-26`);
     return current.isBetween(start, end, 'day', '[]');
   };
