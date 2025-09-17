@@ -51,7 +51,7 @@ const ActionCalendar = () => {
 
   const { defaultDate } = useMemo(
     () => ({
-      defaultDate: new Date('2024-10-18'),
+      defaultDate: new Date('2025-10-17'),
     }),
     []
   );
