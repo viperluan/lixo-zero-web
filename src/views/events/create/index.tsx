@@ -58,6 +58,8 @@ type DadosFormik = {
   termoDeCompromisso: boolean;
 };
 
+const INSCRICOES_ENCERRADAS = true;
+
 const ActionContainer = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -254,7 +256,6 @@ const ActionContainer = () => {
     </>
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const renderizaFormulario = () => (
     <Formik
       initialValues={valoresIniciaisFormik}
@@ -659,7 +660,7 @@ const ActionContainer = () => {
     <Container className="d-flex flex-grow-1 py-5">
       <LoadingOverlay isLoading={isLoading} />
 
-      {renderizaMensagemAcabouPrazo()}
+      {INSCRICOES_ENCERRADAS ? renderizaMensagemAcabouPrazo() : renderizaFormulario()}
     </Container>
   );
 };
