@@ -1,23 +1,26 @@
 import api from '~api';
 import { useAuth } from '~context/AuthContext';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  FormGroup,
-  Input,
-  Form,
-  Label,
-  Button,
-  CardTitle,
-} from 'reactstrap';
 import InputMask from 'react-input-mask';
 import { SituacaoPatrocinio } from '~/Enumerados';
 import { useNavigate } from 'react-router-dom';
 import { LoadingOverlay } from '~components/Loading';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Container,
+  FormGroup,
+  HelpText,
+  Input,
+  Label,
+  Select,
+  Textarea,
+} from '~components/ui';
 
 const PartnersCreateContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -85,20 +88,24 @@ const PartnersCreateContainer = () => {
   };
 
   return (
-    <Fragment>
+    <Container className="max-w-3xl">
       <LoadingOverlay isLoading={isLoading} />
+
       <Card>
         <CardHeader>
           <CardTitle>Quero apoiar o Instituto Lixo Zero Caxias Do Sul</CardTitle>
         </CardHeader>
+
         <CardBody>
-          <Form className="form">
+          <form>
             <FormGroup>
-              <Label for="nomePatrocionador">Nome do Patrocionador</Label>
-              <span className="form-text text-muted small">
+              <Label htmlFor="nomePatrocionador">Nome do Patrocionador</Label>
+
+              <HelpText>
                 {`Empresa/Instituição/Grupo que irá fornecer o patrocínio. Se for 'pessoa física'
                 insira seu nome`}
-              </span>
+              </HelpText>
+
               <Input
                 id="nomePatrocionador"
                 name="nomePatrocionador"
@@ -110,7 +117,8 @@ const PartnersCreateContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="whatsapp">Conta do responsável pelo patrocínio</Label>
+              <Label htmlFor="whatsapp">Contato do responsável pelo patrocínio</Label>
+
               <InputMask
                 mask="(99) 99999-9999"
                 value={whatsapp}
@@ -129,47 +137,49 @@ const PartnersCreateContainer = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="cota_patrocinio">Cota de Patrocínio</Label>
-              <Input
+              <Label htmlFor="cota_patrocinio">Cota de Patrocínio</Label>
+
+              <Select
                 id="cota_patrocinio"
-                name="realizationForm"
-                type="select"
-                placeholder="Selecione"
+                name="cota_patrocinio"
                 value={cotaPatrocinio}
                 onChange={(e) => setCotaPatrocinio(e.target.value)}
               >
                 <option value="" disabled>
                   Selecione
                 </option>
-                {listaCotas.map((categorie) => (
-                  <option key={categorie.id} value={categorie.id}>
-                    {categorie.descricao}
+                {listaCotas.map((cota) => (
+                  <option key={cota.id} value={cota.id}>
+                    {cota.descricao}
                   </option>
                 ))}
-              </Input>
+              </Select>
             </FormGroup>
 
-            <FormGroup>
-              <Label>Descrição de como irei realizar o patrocínio</Label>
-              <Input
+            <FormGroup className="mb-0">
+              <Label htmlFor="activityDescription">
+                Descrição de como irei realizar o patrocínio
+              </Label>
+
+              <Textarea
                 id="activityDescription"
                 name="activityDescription"
-                type="textarea"
                 placeholder="Descrição do patrocinio"
                 rows={3}
                 value={descricaoPatrocinador}
                 onChange={(e) => setDescricaoPatrocionador(e.target.value)}
               />
             </FormGroup>
-          </Form>
+          </form>
         </CardBody>
-        <CardFooter className="d-flex justify-content-center">
-          <Button onClick={() => handleSubmit()} color="primary">
+
+        <CardFooter className="justify-center">
+          <Button size="lg" onClick={handleSubmit}>
             Enviar Formulário
           </Button>
         </CardFooter>
       </Card>
-    </Fragment>
+    </Container>
   );
 };
 

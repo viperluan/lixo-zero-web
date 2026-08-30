@@ -1,20 +1,23 @@
 import api from '~api';
 import { useEffect, useState } from 'react';
-import {
-  Card,
-  CardHeader,
-  CardFooter,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Table,
-  Row,
-  CardBody,
-  Button,
-  Container,
-} from 'reactstrap';
 import { CategoriesRegister } from './register';
 import { LoadingOverlay } from '~components/Loading';
+import {
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Container,
+  Pagination,
+  Table,
+  TableEmpty,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '~components/ui';
 
 const CategoriesContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -63,81 +66,37 @@ const CategoriesContainer = () => {
 
       <Container>
         <Card>
-          <CardBody>
-            <Row>
-              <div className="col">
-                <Card className="shadow">
-                  <CardHeader className="border-0 d-flex justify-content-between">
-                    <h3 className="mb-0">Lista de Categorias</h3>
-                    <Button onClick={() => setOpenModal(!openModal)} color="primary">
-                      Nova Categoria
-                    </Button>
-                  </CardHeader>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Descrição</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {listCategories.map((category) => (
-                        <tr key={category.id}>
-                          <th scope="row">{category.descricao}</th>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                  <CardFooter className="py-4 d-flex justify-content-center">
-                    <nav aria-label="...">
-                      <Pagination
-                        className="pagination justify-content-end mb-0"
-                        listClassName="justify-content-end mb-0"
-                      >
-                        <PaginationItem disabled={currentPage <= 1}>
-                          <PaginationLink
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePageChange(currentPage - 1);
-                            }}
-                            tabIndex="-1"
-                          >
-                            <i className="fas fa-angle-left" />
-                            <span className="sr-only">Anterior</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        {[...Array(totalPages)].map((_, index) => (
-                          <PaginationItem key={index} active={index + 1 === currentPage}>
-                            <PaginationLink
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handlePageChange(index + 1);
-                              }}
-                            >
-                              {index + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                        <PaginationItem disabled={currentPage >= totalPages}>
-                          <PaginationLink
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePageChange(currentPage + 1);
-                            }}
-                          >
-                            <i className="fas fa-angle-right" />
-                            <span className="sr-only">Próximo</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                      </Pagination>
-                    </nav>
-                  </CardFooter>
-                </Card>
-              </div>
-            </Row>
-          </CardBody>
+          <CardHeader className="flex flex-wrap items-center justify-between gap-4">
+            <CardTitle>Lista de Categorias</CardTitle>
+
+            <Button onClick={toogleModal}>Nova Categoria</Button>
+          </CardHeader>
+
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>Descrição</Th>
+              </Tr>
+            </Thead>
+
+            <Tbody>
+              {listCategories.length === 0 && <TableEmpty colSpan={1} />}
+
+              {listCategories.map((category) => (
+                <Tr key={category.id}>
+                  <Td className="font-semibold">{category.descricao}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+
+          <CardFooter>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </CardFooter>
         </Card>
       </Container>
     </>

@@ -1,60 +1,59 @@
-import { Fragment } from 'react';
-import {
-  Button,
-  Card,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Col,
-} from 'reactstrap';
+import { Lock, Mail } from 'lucide-react';
+import { Button, Card, CardBody, FormGroup, Input, Label } from '~components/ui';
 
 const Login = () => {
   return (
-    <Fragment>
-      <Col lg="5" md="7">
-        <Card className="bg-secondary shadow border-0">
-          <CardBody className="px-lg-5 py-lg-5">
-            <Form role="form">
-              <FormGroup className="mb-3">
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-email-83" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Email" type="email" autoComplete="new-email" />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Senha" type="password" autoComplete="new-password" />
-                </InputGroup>
-              </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input className="custom-control-input" id=" customCheckLogin" type="checkbox" />
-                <label className="custom-control-label" htmlFor=" customCheckLogin">
-                  <span className="text-muted">Lembrar</span>
-                </label>
+    <div className="mx-auto w-full max-w-md px-4">
+      <Card>
+        <CardBody className="p-8">
+          <h1 className="mb-6 text-center font-display text-2xl text-brand-primary-dark">Entrar</h1>
+
+          <form>
+            <FormGroup>
+              <Label htmlFor="login-email">E-mail</Label>
+
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Input
+                  id="login-email"
+                  className="pl-10"
+                  placeholder="Email"
+                  type="email"
+                  autoComplete="email"
+                />
               </div>
-              <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
-                  Entrar
-                </Button>
+            </FormGroup>
+
+            <FormGroup>
+              <Label htmlFor="login-password">Senha</Label>
+
+              <div className="relative">
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Input
+                  id="login-password"
+                  className="pl-10"
+                  placeholder="Senha"
+                  type="password"
+                  autoComplete="current-password"
+                />
               </div>
-            </Form>
-          </CardBody>
-        </Card>
-      </Col>
-    </Fragment>
+            </FormGroup>
+
+            <label className="flex items-center gap-2 text-sm text-gray-500">
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-gray-300 text-brand-primary-dark focus:ring-brand-primary-dark/30"
+              />
+              Lembrar
+            </label>
+
+            <Button className="mt-6 w-full" type="button">
+              Entrar
+            </Button>
+          </form>
+        </CardBody>
+      </Card>
+    </div>
   );
 };
 

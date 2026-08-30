@@ -2,28 +2,32 @@ import { FormaRealizacaoAcao, TipoPublico } from '~/Enumerados';
 import { listarEnumerados } from '~/Enumerados';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
-import moment, { Moment } from 'moment';
+import moment, { Moment } from '~/lib/moment';
 import { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  FormGroup,
-  Input,
-  Label,
-  Button,
-  CardTitle,
-  Container,
-  FormFeedback,
-} from 'reactstrap';
 import InputMask, { Props } from 'react-input-mask';
 import { LoadingOverlay } from '~components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
-import api from '~/api';
-import AdditionalInfoEventCreate from '~/components/AdditionalInfoEventCreate';
+import api from '~api';
+import AdditionalInfoEventCreate from '~components/AdditionalInfoEventCreate';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Checkbox,
+  Container,
+  FieldError,
+  FormGroup,
+  HelpText,
+  Input,
+  Label,
+  Select,
+  Textarea,
+} from '~components/ui';
 
 import * as yup from 'yup';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
@@ -59,6 +63,13 @@ type DadosFormik = {
 };
 
 const INSCRICOES_ENCERRADAS = true;
+
+// O ErrorMessage do Formik so renderiza quando o campo foi tocado e tem erro,
+// entao envolve-lo no FieldError mantem o espacamento fora do fluxo quando nao
+// ha mensagem.
+const CampoErro = ({ name }: { name: string }) => (
+  <ErrorMessage name={name}>{(mensagem) => <FieldError>{mensagem}</FieldError>}</ErrorMessage>
+);
 
 const ActionContainer = () => {
   const navigate = useNavigate();
@@ -263,9 +274,9 @@ const ActionContainer = () => {
       onSubmit={handleSubmitForm}
     >
       {({ values, errors, touched, handleChange, handleBlur }) => (
-        <Form className="form">
+        <Form>
           <Card>
-            <CardHeader>
+            <CardHeader className="space-y-5">
               <CardTitle>INSCRIÇÃO DE AÇÃO - SEMANA LIXO ZERO CAXIAS DO SUL</CardTitle>
 
               <AdditionalInfoEventCreate
@@ -277,12 +288,12 @@ const ActionContainer = () => {
             <CardBody>
               {/* Nome do organizador */}
               <FormGroup>
-                <Label for="nomeDoOrganizador">Nome do organizador da ação</Label>
+                <Label htmlFor="nomeDoOrganizador">Nome do organizador da ação</Label>
 
-                <span className="form-text text-muted small">
+                <HelpText>
                   {`Empresa/Instituição/Grupo que você representa. Se for 'pessoa física' insira seu
                 nome`}
-                </span>
+                </HelpText>
 
                 <Input
                   type="text"
@@ -295,14 +306,13 @@ const ActionContainer = () => {
                   invalid={touched.nomeDoOrganizador && !!errors.nomeDoOrganizador}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="nomeDoOrganizador" />
-                </FormFeedback>
+                <CampoErro name="nomeDoOrganizador" />
               </FormGroup>
 
               {/* Numero do whatsapp */}
               <FormGroup>
-                <Label for="numeroDoWhatsapp">Whatsapp do responsável pela ação</Label>
+                <Label htmlFor="numeroDoWhatsapp">Whatsapp do responsável pela ação</Label>
+
                 <InputMask mask="(99) 99999-9999" onChange={handleChange} onBlur={handleBlur}>
                   {
                     ((inputProps: Props) => (
@@ -319,21 +329,19 @@ const ActionContainer = () => {
                   }
                 </InputMask>
 
-                <FormFeedback>
-                  <ErrorMessage name="numeroDoWhatsapp" />
-                </FormFeedback>
+                <CampoErro name="numeroDoWhatsapp" />
               </FormGroup>
 
               {/* Titulo da atividade */}
               <FormGroup>
-                <Label for="tituloDaAtividade">
+                <Label htmlFor="tituloDaAtividade">
                   Título da atividade para divulgação na programação
                 </Label>
 
-                <span className="form-text text-muted small">
+                <HelpText>
                   Ex: Webinar sobre coleta seletiva / Live: Compostagem na Prática / Oficina de
                   receitas....
-                </span>
+                </HelpText>
 
                 <Input
                   type="text"
@@ -345,24 +353,21 @@ const ActionContainer = () => {
                   invalid={touched.tituloDaAtividade && !!errors.tituloDaAtividade}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="tituloDaAtividade" />
-                </FormFeedback>
+                <CampoErro name="tituloDaAtividade" />
               </FormGroup>
 
               {/* Descrição da atividade */}
               <FormGroup>
-                <Label for="descricaoDaAtividade">
+                <Label htmlFor="descricaoDaAtividade">
                   Descrição resumida da atividade (o que será falado / feito?)
                 </Label>
 
-                <span className="form-text text-muted small">
+                <HelpText>
                   Se houver necessidade de INSCRIÇÃO de participantes para acesso ao seu evento, por
                   favor informe aqui como deve acontecer.
-                </span>
+                </HelpText>
 
-                <Input
-                  type="textarea"
+                <Textarea
                   id="descricaoDaAtividade"
                   name="descricaoDaAtividade"
                   placeholder="Descrição da atividade"
@@ -370,35 +375,30 @@ const ActionContainer = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   invalid={touched.descricaoDaAtividade && !!errors.descricaoDaAtividade}
-                  style={{ resize: 'none' }}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="descricaoDaAtividade" />
-                </FormFeedback>
+                <CampoErro name="descricaoDaAtividade" />
               </FormGroup>
 
               {/* Tipo da atividade */}
               <FormGroup>
-                <Label for="tipoDaAtividade">Tipo da atividade</Label>
+                <Label htmlFor="tipoDaAtividade">Tipo da atividade</Label>
 
                 <Field
-                  as="select"
+                  as={Select}
                   id="tipoDaAtividade"
                   name="tipoDaAtividade"
-                  className={`form-control ${touched.tipoDaAtividade && errors.tipoDaAtividade ? 'is-invalid' : ''}`}
+                  invalid={touched.tipoDaAtividade && !!errors.tipoDaAtividade}
                 >
                   {renderizaOpcoesDeCategorias()}
                 </Field>
 
-                <FormFeedback>
-                  <ErrorMessage name="tipoDaAtividade" />
-                </FormFeedback>
+                <CampoErro name="tipoDaAtividade" />
               </FormGroup>
 
               {/* Data da ação */}
               <FormGroup>
-                <Label for="dataDaAcao">
+                <Label htmlFor="dataDaAcao">
                   Data e horário que a atividade será realizada (datas entre 17/10/
                   {moment().year()} e 26/10/{moment().year()})
                 </Label>
@@ -410,30 +410,30 @@ const ActionContainer = () => {
                 />
 
                 {touched.dataDaAcao && errors.dataDaAcao && (
-                  <FormFeedback style={{ display: 'block' }}>{errors.dataDaAcao}</FormFeedback>
+                  <FieldError>{errors.dataDaAcao as string}</FieldError>
                 )}
               </FormGroup>
 
               {/* Forma de realização da atividade */}
               <FormGroup>
-                <Label for="formaDeRealizacaoAtividade">Forma de realização da atividade</Label>
+                <Label htmlFor="formaDeRealizacaoAtividade">Forma de realização da atividade</Label>
 
                 <Field
-                  as="select"
+                  as={Select}
                   id="formaDeRealizacaoAtividade"
                   name="formaDeRealizacaoAtividade"
-                  className={`form-control ${touched.formaDeRealizacaoAtividade && errors.formaDeRealizacaoAtividade ? 'is-invalid' : ''}`}
+                  invalid={
+                    touched.formaDeRealizacaoAtividade && !!errors.formaDeRealizacaoAtividade
+                  }
                 >
                   {renderizaFormaDeRealizacaoAtividade()}
                 </Field>
 
-                <FormFeedback>
-                  <ErrorMessage name="formaDeRealizacaoAtividade" />
-                </FormFeedback>
+                <CampoErro name="formaDeRealizacaoAtividade" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="linkDeDivulgacaoAcessoDoEvento">
+                <Label htmlFor="linkDeDivulgacaoAcessoDoEvento">
                   Link de divulgação de acesso ao evento
                 </Label>
 
@@ -450,13 +450,11 @@ const ActionContainer = () => {
                   }
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="linkDeDivulgacaoAcessoDoEvento" />
-                </FormFeedback>
+                <CampoErro name="linkDeDivulgacaoAcessoDoEvento" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="nomeDoLocalDoEvento">Nome do local do evento</Label>
+                <Label htmlFor="nomeDoLocalDoEvento">Nome do local do evento</Label>
 
                 <Input
                   disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
@@ -469,13 +467,11 @@ const ActionContainer = () => {
                   invalid={touched.nomeDoLocalDoEvento && !!errors.nomeDoLocalDoEvento}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="nomeDoLocalDoEvento" />
-                </FormFeedback>
+                <CampoErro name="nomeDoLocalDoEvento" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="enderecoDoLocalDoEvento">Endereço do local do evento</Label>
+                <Label htmlFor="enderecoDoLocalDoEvento">Endereço do local do evento</Label>
 
                 <Input
                   disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
@@ -488,24 +484,20 @@ const ActionContainer = () => {
                   invalid={touched.enderecoDoLocalDoEvento && !!errors.enderecoDoLocalDoEvento}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="enderecoDoLocalDoEvento" />
-                </FormFeedback>
+                <CampoErro name="enderecoDoLocalDoEvento" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="informacoesDeOndeOcorreraOEvento">
+                <Label htmlFor="informacoesDeOndeOcorreraOEvento">
                   Informações sobre como ocorrerá o evento
                 </Label>
 
-                <Input
+                <Textarea
                   disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
-                  type="textarea"
                   id="informacoesDeOndeOcorreraOEvento"
                   name="informacoesDeOndeOcorreraOEvento"
                   placeholder="Informações sobre como ocorrerá o evento"
                   rows={5}
-                  style={{ resize: 'none' }}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   invalid={
@@ -514,13 +506,11 @@ const ActionContainer = () => {
                   }
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="informacoesDeOndeOcorreraOEvento" />
-                </FormFeedback>
+                <CampoErro name="informacoesDeOndeOcorreraOEvento" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="linkParaInscricao">
+                <Label htmlFor="linkParaInscricao">
                   Link para inscrição (se não tiver, deixe em branco)
                 </Label>
 
@@ -534,62 +524,51 @@ const ActionContainer = () => {
                   invalid={touched.linkParaInscricao && !!errors.linkParaInscricao}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="linkParaInscricao" />
-                </FormFeedback>
+                <CampoErro name="linkParaInscricao" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="tipoDePublicoEvento">
+                <Label htmlFor="tipoDePublicoEvento">
                   Evento será para o público externo ou interno?
                 </Label>
 
-                <Input
+                <Select
                   id="tipoDePublicoEvento"
                   name="tipoDePublicoEvento"
-                  type="select"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   invalid={touched.tipoDePublicoEvento && !!errors.tipoDePublicoEvento}
                 >
                   {renderizaOpcoesTipoDePublicoEvento()}
-                </Input>
+                </Select>
 
-                <FormFeedback>
-                  <ErrorMessage name="tipoDePublicoEvento" />
-                </FormFeedback>
+                <CampoErro name="tipoDePublicoEvento" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="descricaoDivulgacaoEvento">
+                <Label htmlFor="descricaoDivulgacaoEvento">
                   Descrição resumida de como você pretende divulgar o evento
                 </Label>
 
-                <Input
-                  type="textarea"
+                <Textarea
                   id="descricaoDivulgacaoEvento"
                   name="descricaoDivulgacaoEvento"
                   placeholder="Descrição resumida de como você pretende divulgar o evento"
                   rows={5}
-                  style={{ resize: 'none' }}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   invalid={touched.descricaoDivulgacaoEvento && !!errors.descricaoDivulgacaoEvento}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="descricaoDivulgacaoEvento" />
-                </FormFeedback>
+                <CampoErro name="descricaoDivulgacaoEvento" />
               </FormGroup>
 
               <FormGroup>
-                <Label for="numeroDeOrganizadores">
+                <Label htmlFor="numeroDeOrganizadores">
                   Quantas pessoas irão organizar essa ação? (Incluindo você)
                 </Label>
 
-                <span className="form-text text-muted small">
-                  Se não tiver certeza, insira uma média
-                </span>
+                <HelpText>Se não tiver certeza, insira uma média</HelpText>
 
                 <Input
                   id="numeroDeOrganizadores"
@@ -602,34 +581,25 @@ const ActionContainer = () => {
                   invalid={touched.numeroDeOrganizadores && !!errors.numeroDeOrganizadores}
                 />
 
-                <FormFeedback>
-                  <ErrorMessage name="numeroDeOrganizadores" />
-                </FormFeedback>
+                <CampoErro name="numeroDeOrganizadores" />
               </FormGroup>
 
-              <FormGroup check className="mb-3">
-                <Input
-                  type="checkbox"
+              <FormGroup className="mb-0">
+                <Checkbox
                   id="termoDeCompromisso"
                   name="termoDeCompromisso"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   invalid={touched.termoDeCompromisso && !!errors.termoDeCompromisso}
+                  label="Eu me comprometo a preencher o relatório de indicadores da atividade que desenvolvi ao final da SLZ. Você receberá um email com o formulário."
                 />
 
-                <Label for="termoDeCompromisso" check>
-                  Eu me comprometo a preencher o relatório de indicadores da atividade que
-                  desenvolvi ao final da SLZ. Você receberá um email com o formulário.
-                </Label>
-
-                <FormFeedback>
-                  <ErrorMessage name="termoDeCompromisso" />
-                </FormFeedback>
+                <CampoErro name="termoDeCompromisso" />
               </FormGroup>
             </CardBody>
 
-            <CardFooter className="d-flex justify-content-center">
-              <Button type="submit" color="primary">
+            <CardFooter className="justify-center">
+              <Button type="submit" size="lg">
                 Cadastrar ação
               </Button>
             </CardFooter>
@@ -640,24 +610,28 @@ const ActionContainer = () => {
   );
 
   const renderizaMensagemAcabouPrazo = () => (
-    <Card className="text-center">
-      <CardHeader>
-        <h2>As inscrições de ações para a 6° Semana Lixo Zero estão encerradas! 💚</h2>
+    <Card>
+      <CardHeader className="text-center">
+        <CardTitle>
+          As inscrições de ações para a 6ª Semana Lixo Zero estão encerradas! 💚
+        </CardTitle>
       </CardHeader>
 
-      <CardBody className="d-flex flex-column align-items-center justify-content-center px-5">
-        <h5 className="mb-5">
+      <CardBody className="space-y-6 px-6 py-10 text-center sm:px-12">
+        <p className="text-lg text-gray-700">
           Se você já inscreveu sua ação, confira seu email cadastrado para orientações. Em breve
           divulgaremos a programação completa!
-        </h5>
+        </p>
 
-        <h5>Fiquem ligados na nossa página e nos vemos nas ações da Semana Lixo Zero!</h5>
+        <p className="text-lg text-gray-700">
+          Fiquem ligados na nossa página e nos vemos nas ações da Semana Lixo Zero!
+        </p>
       </CardBody>
     </Card>
   );
 
   return (
-    <Container className="d-flex flex-grow-1 py-5">
+    <Container className="max-w-4xl">
       <LoadingOverlay isLoading={isLoading} />
 
       {INSCRICOES_ENCERRADAS ? renderizaMensagemAcabouPrazo() : renderizaFormulario()}

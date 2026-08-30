@@ -1,13 +1,11 @@
-import React from 'react';
-import { Spinner } from 'reactstrap';
-import './LoadingOverlay.scss'; // Importe o arquivo de estilos
+import { Spinner } from '~components/ui';
 
 const LoadingOverlay = ({ isLoading }) => {
   if (!isLoading) return null;
 
   return (
-    <div className="loading-overlay">
-      <Spinner color="light" />
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
+      <Spinner size="lg" className="text-white" />
     </div>
   );
 };

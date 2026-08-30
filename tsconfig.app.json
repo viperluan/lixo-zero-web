@@ -25,13 +25,13 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "~/*": ["./src/*"],
+      "~api": ["./src/api/index.ts"],
       "~api/*": ["./src/api/*"],
       "~assets/*": ["./src/assets/*"],
       "~components/*": ["./src/components/*"],
       "~context/*": ["./src/context/*"],
       "~layouts/*": ["./src/layouts/*"],
-      "~views/*": ["./src/views/*"],
-      "~bootstrap/*": ["./node_modules/bootstrap/*"],
+      "~views/*": ["./src/views/*"]
     }
   },
   "include": [

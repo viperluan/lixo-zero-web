@@ -3,20 +3,21 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   Button,
-  Card,
-  CardBody,
-  CardFooter,
   FormGroup,
   Input,
+  Label,
   Modal,
+  ModalBody,
+  ModalFooter,
   ModalHeader,
-  Form,
-} from 'reactstrap';
+} from '~components/ui';
 
 const QuotasRegister = ({ isOpen, toogleModal, callBack }) => {
   const [description, setDescription] = useState('');
 
-  const handleClick = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
     if (!description) return toast.error('Informe uma descrição para a cota');
 
     api
@@ -25,7 +26,7 @@ const QuotasRegister = ({ isOpen, toogleModal, callBack }) => {
       })
       .then((res) => {
         if (res.data.id) {
-          setDescription();
+          setDescription('');
           toast.success('Cota cadastrada com sucesso');
           toogleModal();
           callBack();
@@ -36,29 +37,33 @@ const QuotasRegister = ({ isOpen, toogleModal, callBack }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} toggle={toogleModal} className="modal-box">
-      <ModalHeader toggle={toogleModal}>Cadastro de Cota</ModalHeader>
-      <Card className="bg-secondary shadow border-0">
-        <CardBody>
-          <Form className="form">
-            <FormGroup className="mb-3">
-              <Input
-                id="text"
-                name="text"
-                type="text"
-                placeholder="Descrição da Cota"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormGroup>
-          </Form>
-        </CardBody>
-        <CardFooter className="d-flex justify-content-center">
-          <Button onClick={handleClick} color="primary">
-            Cadastrar
+    <Modal isOpen={isOpen} toggle={toogleModal} size="sm">
+      <form onSubmit={handleSubmit}>
+        <ModalHeader toggle={toogleModal}>Cadastro de Cota</ModalHeader>
+
+        <ModalBody>
+          <FormGroup className="mb-0">
+            <Label htmlFor="descricao-cota">Descrição</Label>
+            <Input
+              id="descricao-cota"
+              name="descricao"
+              type="text"
+              placeholder="Descrição da Cota"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              autoFocus
+            />
+          </FormGroup>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button variant="neutral" onClick={toogleModal}>
+            Cancelar
           </Button>
-        </CardFooter>
-      </Card>
+
+          <Button type="submit">Cadastrar</Button>
+        </ModalFooter>
+      </form>
     </Modal>
   );
 };

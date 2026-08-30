@@ -1,21 +1,19 @@
-import { Card, CardBody, Container } from 'reactstrap';
+import { Container } from '~components/ui';
 
 const AboutContainer = () => {
   return (
-    <Card>
-      <div style={{ backgroundColor: 'rgb(23 114 146)' }} className="p-5">
+    <>
+      <section className="bg-brand-primary-dark py-16 text-white">
         <Container>
-          <h1
-            style={{ fontSize: '50px', fontWeight: 'bold', fontFamily: 'Barlow, sans-serif' }}
-            className="text-default"
-          >
-            O Caxias Lixo Zero
-          </h1>
-          <h3 style={{ fontSize: '32px', fontStyle: 'italic', color: '#fff' }}>
+          <h1 className="font-display text-4xl sm:text-5xl">O Caxias Lixo Zero</h1>
+
+          <p className="mt-4 text-xl italic text-white/90">
             Coletivo de Voluntários que representa o ILZB em Caxias do Sul desde 2020
-          </h3>
-          <h3 style={{ fontSize: '40px', color: '#fff' }}>Missão</h3>
-          <ul style={{ fontSize: '18px', color: '#fff' }}>
+          </p>
+
+          <h2 className="mt-10 font-display text-3xl text-brand-secondary-light">Missão</h2>
+
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-lg text-white/90 marker:text-brand-secondary-light">
             <li>Educação ambiental do cidadão Caxiense</li>
             <li>Engajamento e mobilização socioambiental</li>
             <li>
@@ -24,29 +22,25 @@ const AboutContainer = () => {
             </li>
           </ul>
         </Container>
-      </div>
-      <div className="my-4 text-center">
-        <Container>
-          <Card className="border-0">
-            <CardBody>
-              <h3 style={{ fontSize: '57px', textAlign: 'center', color: '#17a2b8' }}>
-                Conceito <span style={{ color: '#343a40' }}>Lixo Zero</span>
-              </h3>
-              <p
-                style={{ fontSize: '20px', textAlign: 'center', fontFamily: 'Barlow, sans-serif' }}
-                className="text-default"
-              >
-                Lixo zero é uma meta ética, econômica, eficiente e visionária que incentiva os
-                ciclos naturais sustentáveis, na qual todos os materiais são projetados para
-                permitir sua recuperação e uso pós-consumo
-              </p>
-            </CardBody>
-          </Card>
+      </section>
+
+      <section className="py-16">
+        <Container className="max-w-3xl text-center">
+          <h2 className="font-display text-4xl sm:text-5xl text-brand-primary-light">
+            Conceito <span className="text-brand-dark">Lixo Zero</span>
+          </h2>
+
+          <p className="mt-6 text-lg leading-relaxed text-gray-700">
+            Lixo zero é uma meta ética, econômica, eficiente e visionária que incentiva os ciclos
+            naturais sustentáveis, na qual todos os materiais são projetados para permitir sua
+            recuperação e uso pós-consumo
+          </p>
         </Container>
-      </div>
-      <div className="bg-default p-4">
+      </section>
+
+      <section className="bg-brand-dark py-12 text-white">
         <Container>
-          <ul style={{ color: '#fff', fontSize: '18px' }}>
+          <ul className="list-disc space-y-3 pl-5 text-lg text-white/90 marker:text-brand-secondary-light">
             <li>
               <b>Máximo aproveitamento e correto encaminhamento</b> dos resíduos;
             </li>
@@ -58,8 +52,8 @@ const AboutContainer = () => {
             </li>
           </ul>
         </Container>
-      </div>
-    </Card>
+      </section>
+    </>
   );
 };
 

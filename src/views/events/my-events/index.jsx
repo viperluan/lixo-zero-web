@@ -1,27 +1,31 @@
 import api from '~api';
 import { useEffect, useState } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
+import { useParams } from 'react-router-dom';
+import { LoadingOverlay } from '~components/Loading';
+import { ActionStatusBadge } from '~components/ActionStatusBadge';
+import { listarEnumerados, SituacaoAcao } from '~/Enumerados';
 import {
-  Card,
-  CardHeader,
-  CardFooter,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Table,
-  Row,
-  CardBody,
-  Badge,
   Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Container,
+  FormGroup,
   Input,
   Label,
-  FormGroup,
-  Col,
-  Container,
-} from 'reactstrap';
-import { FaWhatsapp } from 'react-icons/fa';
-import { LoadingOverlay } from '~components/Loading';
-import { listarEnumerados, SituacaoAcao } from '~/Enumerados';
-import { useParams } from 'react-router-dom';
+  Pagination,
+  Select,
+  Table,
+  TableEmpty,
+  Tbody,
+  Td,
+  Tdh,
+  Th,
+  Thead,
+  Tr,
+} from '~components/ui';
 
 const MyEventsContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -89,209 +93,139 @@ const MyEventsContainer = () => {
     }
   };
 
-  const getStatusBadge = (situacao) => {
-    switch (situacao) {
-      case 'Pendente':
-        return (
-          <Badge pill color="warning">
-            Pendente
-          </Badge>
-        );
-      case 'Aprovada':
-        return (
-          <Badge pill color="success">
-            Aprovada
-          </Badge>
-        );
-      case 'Reprovada':
-        return (
-          <Badge pill color="danger">
-            Reprovada
-          </Badge>
-        );
-      default:
-        return (
-          <Badge pill color="secondary">
-            Desconhecida
-          </Badge>
-        );
-    }
-  };
-
   return (
     <Container>
       <LoadingOverlay isLoading={isLoading} />
+
       <Card>
-        <CardBody>
-          <Row>
-            <div className="col">
-              <Card className="shadow">
-                <CardHeader className="border-0">
-                  <div className="d-flex justify-content-between">
-                    <h3 className="mb-0">Minhas de Ações</h3>
-                  </div>
-                  <hr className="m-0" />
-                  <div className="">
-                    <h3 className="mb-0">Filtros</h3>
-                    <Row>
-                      <Col xl="3">
-                        <FormGroup>
-                          <Label for="pesquisa">Pesquisa</Label>
-                          <Input
-                            id="pesquisa"
-                            name="pesquisa"
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                          ></Input>
-                        </FormGroup>
-                      </Col>
-                      <Col xl="3">
-                        <FormGroup>
-                          <Label for="tipo_atividade">Tipo da Atividade</Label>
-                          <Input
-                            id="tipo_atividade"
-                            name="activityType"
-                            type="select"
-                            value={activityType}
-                            onChange={(e) => setActivityType(e.target.value)}
-                          >
-                            <option value="">Todos</option>
-                            {listCategories.map((categorie) => (
-                              <option key={categorie.id} value={categorie.id}>
-                                {categorie.descricao}
-                              </option>
-                            ))}
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                      <Col xl="3">
-                        <FormGroup>
-                          <Label for="tipo_atividade">Situação</Label>
-                          <Input
-                            type="select"
-                            id="filterType"
-                            value={situacaoFiltro}
-                            onChange={(e) => setSituacaoFiltro(e.target.value)}
-                          >
-                            <option value="">Todos</option>
-                            {listaSituacaoAcao.map((forma) => (
-                              <option key={forma.value} value={forma.value}>
-                                {forma.label}
-                              </option>
-                            ))}
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Button color="primary" onClick={() => fetchActions(currentPage)}>
-                      {' '}
-                      Filtrar
-                    </Button>
-                  </div>
-                </CardHeader>
-                <Table className="align-items-center table-flush" responsive>
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Título da Ação</th>
-                      <th scope="col">Situação</th>
-                      <th scope="col">Descrição</th>
-                      <th scope="col">Nome do Organizador</th>
-                      <th scope="col">Celular</th>
-                      <th scope="col">Data da Ação</th>
-                      <th scope="col">Local da Ação</th>
-                      <th scope="col">Número de Organizadores</th>
-                      <th scope="col">Categoria</th>
-                      <th scope="col">Aprovado/Recusado por</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listActions.map((action) => (
-                      <tr key={action.id}>
-                        <th scope="row">{action.titulo_acao}</th>
-                        <td>{getStatusBadge(action.situacao_acao)}</td>
-                        <td>{action.descricao_acao}</td>
-                        <td>{action.nome_organizador}</td>
-                        <td>
-                          {action.celular}
-                          <a
-                            href={`https://wa.me/${action.celular}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ marginLeft: '10px' }}
-                          >
-                            <FaWhatsapp size={20} color="#25D366" />
-                          </a>
-                        </td>
-                        <td>
-                          {new Date(action.data_acao).toLocaleString('pt-BR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                          })}
-                        </td>
-                        <td>{action.local_acao}</td>
-                        <td>{action.numero_organizadores_acao}</td>
-                        <td>{action.categoria.descricao}</td>
-                        <td>{action?.usuario_alteracao?.nome}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-                <CardFooter className="py-4 d-flex justify-content-center">
-                  <nav aria-label="...">
-                    <Pagination
-                      className="pagination justify-content-end mb-0"
-                      listClassName="justify-content-end mb-0"
-                    >
-                      <PaginationItem disabled={currentPage <= 1}>
-                        <PaginationLink
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePageChange(currentPage - 1);
-                          }}
-                          tabIndex="-1"
-                        >
-                          <i className="fas fa-angle-left" />
-                          <span className="sr-only">Anterior</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                      {[...Array(totalPages)].map((_, index) => (
-                        <PaginationItem key={index} active={index + 1 === currentPage}>
-                          <PaginationLink
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePageChange(index + 1);
-                            }}
-                          >
-                            {index + 1}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ))}
-                      <PaginationItem disabled={currentPage >= totalPages}>
-                        <PaginationLink
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePageChange(currentPage + 1);
-                          }}
-                        >
-                          <i className="fas fa-angle-right" />
-                          <span className="sr-only">Próximo</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                    </Pagination>
-                  </nav>
-                </CardFooter>
-              </Card>
+        <CardHeader className="space-y-5">
+          <CardTitle>Minhas Ações</CardTitle>
+
+          <div>
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
+              Filtros
+            </h3>
+
+            <div className="grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+              <FormGroup className="mb-4">
+                <Label htmlFor="pesquisa">Pesquisa</Label>
+                <Input
+                  id="pesquisa"
+                  name="pesquisa"
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </FormGroup>
+
+              <FormGroup className="mb-4">
+                <Label htmlFor="tipo_atividade">Tipo da Atividade</Label>
+                <Select
+                  id="tipo_atividade"
+                  name="activityType"
+                  value={activityType}
+                  onChange={(e) => setActivityType(e.target.value)}
+                >
+                  <option value="">Todos</option>
+                  {listCategories.map((categorie) => (
+                    <option key={categorie.id} value={categorie.id}>
+                      {categorie.descricao}
+                    </option>
+                  ))}
+                </Select>
+              </FormGroup>
+
+              <FormGroup className="mb-4">
+                <Label htmlFor="situacao">Situação</Label>
+                <Select
+                  id="situacao"
+                  value={situacaoFiltro}
+                  onChange={(e) => setSituacaoFiltro(e.target.value)}
+                >
+                  <option value="">Todos</option>
+                  {listaSituacaoAcao.map((forma) => (
+                    <option key={forma.value} value={forma.value}>
+                      {forma.label}
+                    </option>
+                  ))}
+                </Select>
+              </FormGroup>
             </div>
-          </Row>
-        </CardBody>
+
+            <Button onClick={() => fetchActions(currentPage)}>Filtrar</Button>
+          </div>
+        </CardHeader>
+
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Título da Ação</Th>
+              <Th>Situação</Th>
+              <Th>Descrição</Th>
+              <Th>Nome do Organizador</Th>
+              <Th>Celular</Th>
+              <Th>Data da Ação</Th>
+              <Th>Local da Ação</Th>
+              <Th>Nº de Organizadores</Th>
+              <Th>Categoria</Th>
+              <Th>Aprovado/Recusado por</Th>
+            </Tr>
+          </Thead>
+
+          <Tbody>
+            {listActions.length === 0 && (
+              <TableEmpty colSpan={10}>Você ainda não cadastrou nenhuma ação.</TableEmpty>
+            )}
+
+            {listActions.map((action) => (
+              <Tr key={action.id}>
+                <Tdh>{action.titulo_acao}</Tdh>
+                <Td>
+                  <ActionStatusBadge situacao={action.situacao_acao} />
+                </Td>
+                <Td className="max-w-96 truncate" title={action.descricao_acao}>
+                  {action.descricao_acao}
+                </Td>
+                <Td>{action.nome_organizador}</Td>
+                <Td>
+                  <span className="inline-flex items-center gap-2">
+                    {action.celular}
+                    <a
+                      href={`https://wa.me/${action.celular}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Abrir conversa no WhatsApp"
+                    >
+                      <FaWhatsapp size={18} className="text-[#25D366]" />
+                    </a>
+                  </span>
+                </Td>
+                <Td>
+                  {new Date(action.data_acao).toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                  })}
+                </Td>
+                <Td>{action.local_acao}</Td>
+                <Td>{action.numero_organizadores_acao}</Td>
+                <Td>{action.categoria.descricao}</Td>
+                <Td>{action?.usuario_alteracao?.nome}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+
+        <CardFooter>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </CardFooter>
       </Card>
     </Container>
   );

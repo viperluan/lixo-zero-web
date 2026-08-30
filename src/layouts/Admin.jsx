@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { Container } from 'reactstrap';
 import { useLocation, Route, Routes, Navigate } from 'react-router-dom';
 import routes from '~/routes';
 
@@ -7,6 +6,7 @@ import { HomeNavbar } from '~components/Navbars/HomeNavbar';
 import { Footer } from '~components/Footers/Footer';
 import { useAuth } from '~context/AuthContext';
 import { TipoUsuario } from '~/Enumerados';
+import { Spinner } from '~components/ui';
 import PageNotFound from '~/views/page-not-found';
 
 const Admin = () => {
@@ -35,21 +35,23 @@ const Admin = () => {
   };
 
   return (
-    <div className="main-content d-flex flex-column h-100" ref={mainContent}>
+    <div className="flex min-h-screen flex-col bg-gray-50" ref={mainContent}>
       {loading ? (
-        <h1>Carregando</h1>
+        <div className="flex flex-1 items-center justify-center">
+          <Spinner size="lg" className="text-brand-primary-dark" />
+        </div>
       ) : (
         <>
           <HomeNavbar />
 
-          <Routes>
-            {getRoutes(routes)}
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
+          <main className="w-full flex-1 py-8">
+            <Routes>
+              {getRoutes(routes)}
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </main>
 
-          <Container fluid>
-            <Footer />
-          </Container>
+          <Footer />
         </>
       )}
     </div>
