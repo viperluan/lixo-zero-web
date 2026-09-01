@@ -62,7 +62,7 @@ type DadosFormik = {
   termoDeCompromisso: boolean;
 };
 
-const INSCRICOES_ENCERRADAS = true;
+const INSCRICOES_ENCERRADAS = false;
 
 // O ErrorMessage do Formik so renderiza quando o campo foi tocado e tem erro,
 // entao envolve-lo no FieldError mantem o espacamento fora do fluxo quando nao
