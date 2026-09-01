@@ -6,12 +6,12 @@ import {
   Button,
   FormGroup,
   Input,
+  Label,
   Modal,
-  ModalHeader,
-  Form,
   ModalBody,
   ModalFooter,
-} from 'reactstrap';
+  ModalHeader,
+} from '~components/ui';
 
 const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,15 +46,16 @@ const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
     <>
       <LoadingOverlay isLoading={isLoading} />
 
-      <Modal autoFocus={false} isOpen={isOpen} toggle={toogleModal} className="modal-box">
-        <Form autoFocus className="form" onSubmit={handleSubmit}>
+      <Modal isOpen={isOpen} toggle={toogleModal} size="sm">
+        <form onSubmit={handleSubmit}>
           <ModalHeader toggle={toogleModal}>Cadastro de Categoria</ModalHeader>
 
           <ModalBody>
-            <FormGroup className="mb-3">
+            <FormGroup className="mb-0">
+              <Label htmlFor="descricao-categoria">Descrição</Label>
               <Input
-                id="text"
-                name="text"
+                id="descricao-categoria"
+                name="descricao"
                 type="text"
                 placeholder="Descrição"
                 value={description}
@@ -65,11 +66,13 @@ const CategoriesRegister = ({ isOpen, toogleModal, callBack }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button className="m-auto" type="submit" color="primary">
-              Cadastrar
+            <Button variant="neutral" onClick={toogleModal}>
+              Cancelar
             </Button>
+
+            <Button type="submit">Cadastrar</Button>
           </ModalFooter>
-        </Form>
+        </form>
       </Modal>
     </>
   );

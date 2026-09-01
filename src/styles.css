@@ -1,4 +1,132 @@
-html, body, #root {
-  width: 100%;
-  height: 100%;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full w-full;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-gray-50 text-brand-dark antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-primary-dark px-6 py-2.5 font-semibold text-white transition-all hover:bg-brand-primary-dark/90;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-secondary-light px-6 py-2.5 font-semibold text-brand-dark transition-all hover:bg-brand-secondary-light/90;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border-2 border-brand-primary-dark px-6 py-2.5 font-semibold text-brand-primary-dark transition-all hover:bg-brand-primary-dark hover:text-white;
+  }
+
+  .card-lixo {
+    @apply rounded-xl bg-white p-6 shadow-md transition-shadow hover:shadow-lg;
+  }
+
+  .gradient-brand {
+    @apply bg-gradient-to-r from-brand-primary-dark via-brand-primary-light to-brand-secondary-dark;
+  }
+
+  .section-title {
+    @apply mb-6 font-display text-4xl font-bold text-brand-primary-dark;
+  }
+
+  /* Seta do <select>: o Preflight remove a nativa junto com appearance-none. */
+  .form-select-arrow {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.625rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem 1.25rem;
+    padding-right: 2.25rem;
+  }
+}
+
+/*
+ * react-datetime e react-big-calendar trazem markup proprio e antes herdavam a
+ * aparencia do Bootstrap. Sem ele, o alinhamento com a paleta da marca fica
+ * aqui.
+ */
+.rdtPicker {
+  @apply mt-1 rounded-lg border border-gray-200 p-2 shadow-xl;
+}
+
+.rdtPicker td.rdtActive,
+.rdtPicker td.rdtActive:hover {
+  @apply bg-brand-primary-dark text-white;
+}
+
+.rdtPicker td.rdtToday::before {
+  border-bottom-color: theme('colors.brand.primary-dark');
+}
+
+.rdtPicker td.rdtDay:hover,
+.rdtPicker .rdtTimeToggle:hover,
+.rdtPicker th.rdtSwitch:hover,
+.rdtPicker th.rdtNext:hover,
+.rdtPicker th.rdtPrev:hover {
+  @apply rounded bg-gray-100;
+}
+
+.rbc-calendar {
+  @apply font-sans;
+}
+
+.rbc-toolbar button {
+  @apply rounded-lg border-gray-200 text-sm font-medium text-brand-dark;
+}
+
+.rbc-toolbar button:hover,
+.rbc-toolbar button:focus {
+  @apply bg-gray-100;
+}
+
+.rbc-toolbar button.rbc-active,
+.rbc-toolbar button.rbc-active:hover,
+.rbc-toolbar button.rbc-active:focus {
+  @apply border-brand-primary-dark bg-brand-primary-dark text-white;
+}
+
+.rbc-toolbar .rbc-toolbar-label {
+  @apply font-display text-lg text-brand-primary-dark;
+}
+
+.rbc-header {
+  @apply py-2 text-xs font-semibold uppercase tracking-wide text-gray-500;
+}
+
+.rbc-today {
+  @apply bg-brand-secondary-light/15;
+}
+
+.rbc-event {
+  @apply rounded px-1.5 text-xs font-medium;
+}
+
+.rbc-off-range-bg {
+  @apply bg-gray-50;
 }

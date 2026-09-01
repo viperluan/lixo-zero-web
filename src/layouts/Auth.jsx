@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, Route, Routes } from 'react-router-dom';
-import { Container } from 'reactstrap';
 
 import routes from '~/routes';
 import { HomeNavbar } from '~components/Navbars/HomeNavbar';
 import { Footer } from '~components/Footers/Footer';
 import { useAuth } from '~context/AuthContext';
 import { ModalLogin } from '~components/Headers/Modal/Modal';
+import { Spinner } from '~components/ui';
 import PageNotFound from '~/views/page-not-found';
 
 const Auth = () => {
@@ -49,21 +49,23 @@ const Auth = () => {
     <>
       <ModalLogin isOpen={isLoginModalOpen} toggle={toggleLoginModal} />
 
-      <div className="main-content d-flex flex-column h-100" ref={mainContent}>
+      <div className="flex min-h-screen flex-col bg-gray-50" ref={mainContent}>
         {loading ? (
-          <h1>Carregando</h1>
+          <div className="flex flex-1 items-center justify-center">
+            <Spinner size="lg" className="text-brand-primary-dark" />
+          </div>
         ) : (
           <>
             <HomeNavbar />
 
-            <Routes>
-              {getRoutes(routes)}
-              <Route path="*" element={<PageNotFound />} />
-            </Routes>
+            <main className="w-full flex-1 py-8">
+              <Routes>
+                {getRoutes(routes)}
+                <Route path="*" element={<PageNotFound />} />
+              </Routes>
+            </main>
 
-            <Container fluid>
-              <Footer />
-            </Container>
+            <Footer />
           </>
         )}
       </div>

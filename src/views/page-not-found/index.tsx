@@ -1,17 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, Container } from 'reactstrap';
+import { Button, Container } from '~components/ui';
 
 const PageNotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <Container
-      className="d-flex flex-column align-items-center justify-content-center flex-grow-1"
-      fluid
-    >
-      <h1 className="d-flex text-uppercase">Página não encontrada!</h1>
+    <Container className="flex flex-1 flex-col items-center justify-center py-24 text-center">
+      <p className="font-display text-7xl text-brand-secondary-light">404</p>
 
-      <Button className="my-4" onClick={() => navigate('/')} color="primary">
+      <h1 className="mt-4 font-display text-3xl uppercase text-brand-primary-dark">
+        Página não encontrada!
+      </h1>
+
+      <Button className="mt-8" size="lg" onClick={() => navigate('/')}>
         Voltar para home
       </Button>
     </Container>

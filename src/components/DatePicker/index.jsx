@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Datetime from 'react-datetime';
-import moment from 'moment';
+import moment from '~/lib/moment';
 import InputMask from 'react-input-mask';
-import { Input } from 'reactstrap';
-import 'moment/locale/pt-br';
-
-moment.locale('pt-br');
+import { Input } from '~components/ui';
 
 const DateTimePicker = ({ field, form }) => {
   const [inputValue, setInputValue] = useState('');
@@ -72,7 +69,7 @@ const DateTimePicker = ({ field, form }) => {
       locale="pt-br"
       dateFormat="DD/MM/YYYY"
       timeFormat="HH:mm"
-      className="w-100"
+      className="w-full"
     />
   );
 };

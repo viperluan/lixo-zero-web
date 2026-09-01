@@ -1,21 +1,12 @@
-// reactstrap components
-import api from '../../api/index';
+import api from '~api';
 import { useState } from 'react';
-import {
-  Button,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Col,
-} from 'reactstrap';
+import { IdCard, Lock, Mail, User } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { TipoUsuario } from '~/Enumerados';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~context/AuthContext';
 import { InputCpfCnpj } from '~components/Inputs/InputCpfCnpj';
+import { Button, Card, CardBody, FormGroup, Input, Label } from '~components/ui';
 import { AxiosResponse } from 'axios';
 
 type UserAuthenticateResponseType = {
@@ -89,116 +80,112 @@ const RegisterContainer = () => {
     }
   };
 
+  // Ícone à esquerda dentro do campo: o padrão do InputGroup do Bootstrap virou
+  // um wrapper relativo com o ícone posicionado sobre o input.
+  const iconClass =
+    'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400';
+
   return (
-    <>
-      <div className="py-4 d-flex justify-content-center align-items-center">
-        <Col lg="6" md="8">
-          <h1 className="text-center">Crie sua conta!</h1>
+    <div className="mx-auto w-full max-w-xl px-4">
+      <h1 className="mb-8 text-center font-display text-3xl text-brand-primary-dark">
+        Crie sua conta!
+      </h1>
 
-          <Form role="form">
+      <Card>
+        <CardBody className="p-6 sm:p-8">
+          <form>
             <FormGroup>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-hat-3" />
-                  </InputGroupText>
-                </InputGroupAddon>
+              <Label htmlFor="nome">Nome</Label>
 
+              <div className="relative">
+                <User className={iconClass} />
                 <Input
                   id="nome"
                   name="nome"
-                  placeholder="Digite seu nome"
                   type="text"
-                  style={{ paddingLeft: '12px' }}
+                  className="pl-10"
+                  placeholder="Digite seu nome"
+                  autoComplete="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
-              </InputGroup>
+              </div>
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-email-83" />
-                  </InputGroupText>
-                </InputGroupAddon>
+              <Label htmlFor="cpf-cnpj">CPF ou CNPJ</Label>
 
+              <div className="relative">
+                <IdCard className={iconClass} />
                 <InputCpfCnpj
+                  id="cpf-cnpj"
+                  className="pl-10"
                   placeholder="Digite seu CPF ou CNPJ"
                   value={cpfCnpj}
                   onChange={handleCpfCnpjChange}
                 />
-              </InputGroup>
+              </div>
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-email-83" />
-                  </InputGroupText>
-                </InputGroupAddon>
+              <Label htmlFor="email">E-mail</Label>
 
+              <div className="relative">
+                <Mail className={iconClass} />
                 <Input
+                  id="email"
                   name="email"
-                  placeholder="Digite seu email"
                   type="email"
+                  className="pl-10"
+                  placeholder="Digite seu email"
                   autoComplete="email"
-                  style={{ paddingLeft: '12px' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-              </InputGroup>
+              </div>
             </FormGroup>
 
             <FormGroup>
-              <InputGroup className="">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-lock-circle-open" />
-                  </InputGroupText>
-                </InputGroupAddon>
+              <Label htmlFor="senha">Senha</Label>
 
+              <div className="relative">
+                <Lock className={iconClass} />
                 <Input
-                  placeholder="Digite sua senha"
+                  id="senha"
                   type="password"
+                  className="pl-10"
+                  placeholder="Digite sua senha"
                   autoComplete="new-password"
-                  style={{ paddingLeft: '12px' }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </InputGroup>
+              </div>
             </FormGroup>
 
-            <FormGroup>
-              <InputGroup className="">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-lock-circle-open" />
-                  </InputGroupText>
-                </InputGroupAddon>
+            <FormGroup className="mb-0">
+              <Label htmlFor="confirmar-senha">Confirme sua senha</Label>
 
+              <div className="relative">
+                <Lock className={iconClass} />
                 <Input
-                  placeholder="Confirme sua senha"
+                  id="confirmar-senha"
                   type="password"
+                  className="pl-10"
+                  placeholder="Confirme sua senha"
                   autoComplete="new-password"
-                  style={{ paddingLeft: '12px' }}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-              </InputGroup>
+              </div>
             </FormGroup>
 
-            <FormGroup className="text-center">
-              <Button className="px-4 py-2" color="primary" type="button" onClick={handleRegister}>
-                Criar Conta
-              </Button>
-            </FormGroup>
-          </Form>
-        </Col>
-      </div>
-    </>
+            <Button className="mt-8 w-full" size="lg" onClick={handleRegister}>
+              Criar Conta
+            </Button>
+          </form>
+        </CardBody>
+      </Card>
+    </div>
   );
 };
 
