@@ -23,7 +23,10 @@ type SectionProps = HTMLAttributes<HTMLTableSectionElement>;
 
 const Thead = ({ className, children, ...props }: SectionProps) => (
   <thead
-    className={cn('bg-gray-50 text-xs uppercase tracking-wide text-gray-500', className)}
+    className={cn(
+      'bg-brand-cream font-condensed text-xs font-semibold uppercase tracking-wide text-brand-forest',
+      className
+    )}
     {...props}
   >
     {children}
@@ -43,7 +46,7 @@ const Tbody = ({ className, children, ...props }: SectionProps) => (
 );
 
 const Tr = ({ className, children, ...props }: HTMLAttributes<HTMLTableRowElement>) => (
-  <tr className={cn('transition-colors hover:bg-gray-50', className)} {...props}>
+  <tr className={cn('transition-colors hover:bg-brand-cream', className)} {...props}>
     {children}
   </tr>
 );

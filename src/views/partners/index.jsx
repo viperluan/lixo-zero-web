@@ -149,7 +149,7 @@ const PartnersContainer = () => {
                     <br />
                     <a
                       href={`mailto:${partner.usuario_patrocinio.email}`}
-                      className="text-brand-primary-dark hover:underline"
+                      className="text-brand-forest hover:underline"
                     >
                       {partner.usuario_patrocinio.email}
                     </a>

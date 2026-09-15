@@ -71,10 +71,7 @@ const UsersContainer = () => {
                 <Tr key={user.id}>
                   <Tdh>{user.nome}</Tdh>
                   <Td>
-                    <a
-                      href={`mailto:${user.email}`}
-                      className="text-brand-primary-dark hover:underline"
-                    >
+                    <a href={`mailto:${user.email}`} className="text-brand-forest hover:underline">
                       {user.email}
                     </a>
                   </Td>

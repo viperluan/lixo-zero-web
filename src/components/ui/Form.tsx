@@ -18,7 +18,7 @@ const CONTROL_BASE =
 const controlState = (invalid?: boolean) =>
   invalid
     ? 'border-brand-danger focus:border-brand-danger focus:ring-brand-danger/30'
-    : 'border-gray-300 focus:border-brand-primary-dark focus:ring-brand-primary-dark/30';
+    : 'border-gray-300 focus:border-brand-forest focus:ring-brand-forest/30';
 
 /** Marca visual de campo invalido, comum aos tres controles. */
 interface InvalidProp {
@@ -32,7 +32,13 @@ const FormGroup = ({ className, children, ...props }: HTMLAttributes<HTMLDivElem
 );
 
 const Label = ({ className, children, ...props }: LabelHTMLAttributes<HTMLLabelElement>) => (
-  <label className={cn('block mb-1.5 text-sm font-semibold text-brand-dark', className)} {...props}>
+  <label
+    className={cn(
+      'block mb-1.5 font-condensed text-sm font-semibold uppercase tracking-wide text-brand-dark',
+      className
+    )}
+    {...props}
+  >
     {children}
   </label>
 );
@@ -108,8 +114,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         id={id}
         type="checkbox"
         className={cn(
-          'mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded border-2 text-brand-primary-dark',
-          'focus:outline-none focus:ring-2 focus:ring-brand-primary-dark/30',
+          'mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded border-2 text-brand-forest',
+          'focus:outline-none focus:ring-2 focus:ring-brand-forest/30',
           invalid ? 'border-brand-danger' : 'border-gray-300'
         )}
         {...props}

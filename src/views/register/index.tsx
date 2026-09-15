@@ -87,9 +87,7 @@ const RegisterContainer = () => {
 
   return (
     <div className="mx-auto w-full max-w-xl px-4">
-      <h1 className="mb-8 text-center font-display text-3xl text-brand-primary-dark">
-        Crie sua conta!
-      </h1>
+      <h1 className="mb-8 text-center text-3xl text-brand-forest">Crie sua conta!</h1>
 
       <Card>
         <CardBody className="p-6 sm:p-8">

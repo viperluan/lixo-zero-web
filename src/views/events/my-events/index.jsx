@@ -102,9 +102,7 @@ const MyEventsContainer = () => {
           <CardTitle>Minhas Ações</CardTitle>
 
           <div>
-            <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
-              Filtros
-            </h3>
+            <h3 className="label-condensed mb-3 text-sm text-brand-forest">Filtros</h3>
 
             <div className="grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
               <FormGroup className="mb-4">

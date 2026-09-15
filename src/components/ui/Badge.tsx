@@ -3,8 +3,8 @@ import { cn } from './cn';
 
 const VARIANTS = {
   neutral: 'bg-gray-100 text-gray-700',
-  primary: 'bg-brand-primary-dark/10 text-brand-primary-dark',
-  success: 'bg-brand-accent/15 text-brand-secondary-dark',
+  primary: 'bg-brand-forest/10 text-brand-forest',
+  success: 'bg-brand-accent/15 text-brand-forest',
   warning: 'bg-brand-warning/20 text-amber-800',
   danger: 'bg-brand-danger/10 text-brand-danger',
 } as const;
@@ -18,7 +18,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 const Badge = ({ variant = 'neutral', className, children, ...props }: BadgeProps) => (
   <span
     className={cn(
-      'inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold',
+      'inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 font-condensed text-xs font-semibold uppercase tracking-wide',
       VARIANTS[variant],
       className
     )}

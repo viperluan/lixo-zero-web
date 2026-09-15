@@ -49,10 +49,10 @@ const Auth = () => {
     <>
       <ModalLogin isOpen={isLoginModalOpen} toggle={toggleLoginModal} />
 
-      <div className="flex min-h-screen flex-col bg-gray-50" ref={mainContent}>
+      <div className="flex min-h-screen flex-col bg-brand-cream" ref={mainContent}>
         {loading ? (
           <div className="flex flex-1 items-center justify-center">
-            <Spinner size="lg" className="text-brand-primary-dark" />
+            <Spinner size="lg" className="text-brand-forest" />
           </div>
         ) : (
           <>

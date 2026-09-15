@@ -34,7 +34,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
     >
       <button
         type="button"
-        className={cn(PAGE_BUTTON, 'hover:bg-gray-50')}
+        className={cn(PAGE_BUTTON, 'hover:bg-brand-cream')}
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
         aria-label="Página anterior"
@@ -52,8 +52,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
           className={cn(
             PAGE_BUTTON,
             page === currentPage
-              ? 'border-brand-primary-dark bg-brand-primary-dark text-white'
-              : 'hover:bg-gray-50'
+              ? 'border-brand-forest bg-brand-forest text-white'
+              : 'hover:bg-brand-cream'
           )}
           onClick={() => onPageChange(page)}
         >
@@ -65,7 +65,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
 
       <button
         type="button"
-        className={cn(PAGE_BUTTON, 'hover:bg-gray-50')}
+        className={cn(PAGE_BUTTON, 'hover:bg-brand-cream')}
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
         aria-label="Próxima página"

@@ -13,7 +13,7 @@ const SITUACOES = {
   Reprovada: { variant: 'danger', color: '#D83624' },
 };
 
-const FALLBACK = { variant: 'neutral', color: '#26708C' };
+const FALLBACK = { variant: 'neutral', color: '#246352' };
 
 const getActionStatus = (situacao) => SITUACOES[situacao] ?? FALLBACK;
 

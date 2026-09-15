@@ -5,6 +5,13 @@ import { ModalLogin } from '~components/Headers/Modal/Modal';
 import { useAuth } from '~context/AuthContext';
 import { UserLoggedDropDown } from '~components/UserComponent';
 import { TipoUsuario } from '~/Enumerados';
+import iconeLixoZero from '~assets/img/brand/icone-lixo-zero.png';
+
+const LINKS = [
+  { to: '/auth/events/create', label: 'Criar ação' },
+  { to: '/auth/schedule', label: 'Agenda' },
+  { to: '/about', label: 'Sobre' },
+];
 
 const HomeNavbar = () => {
   const { user } = useAuth();
@@ -15,22 +22,22 @@ const HomeNavbar = () => {
   const toggleNavbar = () => setIsOpen(!isOpen);
 
   const renderAdminButtons = () => (
-    <div className="flex flex-wrap gap-2 py-3 border-t border-brand-secondary-light">
-      <Link to="/admin/events" className="btn-secondary text-sm">
+    <div className="flex flex-wrap gap-2 border-t border-brand-sage/40 py-3">
+      <Link to="/admin/events" className="btn-primary text-sm">
         Ações
       </Link>
-      <Link to="/admin/users" className="btn-secondary text-sm">
+      <Link to="/admin/users" className="btn-primary text-sm">
         Usuários
       </Link>
-      <Link to="/admin/categories" className="btn-secondary text-sm">
+      <Link to="/admin/categories" className="btn-primary text-sm">
         Tipo de Atividades
       </Link>
     </div>
   );
 
   const renderUserButtons = () => (
-    <div className="flex flex-wrap gap-2 py-3 border-t border-brand-secondary-light">
-      <Link to={`/auth/events/my-events/${user.id}`} className="btn-secondary text-sm">
+    <div className="flex flex-wrap gap-2 border-t border-brand-sage/40 py-3">
+      <Link to={`/auth/events/my-events/${user.id}`} className="btn-primary text-sm">
         Minhas Ações
       </Link>
     </div>
@@ -38,46 +45,38 @@ const HomeNavbar = () => {
 
   return (
     <>
-      <header className="bg-gradient-to-r from-brand-primary-dark to-brand-primary-light text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo/Brand */}
-            <Link
-              to="/"
-              className="flex items-center space-x-2 font-display text-2xl font-bold hover:opacity-90 transition-opacity"
-            >
-              <div className="w-10 h-10 bg-brand-secondary-light rounded-full flex items-center justify-center text-brand-primary-dark font-bold">
-                L
-              </div>
-              <span className="hidden sm:inline">Lixo Zero</span>
+      <header className="bg-brand-forest text-brand-cream">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between gap-4">
+            <Link to="/" className="shrink-0 transition-opacity hover:opacity-80">
+              <img
+                src={iconeLixoZero}
+                alt="Caxias Lixo Zero"
+                className="h-9 w-auto sm:h-10"
+                width="369"
+                height="320"
+              />
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              <Link
-                to="/auth/events/create"
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all"
-              >
-                Criar ação
-              </Link>
-              <Link
-                to="/auth/schedule"
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all"
-              >
-                Agenda
-              </Link>
-              <Link
-                to="/about"
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all"
-              >
-                Sobre
-              </Link>
+            {/* Navegacao central, como na arte da campanha */}
+            <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
+              {LINKS.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-base text-brand-cream/90 hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
-            {/* Right side buttons */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden shrink-0 items-center gap-3 md:flex">
               {!user ? (
-                <button onClick={toggleModal} className="btn-secondary text-sm font-medium">
+                <button
+                  onClick={toggleModal}
+                  className="rounded-xl bg-brand-sage px-6 py-2.5 font-semibold text-brand-forest-deep transition-all hover:bg-brand-sage/80"
+                >
                   Entrar
                 </button>
               ) : (
@@ -85,49 +84,37 @@ const HomeNavbar = () => {
               )}
             </div>
 
-            {/* Mobile menu button */}
             <button
               onClick={toggleNavbar}
-              className="md:hidden p-2 rounded-md hover:bg-white hover:bg-opacity-20 transition-all"
-              aria-expanded="false"
+              className="rounded-md p-2 transition-all hover:bg-white/10 md:hidden"
+              aria-expanded={isOpen}
+              aria-label="Abrir menu"
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden border-t border-white border-opacity-20">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link
-                to="/auth/events/create"
-                onClick={toggleNavbar}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-white hover:bg-opacity-20"
-              >
-                Criar ação
-              </Link>
-              <Link
-                to="/auth/schedule"
-                onClick={toggleNavbar}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-white hover:bg-opacity-20"
-              >
-                Agenda
-              </Link>
-              <Link
-                to="/about"
-                onClick={toggleNavbar}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-white hover:bg-opacity-20"
-              >
-                Sobre
-              </Link>
+          <div className="border-t border-white/20 md:hidden">
+            <div className="space-y-1 px-2 pb-3 pt-2">
+              {LINKS.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={toggleNavbar}
+                  className="block rounded-md px-3 py-2 text-base hover:bg-white/10"
+                >
+                  {link.label}
+                </Link>
+              ))}
               {!user && (
                 <button
                   onClick={() => {
                     toggleModal();
                     toggleNavbar();
                   }}
-                  className="w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-white hover:bg-opacity-20"
+                  className="mt-2 w-full rounded-xl bg-brand-sage px-3 py-2.5 font-semibold text-brand-forest-deep"
                 >
                   Entrar
                 </button>
@@ -137,11 +124,12 @@ const HomeNavbar = () => {
         )}
       </header>
 
-      {/* Admin/User Action Buttons */}
       {user && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
-          {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
+        <div className="bg-brand-forest text-brand-cream">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {user?.tipo === TipoUsuario.Admin && renderAdminButtons()}
+            {user?.tipo === TipoUsuario.Usuario && renderUserButtons()}
+          </div>
         </div>
       )}
 

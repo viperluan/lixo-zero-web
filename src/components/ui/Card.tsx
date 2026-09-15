@@ -22,10 +22,7 @@ const CardHeader = ({ className, children, ...props }: DivProps) => (
 );
 
 const CardTitle = ({ className, children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-  <h2
-    className={cn('text-xl font-display font-bold text-brand-primary-dark', className)}
-    {...props}
-  >
+  <h2 className={cn('text-xl font-black text-brand-forest', className)} {...props}>
     {children}
   </h2>
 );
@@ -37,7 +34,7 @@ const CardBody = ({ className, children, ...props }: DivProps) => (
 );
 
 const CardFooter = ({ className, children, ...props }: DivProps) => (
-  <div className={cn('px-6 py-5 border-t border-gray-100 bg-gray-50', className)} {...props}>
+  <div className={cn('px-6 py-5 border-t border-gray-100 bg-brand-cream', className)} {...props}>
     {children}
   </div>
 );

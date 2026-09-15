@@ -87,7 +87,7 @@ const DropdownItem = ({
     type="button"
     role="menuitem"
     className={cn(
-      'flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-brand-dark transition-colors hover:bg-gray-50',
+      'flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-brand-dark transition-colors hover:bg-brand-cream',
       className
     )}
     {...props}

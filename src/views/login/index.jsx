@@ -6,7 +6,7 @@ const Login = () => {
     <div className="mx-auto w-full max-w-md px-4">
       <Card>
         <CardBody className="p-8">
-          <h1 className="mb-6 text-center font-display text-2xl text-brand-primary-dark">Entrar</h1>
+          <h1 className="mb-6 text-center text-2xl text-brand-forest">Entrar</h1>
 
           <form>
             <FormGroup>
@@ -42,7 +42,7 @@ const Login = () => {
             <label className="flex items-center gap-2 text-sm text-gray-500">
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-brand-primary-dark focus:ring-brand-primary-dark/30"
+                className="h-4 w-4 rounded border-gray-300 text-brand-forest focus:ring-brand-forest/30"
               />
               Lembrar
             </label>

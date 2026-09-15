@@ -260,9 +260,7 @@ const EventsContainer = () => {
             </div>
 
             <div>
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
-                Filtros
-              </h3>
+              <h3 className="label-condensed mb-3 text-sm text-brand-forest">Filtros</h3>
 
               <div className="grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 <FormGroup className="mb-4">
@@ -462,7 +460,7 @@ const EventsContainer = () => {
                     <br />
                     <a
                       href={`mailto:${action.usuario_responsavel.email}`}
-                      className="text-brand-primary-dark hover:underline"
+                      className="text-brand-forest hover:underline"
                     >
                       {action.usuario_responsavel.email}
                     </a>

@@ -1,5 +1,6 @@
 export { cn } from './cn';
 export { Button } from './Button';
+export { ActionLink } from './ActionLink';
 export { Badge } from './Badge';
 export { Card, CardHeader, CardTitle, CardBody, CardFooter } from './Card';
 export { Collapse } from './Collapse';

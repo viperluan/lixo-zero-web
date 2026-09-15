@@ -18,6 +18,7 @@ tipado, sem dependências externas além do Lucide):
 | Arquivo | Exporta |
 | --- | --- |
 | `Button.tsx` | `Button` — variantes `primary`, `secondary`, `success`, `warning`, `danger`, `neutral`, `outline`, `ghost`, `icon`; tamanhos `sm`/`md`/`lg` |
+| `ActionLink.tsx` | `ActionLink` — CTA com ícone em círculo, tons `sage` (pílula da faixa) e `bare` (rodapé dos cards) |
 | `Card.tsx` | `Card`, `CardHeader`, `CardTitle`, `CardBody`, `CardFooter` |
 | `Form.tsx` | `FormGroup`, `Label`, `HelpText`, `FieldError`, `Input`, `Textarea`, `Select`, `Checkbox` |
 | `Modal.tsx` | `Modal`, `ModalHeader`, `ModalBody`, `ModalFooter` — portal no body, trava de scroll, fecha com Esc/backdrop |
@@ -39,30 +40,64 @@ do calendário.
 
 ## Paleta e tipografia
 
-Definidas em `tailwind.config.js` e carregadas em `index.html`:
+Definidas em `tailwind.config.js` e carregadas em `index.html`. A interface segue
+a arte da 7ª Semana Lixo Zero; as cores foram amostradas da própria arte:
 
 ```javascript
 brand: {
-  'primary-dark': '#26708C',    // Azul escuro
-  'primary-light': '#6AA0D1',   // Azul claro
-  'secondary-dark': '#6D9B3E',  // Verde escuro
-  'secondary-light': '#BECC50', // Verde claro
-  accent:  '#36A339',           // Verde vibrante
-  warning: '#F2AF25',           // Laranja
-  danger:  '#D83624',           // Vermelho
-  purple:  '#9178B5',           // Roxo
-  dark:    '#2E292C',           // Cinza escuro
-  light:   '#FFFFFF',           // Branco
+  forest:        '#246352',  // navbar, faixas, rodapé, seções
+  'forest-deep': '#153C31',  // texto sobre o sage (contraste)
+  cream:         '#FFFCE6',  // fundo do hero e texto sobre o verde
+  sage:          '#86B499',  // botões
+  leaf:          '#A5B798',  // folhas: bordas e detalhes
+  // ... paleta institucional do manual (primary-*, secondary-*, accent,
+  //     warning, danger, purple, dark, light) segue disponível para
+  //     estados semânticos e para o material do ILZB.
 }
 ```
 
-- `font-sans` → **Barlow** (corpo)
-- `font-display` → **Shrikhand** (títulos)
+`forest-deep` existe por um motivo específico: rótulo em `forest` sobre `sage`
+dá 3,0:1 de contraste e só passa no WCAG AA em texto grande. `forest-deep`
+sobre `sage` dá 5,2:1 e vale para qualquer tamanho. Use-o em todo texto que
+fique sobre o verde claro.
+
+### As cinco fontes do manual
+
+| Token | Fonte | Onde |
+| --- | --- | --- |
+| `font-sans` + `font-black` | **Barlow Black** | todos os títulos (`h1`–`h6` já saem assim pelo `@layer base`) |
+| `font-sans` (padrão, 300) | **Barlow Light** | corpo de texto |
+| `font-condensed` | **Barlow Condensed** | navegação, rótulos de formulário, cabeçalho de tabela, badges — via `.label-condensed` |
+| `font-display` | **Shrikhand** | assinatura da marca: o `404` e o nome no rodapé |
+| `font-accent` | **Caveat** | frases manuscritas de apoio |
+
+`Dreaming Outloud Sans`, a quinta fonte do manual, é comercial (My Creative
+Land, distribuída pela Adobe Fonts) e não tem versão web livre — `font-accent`
+usa **Caveat** no lugar dela. Para migrar para a fonte oficial, troque o
+`family=Caveat` no `index.html` pelo kit do Adobe Fonts e o nome em
+`fontFamily.accent`; nenhum componente precisa mudar.
+
+### Arte da campanha
+
+Os assets do hero ficam em `src/assets/img/brand/` e foram recortados da arte
+oficial (`banner site SLZ 2026.zip` e a capa do formulário):
+
+| Arquivo | Papel |
+| --- | --- |
+| `hero-folhas.webp` | faixa de folhas, usada como `background-image` do hero |
+| `hero-logo.webp` | logo "SEMANA 7 LIXO ZERO — CAXIAS DO SUL" |
+| `hero-selo.webp` | selo "TRANSFORMANDO / IDEIAS EM AÇÕES!" |
+| `icone-lixo-zero.png` | símbolo do coletivo na navbar (PNG com alpha, vai sobre o verde) |
+
+O hero é montado em três camadas em `~components/HeroBanner` em vez de uma
+imagem única: no celular a faixa de folhas encolhe até sumir, e o logo
+sobreposto continua no tamanho certo. O componente é usado na home e no
+"sobre", como na arte.
 
 ## Classes utilitárias em `src/styles.css`
 
 `.btn-primary`, `.btn-secondary`, `.btn-outline`, `.card-lixo`,
-`.gradient-brand`, `.section-title` e `.form-select-arrow`.
+`.section-title`, `.label-condensed` e `.form-select-arrow`.
 
 O arquivo também estiliza `react-datetime` e `react-big-calendar`, que antes
 herdavam a aparência do Bootstrap.
@@ -86,8 +121,8 @@ O front consome a API do repositório `lixo-zero-api`. Em desenvolvimento
 Use a paleta, nunca cores literais:
 
 ```jsx
-<button className="bg-brand-primary-dark text-white">   // certo
-<button style={{ backgroundColor: '#26708C' }}>          // evitar
+<button className="bg-brand-forest text-brand-cream">   // certo
+<button style={{ backgroundColor: '#246352' }}>         // evitar
 ```
 
 Mobile-first:
