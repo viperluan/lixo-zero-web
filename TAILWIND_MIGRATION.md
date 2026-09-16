@@ -34,9 +34,24 @@ Importe sempre pelo barrel:
 import { Button, Card, CardBody, Input } from '~components/ui';
 ```
 
-Além desses, `~components/ActionStatusBadge` centraliza a cor e o rótulo da
-situação de uma ação — usado na listagem admin, em "minhas ações" e na legenda
-do calendário.
+Além desses, três componentes de domínio montados sobre a biblioteca:
+
+| Componente | Papel |
+| --- | --- |
+| `~components/ActionStatusBadge` | Cor e rótulo da **situação** — listagem admin, "minhas ações", legenda do calendário e linhas da agenda |
+| `~components/ActionFormatBadge` | Cor, ícone e rótulo da **forma de realização** — espelha o anterior; agenda e home |
+| `~components/ActionAgenda` | A programação em lista agrupada por dia (visão padrão de `/auth/schedule`) |
+| `~components/UpcomingActions` | Faixa "Próximas ações" da home; busca sozinha e não renderiza nada se falhar |
+
+Os dois primeiros são indexados pelo **rótulo em português** que a API devolve,
+não pelo enum de `~/Enumerados` — a API traduz na saída mas espera os códigos
+nos filtros. Cuidado com `'Hibrida'`: a API devolve sem acento, o enum do front
+com. `ActionFormatBadge` aceita as duas grafias por isso.
+
+Ordenação e formatação de data das listagens ficam em `~/lib/acoes`
+(`ordenarPorData`, `agruparPorDia`, `formatarChipDeData`, `ehFutura`, …). A API
+**não** ordena a listagem paginada por conta própria, então toda lista
+cronológica passa por ali.
 
 ## Paleta e tipografia
 

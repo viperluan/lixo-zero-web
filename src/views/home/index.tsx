@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Clock } from 'lucide-react';
 import { ActionLink } from '~components/ui';
 import { HeroBanner } from '~components/HeroBanner';
+import { UpcomingActions } from '~components/UpcomingActions';
 import imageEvento from '~assets/img/acoes-palestra.webp';
 import imageAgenda from '~assets/img/agenda-calendario.webp';
 
@@ -73,6 +74,10 @@ const Home = () => {
             </div>
           </article>
         </div>
+
+        {/* Programacao aprovada, carregada da API. Some sozinha quando nao ha
+            acao futura ou a API esta indisponivel. */}
+        <UpcomingActions />
 
         {/* Focos de atuacao do coletivo */}
         <div className="mx-auto mt-10 max-w-6xl rounded-3xl bg-brand-cream p-8 text-center sm:p-12">
