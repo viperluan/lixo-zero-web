@@ -1,7 +1,6 @@
 import api from '~api';
 import { useEffect, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
 import { LoadingOverlay } from '~components/Loading';
 import { ActionStatusBadge } from '~components/ActionStatusBadge';
 import { listarEnumerados, SituacaoAcao } from '~/Enumerados';
@@ -37,7 +36,6 @@ const MyEventsContainer = () => {
   const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
   const [situacaoFiltro, setSituacaoFiltro] = useState('');
   const [search, setSearch] = useState('');
-  const { id } = useParams();
 
   const fetchCategories = () => {
     api.get(`/categorias?page=1&limit=150`).then((res) => {
@@ -56,10 +54,6 @@ const MyEventsContainer = () => {
       filters.situacao = situacaoFiltro;
     }
 
-    if (id) {
-      filters.id_usuario = id;
-    }
-
     if (search) {
       filters.search = search.trim();
     }
@@ -69,7 +63,7 @@ const MyEventsContainer = () => {
     setIsLoading(true);
 
     api
-      .get(`/acoes?page=${page}&limit=10&${queryString}`)
+      .get(`/acoes/minhas?page=${page}&limit=10&${queryString}`)
       .then((res) => {
         setlistActions(res.data.actions || []);
         setTotalPages(res.data.totalPages || 1);
