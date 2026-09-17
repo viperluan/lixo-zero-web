@@ -21,6 +21,8 @@ import * as yup from 'yup';
 
 type UserAuthenticateResponseType = {
   token: string;
+  expires_in?: number;
+  expires_at?: string;
   usuario: {
     id: string;
     nome: string;
@@ -67,8 +69,13 @@ const ModalLogin = ({ isOpen, toggle }: IModalLoginProps) => {
         senha: password,
       });
 
-      if (data.token) {
-        login(data.token);
+      if (data.token && data.usuario) {
+        login({
+          token: data.token,
+          expires_at: data.expires_at,
+          expires_in: data.expires_in,
+          usuario: data.usuario,
+        });
         toast.success(`Usuario ${data.usuario?.nome} autenticado!`);
         actions.resetForm();
         navigate(location.pathname);

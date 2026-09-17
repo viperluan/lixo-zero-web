@@ -11,6 +11,8 @@ import { AxiosResponse } from 'axios';
 
 type UserAuthenticateResponseType = {
   token: string;
+  expires_in?: number;
+  expires_at?: string;
   usuario: {
     id: string;
     nome: string;
@@ -73,8 +75,13 @@ const RegisterContainer = () => {
       { email, senha: password }
     );
 
-    if (authenticateUser.data.token) {
-      login(authenticateUser.data.token);
+    if (authenticateUser.data.token && authenticateUser.data.usuario) {
+      login({
+        token: authenticateUser.data.token,
+        expires_at: authenticateUser.data.expires_at,
+        expires_in: authenticateUser.data.expires_in,
+        usuario: authenticateUser.data.usuario,
+      });
       toast.success(`Usuario ${authenticateUser.data.usuario.nome} autenticado!`);
       navigate('/');
     }
