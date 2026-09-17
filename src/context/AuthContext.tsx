@@ -1,19 +1,25 @@
 import { createContext, useContext, useState, useEffect, PropsWithChildren } from 'react';
-import { useCookies } from 'react-cookie';
-import * as jose from 'jose';
+import { toast } from 'react-toastify';
+// Garante que o Axios registre o Bearer antes do boot da sessao.
 import api from '~/api';
+import {
+  assumirSessaoPersistida,
+  encerrarSeSessaoMorta,
+  encerrarSessao,
+  inscreverEncerramento,
+  lerSessao,
+  salvarSessao,
+  usuarioDaSessao,
+  type DadosSessao,
+  type UsuarioSessao,
+} from '~/lib/sessao';
 
-export type UserType = {
-  id: string;
-  nome: string;
-  email: string;
-  tipo: string;
-};
+export type UserType = UsuarioSessao;
 
 export type AuthContextType = {
   user: UserType | null;
   loading: boolean;
-  login: (token: string) => void;
+  login: (dados: DadosSessao) => void;
   logout: () => void;
 };
 
@@ -22,47 +28,53 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
   useEffect(() => {
-    const loadUserData = () => {
-      const token = cookies['token'];
+    const unsubscribe = inscreverEncerramento((motivo) => {
+      setUser(null);
 
-      if (token) {
-        loginWithCookie(token);
+      if (motivo === 'expirada') {
+        toast.error('Sessão expirada, entre novamente.');
       }
+    });
 
-      setLoading(false);
+    if (assumirSessaoPersistida()) {
+      const sessaoAtual = lerSessao();
+
+      if (sessaoAtual) {
+        api.defaults.headers.common.Authorization = `Bearer ${sessaoAtual.token}`;
+        const usuario = usuarioDaSessao(sessaoAtual);
+
+        if (usuario) setUser(usuario);
+      }
+    }
+
+    const checarSessaoVisivel = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+
+      encerrarSeSessaoMorta();
     };
 
-    loadUserData();
+    window.addEventListener('focus', checarSessaoVisivel);
+    document.addEventListener('visibilitychange', checarSessaoVisivel);
+
+    setLoading(false);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('focus', checarSessaoVisivel);
+      document.removeEventListener('visibilitychange', checarSessaoVisivel);
+    };
   }, []);
 
-  const loginWithCookie = (token: string) => {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    const userPayloadFromToken = decodeToken(token);
-    setUser(userPayloadFromToken);
-  };
-
-  const login = (token: string) => {
-    setCookie('token', token);
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    const userPayloadFromToken = decodeToken(token);
-    setUser(userPayloadFromToken);
+  const login = (dados: DadosSessao) => {
+    salvarSessao(dados);
+    api.defaults.headers.common.Authorization = `Bearer ${dados.token}`;
+    setUser(dados.usuario);
   };
 
   const logout = () => {
-    removeCookie('token');
-    api.defaults.headers.common['Authorization'] = '';
-    setUser(null);
-  };
-
-  const decodeToken = (token: string): UserType => {
-    const { id, email, nome, tipo } = jose.decodeJwt<UserType>(token);
-
-    return { id, email, nome, tipo };
+    encerrarSessao({ motivo: 'logout' });
   };
 
   return (
