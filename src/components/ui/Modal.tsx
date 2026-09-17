@@ -83,7 +83,7 @@ const ModalHeader = ({ toggle, className, children, ...props }: ModalHeaderProps
     )}
     {...props}
   >
-    <h2 className="text-lg font-display font-bold text-brand-primary-dark">{children}</h2>
+    <h2 className="text-lg font-black text-brand-forest">{children}</h2>
 
     {toggle && (
       <button
@@ -107,7 +107,7 @@ const ModalBody = ({ className, children, ...props }: HTMLAttributes<HTMLDivElem
 const ModalFooter = ({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-wrap items-center justify-end gap-3 px-6 py-5 border-t border-gray-100 bg-gray-50',
+      'flex flex-wrap items-center justify-end gap-3 px-6 py-5 border-t border-gray-100 bg-brand-cream',
       className
     )}
     {...props}

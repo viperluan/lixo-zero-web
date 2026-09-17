@@ -4,8 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Paleta Lixo Zero
         brand: {
+          // Semana Lixo Zero 2026 — cores amostradas da arte oficial da campanha.
+          forest: '#246352', // verde escuro: navbar, faixas, rodape, secoes
+          'forest-deep': '#153C31', // usado no texto sobre o sage: forest ali da 3,0:1
+          cream: '#FFFCE6', // creme: fundo do hero e texto sobre o verde
+          sage: '#86B499', // verde claro: botoes
+          leaf: '#A5B798', // verde das folhas: bordas e detalhes
+
+          // Paleta institucional do manual — estados semanticos e identidade do ILZB.
           'primary-dark': '#26708C', // Azul escuro
           'primary-light': '#6AA0D1', // Azul claro
           'secondary-dark': '#6D9B3E', // Verde escuro
@@ -19,8 +26,12 @@ export default {
         },
       },
       fontFamily: {
+        // Manual da marca. `accent` usa Caveat porque Dreaming Outloud Sans e
+        // comercial (Adobe Fonts) — trocar aqui e no index.html basta para migrar.
         sans: ['Barlow', 'system-ui', 'sans-serif'],
+        condensed: ['"Barlow Condensed"', 'Barlow', 'sans-serif'],
         display: ['Shrikhand', 'Barlow', 'serif'],
+        accent: ['Caveat', 'Barlow', 'cursive'],
       },
       spacing: {
         section: '6rem',

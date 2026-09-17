@@ -24,7 +24,7 @@ const AdditionalInfoEventCreate = ({
 
       <Collapse isOpen={collapseState}>
         <div className="flex flex-col gap-4 pt-6 text-sm leading-relaxed text-brand-dark">
-          <h2 className="font-display text-xl text-brand-primary-dark">
+          <h2 className="text-xl text-brand-forest">
             Vamos juntos construir a 6ª edição da Semana Lixo Zero de Caxias do Sul? :)
           </h2>
 
@@ -40,18 +40,18 @@ const AdditionalInfoEventCreate = ({
             Para maiores informações sobre a SLZ, acesse o site:{' '}
             <a
               href="https://www.caxiaslixozero.com.br"
-              className="text-brand-primary-dark underline hover:text-brand-primary-light"
+              className="text-brand-forest underline hover:text-brand-forest/70"
             >
               Caxias Lixo Zero
             </a>
           </p>
 
           <div className="mt-2">
-            <h3 className="mb-4 font-display text-lg uppercase text-brand-primary-dark">
+            <h3 className="mb-4 font-condensed text-lg uppercase tracking-wide text-brand-forest">
               Por favor, leia antes de prosseguir:
             </h3>
 
-            <ol className="list-decimal space-y-4 pl-5 marker:font-semibold marker:text-brand-primary-dark">
+            <ol className="list-decimal space-y-4 pl-5 marker:font-semibold marker:text-brand-forest">
               <li>
                 As atividades cadastradas deverão ocorrer entre os dias 17 à 26 de outubro de 2025.
                 Todas as ações devem ser GRATUITAS, porém não precisam ser necessariamente abertas
@@ -96,7 +96,7 @@ const AdditionalInfoEventCreate = ({
                 Dúvidas ou esclarecimentos, contate-nos através do e-mail{' '}
                 <a
                   href="mailto:caxiaslixozero@gmail.com"
-                  className="text-brand-primary-dark underline hover:text-brand-primary-light"
+                  className="text-brand-forest underline hover:text-brand-forest/70"
                 >
                   caxiaslixozero@gmail.com
                 </a>

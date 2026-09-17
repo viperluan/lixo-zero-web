@@ -2,18 +2,16 @@ import { ButtonHTMLAttributes } from 'react';
 import { cn } from './cn';
 
 const VARIANTS = {
-  primary:
-    'bg-brand-primary-dark text-white hover:bg-brand-primary-dark/90 focus:ring-brand-primary-dark',
-  secondary:
-    'bg-brand-secondary-light text-brand-dark hover:bg-brand-secondary-light/90 focus:ring-brand-secondary-dark',
+  primary: 'bg-brand-sage text-brand-forest-deep hover:bg-brand-sage/80 focus:ring-brand-forest',
+  secondary: 'bg-brand-forest text-brand-cream hover:bg-brand-forest/90 focus:ring-brand-forest',
   success: 'bg-brand-accent text-white hover:bg-brand-accent/90 focus:ring-brand-accent',
   warning: 'bg-brand-warning text-brand-dark hover:bg-brand-warning/90 focus:ring-brand-warning',
   danger: 'bg-brand-danger text-white hover:bg-brand-danger/90 focus:ring-brand-danger',
-  neutral: 'bg-gray-200 text-brand-dark hover:bg-gray-300 focus:ring-gray-400',
+  neutral: 'bg-brand-leaf/30 text-brand-forest hover:bg-brand-leaf/50 focus:ring-brand-leaf',
   outline:
-    'border-2 border-brand-primary-dark text-brand-primary-dark hover:bg-brand-primary-dark hover:text-white focus:ring-brand-primary-dark',
-  ghost: 'text-brand-primary-dark hover:bg-brand-primary-dark/10 focus:ring-brand-primary-dark',
-  icon: 'text-brand-dark hover:bg-gray-100 focus:ring-gray-400 p-2 rounded-full',
+    'border-2 border-brand-forest text-brand-forest hover:bg-brand-forest hover:text-brand-cream focus:ring-brand-forest',
+  ghost: 'text-brand-forest hover:bg-brand-forest/10 focus:ring-brand-forest',
+  icon: 'text-brand-forest hover:bg-brand-forest/10 focus:ring-brand-forest p-2 rounded-full',
 } as const;
 
 const SIZES = {
@@ -41,7 +39,7 @@ const Button = ({
   <button
     type={type}
     className={cn(
-      'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all',
+      'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all',
       'focus:outline-none focus:ring-2 focus:ring-offset-2',
       'disabled:cursor-not-allowed disabled:opacity-50',
       VARIANTS[variant],
