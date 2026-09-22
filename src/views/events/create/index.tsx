@@ -286,9 +286,13 @@ const ActionContainer = () => {
             </CardHeader>
 
             <CardBody>
+              <HelpText className="mb-5">Campos com * são obrigatórios</HelpText>
+
               {/* Nome do organizador */}
               <FormGroup>
-                <Label htmlFor="nomeDoOrganizador">Nome do organizador da ação</Label>
+                <Label htmlFor="nomeDoOrganizador" required>
+                  Nome do organizador da ação
+                </Label>
 
                 <HelpText>
                   {`Empresa/Instituição/Grupo que você representa. Se for 'pessoa física' insira seu
@@ -311,7 +315,9 @@ const ActionContainer = () => {
 
               {/* Numero do whatsapp */}
               <FormGroup>
-                <Label htmlFor="numeroDoWhatsapp">Whatsapp do responsável pela ação</Label>
+                <Label htmlFor="numeroDoWhatsapp" required>
+                  Whatsapp do responsável pela ação
+                </Label>
 
                 <InputMask mask="(99) 99999-9999" onChange={handleChange} onBlur={handleBlur}>
                   {
@@ -334,7 +340,7 @@ const ActionContainer = () => {
 
               {/* Titulo da atividade */}
               <FormGroup>
-                <Label htmlFor="tituloDaAtividade">
+                <Label htmlFor="tituloDaAtividade" required>
                   Título da atividade para divulgação na programação
                 </Label>
 
@@ -358,7 +364,7 @@ const ActionContainer = () => {
 
               {/* Descrição da atividade */}
               <FormGroup>
-                <Label htmlFor="descricaoDaAtividade">
+                <Label htmlFor="descricaoDaAtividade" required>
                   Descrição resumida da atividade (o que será falado / feito?)
                 </Label>
 
@@ -382,7 +388,9 @@ const ActionContainer = () => {
 
               {/* Tipo da atividade */}
               <FormGroup>
-                <Label htmlFor="tipoDaAtividade">Tipo da atividade</Label>
+                <Label htmlFor="tipoDaAtividade" required>
+                  Tipo da atividade
+                </Label>
 
                 <Field
                   as={Select}
@@ -398,7 +406,7 @@ const ActionContainer = () => {
 
               {/* Data da ação */}
               <FormGroup>
-                <Label htmlFor="dataDaAcao">
+                <Label htmlFor="dataDaAcao" required>
                   Data e horário que a atividade será realizada (datas entre 17/10/
                   {moment().year()} e 26/10/{moment().year()})
                 </Label>
@@ -416,7 +424,9 @@ const ActionContainer = () => {
 
               {/* Forma de realização da atividade */}
               <FormGroup>
-                <Label htmlFor="formaDeRealizacaoAtividade">Forma de realização da atividade</Label>
+                <Label htmlFor="formaDeRealizacaoAtividade" required>
+                  Forma de realização da atividade
+                </Label>
 
                 <Field
                   as={Select}
@@ -433,7 +443,10 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="linkDeDivulgacaoAcessoDoEvento">
+                <Label
+                  htmlFor="linkDeDivulgacaoAcessoDoEvento"
+                  required={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
+                >
                   Link de divulgação de acesso ao evento
                 </Label>
 
@@ -454,7 +467,15 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="nomeDoLocalDoEvento">Nome do local do evento</Label>
+                <Label
+                  htmlFor="nomeDoLocalDoEvento"
+                  required={
+                    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Presencial ||
+                    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Hibrida
+                  }
+                >
+                  Nome do local do evento
+                </Label>
 
                 <Input
                   disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
@@ -471,7 +492,15 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="enderecoDoLocalDoEvento">Endereço do local do evento</Label>
+                <Label
+                  htmlFor="enderecoDoLocalDoEvento"
+                  required={
+                    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Presencial ||
+                    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Hibrida
+                  }
+                >
+                  Endereço do local do evento
+                </Label>
 
                 <Input
                   disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
@@ -488,7 +517,13 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="informacoesDeOndeOcorreraOEvento">
+                <Label
+                  htmlFor="informacoesDeOndeOcorreraOEvento"
+                  required={
+                    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Presencial ||
+                    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Hibrida
+                  }
+                >
                   Informações sobre como ocorrerá o evento
                 </Label>
 
@@ -528,7 +563,7 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="tipoDePublicoEvento">
+                <Label htmlFor="tipoDePublicoEvento" required>
                   Evento será para o público externo ou interno?
                 </Label>
 
@@ -546,7 +581,7 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="descricaoDivulgacaoEvento">
+                <Label htmlFor="descricaoDivulgacaoEvento" required>
                   Descrição resumida de como você pretende divulgar o evento
                 </Label>
 
@@ -564,7 +599,7 @@ const ActionContainer = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="numeroDeOrganizadores">
+                <Label htmlFor="numeroDeOrganizadores" required>
                   Quantas pessoas irão organizar essa ação? (Incluindo você)
                 </Label>
 
@@ -588,6 +623,7 @@ const ActionContainer = () => {
                 <Checkbox
                   id="termoDeCompromisso"
                   name="termoDeCompromisso"
+                  required
                   onChange={handleChange}
                   onBlur={handleBlur}
                   invalid={touched.termoDeCompromisso && !!errors.termoDeCompromisso}
