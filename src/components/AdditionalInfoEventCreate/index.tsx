@@ -36,9 +36,12 @@ const AdditionalInfoEventCreate = () => {
         Para maiores informações sobre a SLZ, acesse o site:{' '}
         <a
           href="https://www.caxiaslixozero.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-brand-forest underline hover:text-brand-forest/70"
         >
           Caxias Lixo Zero
+          <span className="sr-only"> (abre em uma nova aba)</span>
         </a>
       </p>
 
@@ -46,16 +49,20 @@ const AdditionalInfoEventCreate = () => {
         <h3 className="sticky top-0 z-10 -mx-4 bg-[color-mix(in_srgb,#F2AF25_20%,white)] px-4 py-2">
           <button
             type="button"
-            className="flex w-full items-center justify-between gap-3 text-left font-condensed text-lg uppercase tracking-wide text-brand-forest focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest"
+            className="flex w-full items-center justify-between gap-3 rounded-lg border border-brand-forest/30 bg-white/60 px-3 py-2.5 text-left font-condensed text-lg uppercase tracking-wide text-brand-forest transition-colors hover:bg-brand-forest/10 focus:outline-none focus-visible:bg-brand-forest/10 focus-visible:ring-2 focus-visible:ring-brand-forest"
             aria-expanded={listaAberta}
             aria-controls="orientacoes-cadastro-acao"
             onClick={() => setListaAberta((aberta) => !aberta)}
           >
             Por favor, leia antes de prosseguir:
-            <ChevronDown
-              className={`h-5 w-5 shrink-0 transition-transform ${listaAberta ? 'rotate-180' : ''}`}
+            <span
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-forest/10"
               aria-hidden="true"
-            />
+            >
+              <ChevronDown
+                className={`h-5 w-5 transition-transform ${listaAberta ? 'rotate-180' : ''}`}
+              />
+            </span>
           </button>
         </h3>
 
@@ -112,10 +119,12 @@ const AdditionalInfoEventCreate = () => {
               >
                 caxiaslixozero@gmail.com
               </a>
-              <br />
-              Muito obrigado!
             </li>
           </ol>
+
+          <p className="pb-4 text-center text-base font-semibold text-brand-forest">
+            Muito obrigado!
+          </p>
         </Collapse>
       </div>
     </div>
