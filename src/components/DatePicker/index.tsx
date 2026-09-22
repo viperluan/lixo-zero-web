@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FieldProps } from 'formik';
-import { Clock } from 'lucide-react';
 import moment, { type Moment } from '~/lib/moment';
-import { HelpText, Input } from '~components/ui';
+import { HelpText, Select } from '~components/ui';
 import { cn } from '~components/ui/cn';
 import { diasDaSlz } from '~/lib/periodoSlz';
 import { formatarDiaLongo, formatarHora } from '~/lib/acoes';
@@ -10,6 +9,8 @@ import { formatarDiaLongo, formatarHora } from '~/lib/acoes';
 type DateTimePickerProps = FieldProps<Moment | null>;
 
 const DIAS = diasDaSlz();
+const HORAS = Array.from({ length: 24 }, (_, indice) => String(indice).padStart(2, '0'));
+const MINUTOS = Array.from({ length: 60 }, (_, indice) => String(indice).padStart(2, '0'));
 
 const chaveDoDia = (data: Moment) => data.format('YYYY-MM-DD');
 
@@ -17,7 +18,13 @@ const extrairDia = (value: Moment | null) =>
   value && moment.isMoment(value) && value.isValid() ? chaveDoDia(value) : '';
 
 const extrairHora = (value: Moment | null) =>
-  value && moment.isMoment(value) && value.isValid() ? value.format('HH:mm') : '';
+  value && moment.isMoment(value) && value.isValid() ? value.format('HH') : '';
+
+const extrairMinuto = (value: Moment | null) =>
+  value && moment.isMoment(value) && value.isValid() ? value.format('mm') : '';
+
+const juntarHorario = (hora: string, minuto: string) =>
+  hora && minuto ? `${hora}:${minuto}` : '';
 
 const capitalizar = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
@@ -26,59 +33,47 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
   const { setFieldValue, setFieldTouched, errors, touched } = form;
   const invalido = Boolean(touched[name] && errors[name]);
 
-  const campoHora = useRef<HTMLInputElement>(null);
   const [dia, setDia] = useState(() => extrairDia(value));
   const [hora, setHora] = useState(() => extrairHora(value));
+  const [minuto, setMinuto] = useState(() => extrairMinuto(value));
 
-  const abrirSeletorHora = () => {
-    const campo = campoHora.current;
-    if (!campo) return;
-
-    campo.focus();
-
-    // No mesmo clique do foco o Chrome fecha o picker se abrir cedo demais.
-    requestAnimationFrame(() => {
-      try {
-        if (typeof campo.showPicker === 'function') {
-          campo.showPicker();
-        }
-      } catch {
-        // showPicker lanca se o picker ja estiver aberto.
-      }
-    });
-  };
+  const horario = juntarHorario(hora, minuto);
 
   useEffect(() => {
     if (value && moment.isMoment(value) && value.isValid()) {
       const proximoDia = chaveDoDia(value);
-      const proximaHora = value.format('HH:mm');
+      const proximaHora = value.format('HH');
+      const proximoMinuto = value.format('mm');
 
       if (proximoDia !== dia) setDia(proximoDia);
       if (proximaHora !== hora) setHora(proximaHora);
+      if (proximoMinuto !== minuto) setMinuto(proximoMinuto);
       return;
     }
 
-    // Reset do formulario: os dois pedacos estavam preenchidos e o campo
-    // voltou a null. Escolha incompleta (so dia ou so hora) tambem grava
-    // null — nesse caso o estado local precisa permanecer.
-    if (!value && dia && hora) {
+    // Reset do formulario: os tres pedacos estavam preenchidos e o campo
+    // voltou a null. Escolha incompleta tambem grava null — nesse caso o
+    // estado local precisa permanecer.
+    if (!value && dia && hora && minuto) {
       setDia('');
       setHora('');
+      setMinuto('');
     }
-  }, [value, dia, hora]);
+  }, [value, dia, hora, minuto]);
 
-  const gravar = (proximoDia: string, proximaHora: string) => {
+  const gravar = (proximoDia: string, proximaHora: string, proximoMinuto: string) => {
     setDia(proximoDia);
     setHora(proximaHora);
+    setMinuto(proximoMinuto);
 
-    if (proximoDia && proximaHora) {
-      const combinado = moment(`${proximoDia} ${proximaHora}`, 'YYYY-MM-DD HH:mm', true);
+    const proximoHorario = juntarHorario(proximaHora, proximoMinuto);
+
+    if (proximoDia && proximoHorario) {
+      const combinado = moment(`${proximoDia} ${proximoHorario}`, 'YYYY-MM-DD HH:mm', true);
       setFieldValue(name, combinado.isValid() ? combinado : null);
       return;
     }
 
-    // Sem os dois pedacos o Formik fica null; nao validar ainda para o
-    // erro de obrigatorio so aparecer no blur da hora ou no submit.
     setFieldValue(name, null, false);
   };
 
@@ -103,8 +98,8 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
                 role="radio"
                 aria-checked={selecionado}
                 onClick={() => {
-                  gravar(chave, hora);
-                  setFieldTouched(name, true, Boolean(hora));
+                  gravar(chave, hora, minuto);
+                  setFieldTouched(name, true, Boolean(horario));
                 }}
                 className={cn(
                   'flex flex-col items-center rounded-xl border px-2 py-2.5 transition-colors',
@@ -129,31 +124,44 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
       <div>
         <p className="mb-1.5 text-xs text-gray-500">Horário</p>
 
-        <div className="relative max-w-[13rem]">
-          <Clock
-            className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-brand-forest"
-            aria-hidden="true"
-          />
-
-          <Input
-            ref={campoHora}
+        <div className="flex max-w-sm items-center gap-2">
+          <Select
             id="dataDaAcao"
-            name={name}
-            type="time"
+            aria-label="Hora"
             value={hora}
-            onChange={(evento) => gravar(dia, evento.target.value)}
+            onChange={(evento) => gravar(dia, evento.target.value, minuto)}
             onBlur={() => setFieldTouched(name, true)}
-            onClick={abrirSeletorHora}
             invalid={invalido}
-            className={cn(
-              'cursor-pointer pl-10',
-              '[&::-webkit-calendar-picker-indicator]:pointer-events-none',
-              '[&::-webkit-calendar-picker-indicator]:opacity-0'
-            )}
-          />
+          >
+            <option value="">Hora</option>
+            {HORAS.map((opcao) => (
+              <option key={opcao} value={opcao}>
+                {opcao}
+              </option>
+            ))}
+          </Select>
+
+          <span className="text-lg font-semibold text-brand-forest" aria-hidden="true">
+            :
+          </span>
+
+          <Select
+            aria-label="Minuto"
+            value={minuto}
+            onChange={(evento) => gravar(dia, hora, evento.target.value)}
+            onBlur={() => setFieldTouched(name, true)}
+            invalid={invalido}
+          >
+            <option value="">Min</option>
+            {MINUTOS.map((opcao) => (
+              <option key={opcao} value={opcao}>
+                {opcao}
+              </option>
+            ))}
+          </Select>
         </div>
 
-        <HelpText className="mt-1.5 mb-0">Toque no campo para escolher o horário.</HelpText>
+        <HelpText className="mt-1.5 mb-0">Escolha a hora e o minuto.</HelpText>
       </div>
 
       {value && moment.isMoment(value) && value.isValid() && (
