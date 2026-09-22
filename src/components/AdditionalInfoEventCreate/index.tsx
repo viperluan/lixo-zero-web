@@ -25,7 +25,8 @@ const AdditionalInfoEventCreate = ({
       <Collapse isOpen={collapseState}>
         <div className="flex flex-col gap-4 pt-6 text-sm leading-relaxed text-brand-dark">
           <h2 className="text-xl text-brand-forest">
-            Vamos juntos construir a 6ª edição da Semana Lixo Zero de Caxias do Sul? :)
+            Vamos juntos transformar ideias em ações na 7ª edição da Semana Lixo Zero de Caxias do
+            Sul? :)
           </h2>
 
           <p className="font-semibold">A Semana Lixo Zero é um evento colaborativo e voluntário.</p>
@@ -33,7 +34,8 @@ const AdditionalInfoEventCreate = ({
           <p>
             Mobilize sua empresa, escritório, estabelecimento, escola, grupo de amigos e familiares
             e cadastre sua ação{' '}
-            <mark className="bg-brand-warning/40 font-bold uppercase">até o dia 07 de outubro</mark>
+            <mark className="bg-brand-warning/40 font-bold uppercase">até o dia 08 de outubro</mark>
+            .
           </p>
 
           <p className="font-semibold">
@@ -53,18 +55,18 @@ const AdditionalInfoEventCreate = ({
 
             <ol className="list-decimal space-y-4 pl-5 marker:font-semibold marker:text-brand-forest">
               <li>
-                As atividades cadastradas deverão ocorrer entre os dias 17 à 26 de outubro de 2025.
+                As atividades cadastradas deverão ocorrer entre os dias 07 e 15 de novembro de 2026.
                 Todas as ações devem ser GRATUITAS, porém não precisam ser necessariamente abertas
                 ao público.
               </li>
 
               <li>
-                Caso você tenha mais de uma atividade para cadastrar envie um formulário PARA CADA
+                Caso você tenha mais de uma atividade para cadastrar, envie um formulário PARA CADA
                 ação.
               </li>
 
               <li>
-                A 6ª Semana Lixo Zero ocorrerá de forma híbrida, ou seja, as ações poderão ser
+                A 7ª Semana Lixo Zero ocorrerá de forma híbrida, ou seja, as ações poderão ser
                 presenciais ou online.
               </li>
 
@@ -73,13 +75,13 @@ const AdditionalInfoEventCreate = ({
                   Você é responsável por ORGANIZAR, DIVULGAR E REALIZAR a sua atividade cadastrada.
                 </span>{' '}
                 O Coletivo Lixo Zero de Caxias do Sul oferece suporte e ajuda na divulgação das
-                ações cadastradas na programação, porém não as executa
+                ações cadastradas na programação, porém não as executa.
               </li>
 
               <li>
                 Após preencher sua inscrição,{' '}
                 <mark className="bg-brand-warning/40">
-                  você será informado através do email cadastrado
+                  você será informado através do e-mail cadastrado
                 </mark>{' '}
                 sobre a confirmação da sua inscrição e receberá informações para a divulgação da sua
                 ação (templates de cards e materiais para divulgação) e outras orientações

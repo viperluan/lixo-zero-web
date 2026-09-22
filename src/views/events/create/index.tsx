@@ -119,8 +119,8 @@ const ActionContainer = () => {
       .date()
       .required('É necessário selecionar uma data e hora para realização da atividade.')
       .test('is-valid-date', 'Data fora do intervalo permitido', (value) => {
-        const minDate = moment(`${moment().year()}-10-17`).format('YYYY-MM-DD');
-        const maxDate = moment(`${moment().year()}-10-26`).format('YYYY-MM-DD');
+        const minDate = moment(`${moment().year()}-11-07`).format('YYYY-MM-DD');
+        const maxDate = moment(`${moment().year()}-11-15`).format('YYYY-MM-DD');
         const recievedDate = moment(value).format('YYYY-MM-DD');
 
         return moment(recievedDate).isBetween(minDate, maxDate, undefined, '[]');
@@ -396,8 +396,8 @@ const ActionContainer = () => {
               {/* Data da ação */}
               <FormGroup>
                 <Label htmlFor="dataDaAcao" required>
-                  Data e horário que a atividade será realizada (datas entre 17/10/
-                  {moment().year()} e 26/10/{moment().year()})
+                  Data e horário que a atividade será realizada (datas entre 07/11/
+                  {moment().year()} e 15/11/{moment().year()})
                 </Label>
 
                 <Field

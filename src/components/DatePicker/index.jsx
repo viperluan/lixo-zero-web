@@ -12,8 +12,8 @@ const DateTimePicker = ({ field, form }) => {
 
   // Função para verificar se a data está no intervalo permitido
   const isValidDate = (current) => {
-    const start = moment(`${currentYear}-10-17`);
-    const end = moment(`${currentYear}-10-26`);
+    const start = moment(`${currentYear}-11-07`);
+    const end = moment(`${currentYear}-11-15`);
     return current.isBetween(start, end, 'day', '[]');
   };
 
@@ -64,7 +64,7 @@ const DateTimePicker = ({ field, form }) => {
       value={value}
       inputProps={{ id: 'dataDaAcao' }}
       isValidDate={isValidDate}
-      initialViewDate={moment(`${currentYear}-10-18`)}
+      initialViewDate={moment(`${currentYear}-11-07`)}
       onChange={handleDateChange}
       locale="pt-br"
       dateFormat="DD/MM/YYYY"
