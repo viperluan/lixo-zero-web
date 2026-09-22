@@ -5,6 +5,7 @@ import { EventsContainer } from '~views/events';
 import { UsersContainer } from '~views/users';
 import { PartnersContainer } from '~views/partners';
 import { ActionContainer } from '~views/events/create';
+import { ActionCreateSuccess } from '~views/events/create/success';
 import { ActionCalendar } from '~views/events/schedule';
 import { PartnersCreateContainer } from '~views/partners/create';
 import { QuotasContainer } from '~views/quotas';
@@ -30,6 +31,13 @@ const routes = [
     name: 'Ações',
     icon: 'ni ni-bullet-list-67 text-red',
     component: <ActionContainer />,
+    layout: '/auth',
+  },
+  {
+    path: '/events/create/success',
+    name: 'Ações',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: <ActionCreateSuccess />,
     layout: '/auth',
   },
   {

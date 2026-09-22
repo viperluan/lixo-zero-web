@@ -25,13 +25,23 @@ interface InvalidProp {
   invalid?: boolean;
 }
 
+const RequiredMark = () => (
+  <span aria-hidden="true" className="ml-0.5 text-brand-danger">
+    *
+  </span>
+);
+
 const FormGroup = ({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div className={cn('mb-5', className)} {...props}>
     {children}
   </div>
 );
 
-const Label = ({ className, children, ...props }: LabelHTMLAttributes<HTMLLabelElement>) => (
+type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
+  required?: boolean;
+};
+
+const Label = ({ className, children, required, ...props }: LabelProps) => (
   <label
     className={cn(
       'block mb-1.5 font-condensed text-sm font-semibold uppercase tracking-wide text-brand-dark',
@@ -40,6 +50,7 @@ const Label = ({ className, children, ...props }: LabelHTMLAttributes<HTMLLabelE
     {...props}
   >
     {children}
+    {required && <RequiredMark />}
   </label>
 );
 
@@ -63,7 +74,12 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & InvalidProp;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ invalid = false, className, ...props }, ref) => (
-    <input ref={ref} className={cn(CONTROL_BASE, controlState(invalid), className)} {...props} />
+    <input
+      ref={ref}
+      className={cn(CONTROL_BASE, controlState(invalid), className)}
+      {...props}
+      aria-invalid={invalid || undefined}
+    />
   )
 );
 Input.displayName = 'Input';
@@ -77,6 +93,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       rows={rows}
       className={cn(CONTROL_BASE, 'resize-none', controlState(invalid), className)}
       {...props}
+      aria-invalid={invalid || undefined}
     />
   )
 );
@@ -95,6 +112,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         className
       )}
       {...props}
+      aria-invalid={invalid || undefined}
     >
       {children}
     </select>
@@ -107,7 +125,7 @@ export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, In
 }
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, invalid = false, className, id, ...props }, ref) => (
+  ({ label, invalid = false, className, id, required, ...props }, ref) => (
     <div className={cn('flex items-start gap-3', className)}>
       <input
         ref={ref}
@@ -119,10 +137,12 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           invalid ? 'border-brand-danger' : 'border-gray-300'
         )}
         {...props}
+        aria-invalid={invalid || undefined}
       />
       {label && (
         <label htmlFor={id} className="cursor-pointer text-sm leading-relaxed text-brand-dark">
           {label}
+          {required && <RequiredMark />}
         </label>
       )}
     </div>

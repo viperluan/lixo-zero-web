@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 export interface CollapseProps extends PropsWithChildren {
   isOpen: boolean;
@@ -11,11 +11,18 @@ export interface CollapseProps extends PropsWithChildren {
  */
 const Collapse = ({ isOpen, children }: CollapseProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
+  const primeiraRenderizacao = useRef(true);
   const [height, setHeight] = useState<number | 'auto'>(isOpen ? 'auto' : 0);
 
   useEffect(() => {
     const element = contentRef.current;
     if (!element) return;
+
+    if (primeiraRenderizacao.current) {
+      primeiraRenderizacao.current = false;
+      setHeight(isOpen ? 'auto' : 0);
+      return;
+    }
 
     if (!isOpen) {
       setHeight(element.scrollHeight);
@@ -36,6 +43,7 @@ const Collapse = ({ isOpen, children }: CollapseProps) => {
       style={{ height, overflow: height === 'auto' ? 'visible' : 'hidden' }}
       className="transition-[height] duration-300 ease-in-out"
       aria-hidden={!isOpen}
+      {...(isOpen ? {} : ({ inert: '' } as HTMLAttributes<HTMLDivElement>))}
     >
       <div ref={contentRef}>{children}</div>
     </div>

@@ -3,7 +3,7 @@ import { listarEnumerados } from '~/Enumerados';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
 import moment, { Moment } from '~/lib/moment';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import InputMask, { Props } from 'react-input-mask';
 import { LoadingOverlay } from '~components/Loading';
@@ -30,7 +30,7 @@ import {
 } from '~components/ui';
 
 import * as yup from 'yup';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form, ErrorMessage, type FormikProps } from 'formik';
 
 type Categoria = {
   id: string;
@@ -71,15 +71,478 @@ const CampoErro = ({ name }: { name: string }) => (
   <ErrorMessage name={name}>{(mensagem) => <FieldError>{mensagem}</FieldError>}</ErrorMessage>
 );
 
+const ORDEM_CAMPOS: (keyof DadosFormik)[] = [
+  'nomeDoOrganizador',
+  'numeroDoWhatsapp',
+  'tituloDaAtividade',
+  'descricaoDaAtividade',
+  'tipoDaAtividade',
+  'dataDaAcao',
+  'formaDeRealizacaoAtividade',
+  'linkDeDivulgacaoAcessoDoEvento',
+  'nomeDoLocalDoEvento',
+  'enderecoDoLocalDoEvento',
+  'informacoesDeOndeOcorreraOEvento',
+  'linkParaInscricao',
+  'tipoDePublicoEvento',
+  'descricaoDivulgacaoEvento',
+  'numeroDeOrganizadores',
+  'termoDeCompromisso',
+];
+
+const CLASSE_TITULO_BLOCO =
+  'mb-4 font-condensed text-sm font-semibold uppercase tracking-wide text-brand-forest';
+
+type FormularioCadastroAcaoProps = FormikProps<DadosFormik> & {
+  listaDeCategorias: Categoria[];
+};
+
+const FormularioCadastroAcao = ({
+  values,
+  errors,
+  touched,
+  handleChange,
+  handleBlur,
+  submitCount,
+  setFieldValue,
+  listaDeCategorias,
+}: FormularioCadastroAcaoProps) => {
+  const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
+  const listaTipoPublico = listarEnumerados(TipoPublico);
+  const formaAnterior = useRef(values.formaDeRealizacaoAtividade);
+  const submitCountVisto = useRef(submitCount);
+  const errosRef = useRef(errors);
+  errosRef.current = errors;
+
+  const mostraLink =
+    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online ||
+    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Hibrida;
+  const mostraLocal =
+    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Presencial ||
+    values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Hibrida;
+  const exibirRevisao = submitCount > 0 && Object.keys(errors).length > 0;
+
+  useEffect(() => {
+    const anterior = formaAnterior.current;
+    const atual = values.formaDeRealizacaoAtividade;
+    if (anterior === atual) return;
+
+    formaAnterior.current = atual;
+
+    const exigeLink = atual === FormaRealizacaoAcao.Online || atual === FormaRealizacaoAcao.Hibrida;
+    const exigeLocal =
+      atual === FormaRealizacaoAcao.Presencial || atual === FormaRealizacaoAcao.Hibrida;
+
+    if (!exigeLink) setFieldValue('linkDeDivulgacaoAcessoDoEvento', '');
+
+    if (!exigeLocal) {
+      setFieldValue('nomeDoLocalDoEvento', '');
+      setFieldValue('enderecoDoLocalDoEvento', '');
+      setFieldValue('informacoesDeOndeOcorreraOEvento', '');
+    }
+  }, [values.formaDeRealizacaoAtividade, setFieldValue]);
+
+  useEffect(() => {
+    if (submitCount === submitCountVisto.current) return;
+    submitCountVisto.current = submitCount;
+
+    const erros = errosRef.current;
+    const nome = ORDEM_CAMPOS.find(
+      (campo) => erros[campo] && document.getElementById(`campo-${campo}`)
+    );
+    if (!nome) return;
+
+    const container = document.getElementById(`campo-${nome}`);
+    if (!container) return;
+
+    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    const controle = container.querySelector<HTMLElement>('input, select, textarea');
+    if (controle) {
+      controle.focus();
+      return;
+    }
+
+    container.tabIndex = -1;
+    container.focus();
+  }, [submitCount]);
+
+  return (
+    <Form>
+      <Card overflowClip={false}>
+        <CardHeader className="space-y-5">
+          <div>
+            <CardTitle>Inscrição de ação</CardTitle>
+            <p className="text-sm text-gray-500">Semana Lixo Zero Caxias do Sul</p>
+          </div>
+
+          <AdditionalInfoEventCreate />
+        </CardHeader>
+
+        <CardBody>
+          {exibirRevisao && (
+            <p
+              role="alert"
+              className="mb-5 rounded-lg border border-brand-danger/40 bg-brand-danger/10 px-4 py-3 text-sm font-medium text-brand-danger"
+            >
+              Revise os campos marcados.
+            </p>
+          )}
+
+          <HelpText className="mb-5">Campos com * são obrigatórios</HelpText>
+
+          <h3 className={CLASSE_TITULO_BLOCO}>Quem organiza</h3>
+
+          <FormGroup id="campo-nomeDoOrganizador">
+            <Label htmlFor="nomeDoOrganizador" required>
+              Nome do organizador da ação
+            </Label>
+
+            <HelpText>
+              Empresa/Instituição/Grupo que você representa. Se for &apos;pessoa física&apos; insira
+              seu nome
+            </HelpText>
+
+            <Input
+              type="text"
+              id="nomeDoOrganizador"
+              name="nomeDoOrganizador"
+              autoComplete="on"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.nomeDoOrganizador && !!errors.nomeDoOrganizador}
+            />
+
+            <CampoErro name="nomeDoOrganizador" />
+          </FormGroup>
+
+          <FormGroup id="campo-numeroDoWhatsapp">
+            <Label htmlFor="numeroDoWhatsapp" required>
+              Whatsapp do responsável pela ação
+            </Label>
+
+            <InputMask mask="(99) 99999-9999" onChange={handleChange} onBlur={handleBlur}>
+              {
+                ((inputProps: Props) => (
+                  <Input
+                    {...inputProps}
+                    type="text"
+                    id="numeroDoWhatsapp"
+                    name="numeroDoWhatsapp"
+                    autoComplete="tel"
+                    placeholder="(99) 99999-9999"
+                    invalid={touched.numeroDoWhatsapp && !!errors.numeroDoWhatsapp}
+                  />
+                )) as unknown as ReactNode
+              }
+            </InputMask>
+
+            <CampoErro name="numeroDoWhatsapp" />
+          </FormGroup>
+
+          <h3 className={`${CLASSE_TITULO_BLOCO} mt-8`}>A atividade</h3>
+
+          <FormGroup id="campo-tituloDaAtividade">
+            <Label htmlFor="tituloDaAtividade" required>
+              Título da atividade para divulgação na programação
+            </Label>
+
+            <HelpText>
+              Ex: Webinar sobre coleta seletiva / Live: Compostagem na Prática / Oficina de
+              receitas....
+            </HelpText>
+
+            <Input
+              type="text"
+              id="tituloDaAtividade"
+              name="tituloDaAtividade"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.tituloDaAtividade && !!errors.tituloDaAtividade}
+            />
+
+            <CampoErro name="tituloDaAtividade" />
+          </FormGroup>
+
+          <FormGroup id="campo-descricaoDaAtividade">
+            <Label htmlFor="descricaoDaAtividade" required>
+              Descrição resumida da atividade (o que será falado / feito?)
+            </Label>
+
+            <Textarea
+              id="descricaoDaAtividade"
+              name="descricaoDaAtividade"
+              rows={5}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.descricaoDaAtividade && !!errors.descricaoDaAtividade}
+            />
+
+            <CampoErro name="descricaoDaAtividade" />
+          </FormGroup>
+
+          <FormGroup id="campo-tipoDaAtividade">
+            <Label htmlFor="tipoDaAtividade" required>
+              Tipo da atividade
+            </Label>
+
+            <Field
+              as={Select}
+              id="tipoDaAtividade"
+              name="tipoDaAtividade"
+              invalid={touched.tipoDaAtividade && !!errors.tipoDaAtividade}
+            >
+              <option value="">Selecione uma opção</option>
+              {listaDeCategorias.map(({ id, descricao }) => (
+                <option key={id} value={id}>
+                  {descricao}
+                </option>
+              ))}
+            </Field>
+
+            <CampoErro name="tipoDaAtividade" />
+          </FormGroup>
+
+          <FormGroup id="campo-dataDaAcao">
+            <Label htmlFor="dataDaAcao" required>
+              Data e horário
+            </Label>
+
+            <HelpText>Entre 7 e 15 de novembro de 2026.</HelpText>
+
+            <Field name="dataDaAcao" component={DateTimePicker} />
+
+            {touched.dataDaAcao && errors.dataDaAcao && (
+              <FieldError>{errors.dataDaAcao as string}</FieldError>
+            )}
+          </FormGroup>
+
+          <h3 className={`${CLASSE_TITULO_BLOCO} mt-8`}>Onde acontece</h3>
+
+          <FormGroup id="campo-formaDeRealizacaoAtividade">
+            <Label htmlFor="formaDeRealizacaoAtividade" required>
+              Forma de realização da atividade
+            </Label>
+
+            <Field
+              as={Select}
+              id="formaDeRealizacaoAtividade"
+              name="formaDeRealizacaoAtividade"
+              invalid={touched.formaDeRealizacaoAtividade && !!errors.formaDeRealizacaoAtividade}
+            >
+              <option value="">Selecione uma opção</option>
+              {listaFormaAcao.map((forma) => (
+                <option key={forma.value} value={forma.value}>
+                  {forma.label}
+                </option>
+              ))}
+            </Field>
+
+            <CampoErro name="formaDeRealizacaoAtividade" />
+
+            {values.formaDeRealizacaoAtividade === '' && (
+              <HelpText>Escolha a forma para informar o link ou o local.</HelpText>
+            )}
+          </FormGroup>
+
+          {mostraLink && (
+            <FormGroup id="campo-linkDeDivulgacaoAcessoDoEvento">
+              <Label htmlFor="linkDeDivulgacaoAcessoDoEvento" required>
+                Link de divulgação de acesso ao evento
+              </Label>
+
+              <Input
+                type="text"
+                id="linkDeDivulgacaoAcessoDoEvento"
+                name="linkDeDivulgacaoAcessoDoEvento"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                invalid={
+                  touched.linkDeDivulgacaoAcessoDoEvento && !!errors.linkDeDivulgacaoAcessoDoEvento
+                }
+              />
+
+              <CampoErro name="linkDeDivulgacaoAcessoDoEvento" />
+            </FormGroup>
+          )}
+
+          {mostraLocal && (
+            <>
+              <FormGroup id="campo-nomeDoLocalDoEvento">
+                <Label htmlFor="nomeDoLocalDoEvento" required>
+                  Nome do local do evento
+                </Label>
+
+                <Input
+                  type="text"
+                  id="nomeDoLocalDoEvento"
+                  name="nomeDoLocalDoEvento"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  invalid={touched.nomeDoLocalDoEvento && !!errors.nomeDoLocalDoEvento}
+                />
+
+                <CampoErro name="nomeDoLocalDoEvento" />
+              </FormGroup>
+
+              <FormGroup id="campo-enderecoDoLocalDoEvento">
+                <Label htmlFor="enderecoDoLocalDoEvento" required>
+                  Endereço do local do evento
+                </Label>
+
+                <Input
+                  type="text"
+                  id="enderecoDoLocalDoEvento"
+                  name="enderecoDoLocalDoEvento"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  invalid={touched.enderecoDoLocalDoEvento && !!errors.enderecoDoLocalDoEvento}
+                />
+
+                <CampoErro name="enderecoDoLocalDoEvento" />
+              </FormGroup>
+
+              <FormGroup id="campo-informacoesDeOndeOcorreraOEvento">
+                <Label htmlFor="informacoesDeOndeOcorreraOEvento" required>
+                  Informações sobre como ocorrerá o evento
+                </Label>
+
+                <Textarea
+                  id="informacoesDeOndeOcorreraOEvento"
+                  name="informacoesDeOndeOcorreraOEvento"
+                  rows={5}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  invalid={
+                    touched.informacoesDeOndeOcorreraOEvento &&
+                    !!errors.informacoesDeOndeOcorreraOEvento
+                  }
+                />
+
+                <CampoErro name="informacoesDeOndeOcorreraOEvento" />
+              </FormGroup>
+            </>
+          )}
+
+          <h3 className={`${CLASSE_TITULO_BLOCO} mt-8`}>Público e divulgação</h3>
+
+          <FormGroup id="campo-linkParaInscricao">
+            <Label htmlFor="linkParaInscricao">
+              Link para inscrição (se não tiver, deixe em branco)
+            </Label>
+
+            <HelpText>
+              Se houver necessidade de inscrição de participantes para acesso ao seu evento, informe
+              aqui como deve acontecer.
+            </HelpText>
+
+            <Input
+              type="text"
+              id="linkParaInscricao"
+              name="linkParaInscricao"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.linkParaInscricao && !!errors.linkParaInscricao}
+            />
+
+            <CampoErro name="linkParaInscricao" />
+          </FormGroup>
+
+          <FormGroup id="campo-tipoDePublicoEvento">
+            <Label htmlFor="tipoDePublicoEvento" required>
+              Evento será para o público externo ou interno?
+            </Label>
+
+            <Select
+              id="tipoDePublicoEvento"
+              name="tipoDePublicoEvento"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.tipoDePublicoEvento && !!errors.tipoDePublicoEvento}
+            >
+              <option value="">Selecione uma opção</option>
+              {listaTipoPublico.map((tipoPublico) => (
+                <option key={tipoPublico.value} value={tipoPublico.value}>
+                  {tipoPublico.label}
+                </option>
+              ))}
+            </Select>
+
+            <CampoErro name="tipoDePublicoEvento" />
+          </FormGroup>
+
+          <FormGroup id="campo-descricaoDivulgacaoEvento">
+            <Label htmlFor="descricaoDivulgacaoEvento" required>
+              Descrição resumida de como você pretende divulgar o evento
+            </Label>
+
+            <Textarea
+              id="descricaoDivulgacaoEvento"
+              name="descricaoDivulgacaoEvento"
+              rows={5}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.descricaoDivulgacaoEvento && !!errors.descricaoDivulgacaoEvento}
+            />
+
+            <CampoErro name="descricaoDivulgacaoEvento" />
+          </FormGroup>
+
+          <FormGroup id="campo-numeroDeOrganizadores">
+            <Label htmlFor="numeroDeOrganizadores" required>
+              Quantas pessoas irão organizar essa ação? (Incluindo você)
+            </Label>
+
+            <HelpText>Se não tiver certeza, insira uma média</HelpText>
+
+            <Input
+              id="numeroDeOrganizadores"
+              name="numeroDeOrganizadores"
+              type="number"
+              placeholder="Ex.: 3"
+              min="0"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.numeroDeOrganizadores && !!errors.numeroDeOrganizadores}
+            />
+
+            <CampoErro name="numeroDeOrganizadores" />
+          </FormGroup>
+
+          <FormGroup id="campo-termoDeCompromisso" className="mb-0">
+            <Checkbox
+              id="termoDeCompromisso"
+              name="termoDeCompromisso"
+              required
+              onChange={handleChange}
+              onBlur={handleBlur}
+              invalid={touched.termoDeCompromisso && !!errors.termoDeCompromisso}
+              label="Eu me comprometo a preencher o relatório de indicadores da atividade que desenvolvi ao final da SLZ. Você receberá um email com o formulário."
+            />
+
+            <CampoErro name="termoDeCompromisso" />
+          </FormGroup>
+
+          <div className="h-24 sm:hidden" aria-hidden="true" />
+        </CardBody>
+
+        <CardFooter className="sticky bottom-0 z-10 flex justify-center rounded-b-xl sm:static">
+          <Button type="submit" size="lg">
+            Cadastrar ação
+          </Button>
+        </CardFooter>
+      </Card>
+    </Form>
+  );
+};
+
 const ActionContainer = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-
-  const [additionalInfoState, setAdditionalInfoState] = useState(true);
   const [listaDeCategorias, setListaDeCategorias] = useState<Categoria[]>([]);
 
-  const valoresIniciaisFormik = {
+  const valoresIniciaisFormik: DadosFormik = {
     nomeDoOrganizador: '',
     numeroDoWhatsapp: '',
     tituloDaAtividade: '',
@@ -118,9 +581,9 @@ const ActionContainer = () => {
     dataDaAcao: yup
       .date()
       .required('É necessário selecionar uma data e hora para realização da atividade.')
-      .test('is-valid-date', 'Data fora do intervalo permitido', (value) => {
-        const minDate = moment(`${moment().year()}-10-17`).format('YYYY-MM-DD');
-        const maxDate = moment(`${moment().year()}-10-26`).format('YYYY-MM-DD');
+      .test('is-valid-date', 'A data deve estar entre 7 e 15 de novembro de 2026.', (value) => {
+        const minDate = moment(`${moment().year()}-11-07`).format('YYYY-MM-DD');
+        const maxDate = moment(`${moment().year()}-11-15`).format('YYYY-MM-DD');
         const recievedDate = moment(value).format('YYYY-MM-DD');
 
         return moment(recievedDate).isBetween(minDate, maxDate, undefined, '[]');
@@ -129,7 +592,8 @@ const ActionContainer = () => {
       .string()
       .required('É necessário selecionar uma forma de realização da atividade.'),
     linkDeDivulgacaoAcessoDoEvento: yup.string().when('formaDeRealizacaoAtividade', {
-      is: FormaRealizacaoAcao.Online,
+      is: (value: string) =>
+        value === FormaRealizacaoAcao.Online || value === FormaRealizacaoAcao.Hibrida,
       then: (schema) => schema.required('É necessário incluir um link para divulgação do evento.'),
       otherwise: (schema) => schema.notRequired(),
     }),
@@ -208,19 +672,8 @@ const ActionContainer = () => {
     const { data } = await api.post(`/acoes`, payload);
 
     if (data.id) {
-      toast.success(
-        'Recebemos a solicitação de cadastro da sua ação. Em breve você receberá um email com as informações de cadastro.',
-        {
-          autoClose: 10 * 1000, // 10 segundos
-        }
-      );
-
-      if (user.tipo === '0') {
-        navigate('/admin/events');
-        return;
-      }
-
-      navigate(`/auth/events/my-events/${user.id}`);
+      navigate('/auth/events/create/success', { state: { cadastroRealizado: true } });
+      return;
     }
 
     if (data.error) toast.error(data.error);
@@ -228,384 +681,13 @@ const ActionContainer = () => {
     setIsLoading(false);
   };
 
-  const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
-  const listaTipoPublico = listarEnumerados(TipoPublico);
-
-  const renderizaFormaDeRealizacaoAtividade = () => (
-    <>
-      <option value="">Selecione uma opção</option>
-
-      {listaFormaAcao.map((forma) => (
-        <option key={forma.value} value={forma.value}>
-          {forma.label}
-        </option>
-      ))}
-    </>
-  );
-
-  const renderizaOpcoesDeCategorias = () => (
-    <>
-      <option value="">Selecione uma opção</option>
-
-      {listaDeCategorias.map(({ id, descricao }) => (
-        <option key={id} value={id}>
-          {descricao}
-        </option>
-      ))}
-    </>
-  );
-
-  const renderizaOpcoesTipoDePublicoEvento = () => (
-    <>
-      <option value="">Selecione uma opção</option>
-
-      {listaTipoPublico.map((tipoPublico) => (
-        <option key={tipoPublico.value} value={tipoPublico.value}>
-          {tipoPublico.label}
-        </option>
-      ))}
-    </>
-  );
-
   const renderizaFormulario = () => (
     <Formik
       initialValues={valoresIniciaisFormik}
       validationSchema={schema}
       onSubmit={handleSubmitForm}
     >
-      {({ values, errors, touched, handleChange, handleBlur }) => (
-        <Form>
-          <Card>
-            <CardHeader className="space-y-5">
-              <CardTitle>INSCRIÇÃO DE AÇÃO - SEMANA LIXO ZERO CAXIAS DO SUL</CardTitle>
-
-              <AdditionalInfoEventCreate
-                collapseState={additionalInfoState}
-                handleChangeCollapseState={() => setAdditionalInfoState((prevState) => !prevState)}
-              />
-            </CardHeader>
-
-            <CardBody>
-              {/* Nome do organizador */}
-              <FormGroup>
-                <Label htmlFor="nomeDoOrganizador">Nome do organizador da ação</Label>
-
-                <HelpText>
-                  {`Empresa/Instituição/Grupo que você representa. Se for 'pessoa física' insira seu
-                nome`}
-                </HelpText>
-
-                <Input
-                  type="text"
-                  id="nomeDoOrganizador"
-                  name="nomeDoOrganizador"
-                  placeholder="Nome do responsável pela ação"
-                  autoComplete="on"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.nomeDoOrganizador && !!errors.nomeDoOrganizador}
-                />
-
-                <CampoErro name="nomeDoOrganizador" />
-              </FormGroup>
-
-              {/* Numero do whatsapp */}
-              <FormGroup>
-                <Label htmlFor="numeroDoWhatsapp">Whatsapp do responsável pela ação</Label>
-
-                <InputMask mask="(99) 99999-9999" onChange={handleChange} onBlur={handleBlur}>
-                  {
-                    ((inputProps: Props) => (
-                      <Input
-                        {...inputProps}
-                        type="text"
-                        id="numeroDoWhatsapp"
-                        name="numeroDoWhatsapp"
-                        autoComplete="tel"
-                        placeholder="(99) 99999-9999"
-                        invalid={touched.numeroDoWhatsapp && !!errors.numeroDoWhatsapp}
-                      />
-                    )) as unknown as ReactNode
-                  }
-                </InputMask>
-
-                <CampoErro name="numeroDoWhatsapp" />
-              </FormGroup>
-
-              {/* Titulo da atividade */}
-              <FormGroup>
-                <Label htmlFor="tituloDaAtividade">
-                  Título da atividade para divulgação na programação
-                </Label>
-
-                <HelpText>
-                  Ex: Webinar sobre coleta seletiva / Live: Compostagem na Prática / Oficina de
-                  receitas....
-                </HelpText>
-
-                <Input
-                  type="text"
-                  id="tituloDaAtividade"
-                  name="tituloDaAtividade"
-                  placeholder="Título da atividade"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.tituloDaAtividade && !!errors.tituloDaAtividade}
-                />
-
-                <CampoErro name="tituloDaAtividade" />
-              </FormGroup>
-
-              {/* Descrição da atividade */}
-              <FormGroup>
-                <Label htmlFor="descricaoDaAtividade">
-                  Descrição resumida da atividade (o que será falado / feito?)
-                </Label>
-
-                <HelpText>
-                  Se houver necessidade de INSCRIÇÃO de participantes para acesso ao seu evento, por
-                  favor informe aqui como deve acontecer.
-                </HelpText>
-
-                <Textarea
-                  id="descricaoDaAtividade"
-                  name="descricaoDaAtividade"
-                  placeholder="Descrição da atividade"
-                  rows={5}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.descricaoDaAtividade && !!errors.descricaoDaAtividade}
-                />
-
-                <CampoErro name="descricaoDaAtividade" />
-              </FormGroup>
-
-              {/* Tipo da atividade */}
-              <FormGroup>
-                <Label htmlFor="tipoDaAtividade">Tipo da atividade</Label>
-
-                <Field
-                  as={Select}
-                  id="tipoDaAtividade"
-                  name="tipoDaAtividade"
-                  invalid={touched.tipoDaAtividade && !!errors.tipoDaAtividade}
-                >
-                  {renderizaOpcoesDeCategorias()}
-                </Field>
-
-                <CampoErro name="tipoDaAtividade" />
-              </FormGroup>
-
-              {/* Data da ação */}
-              <FormGroup>
-                <Label htmlFor="dataDaAcao">
-                  Data e horário que a atividade será realizada (datas entre 17/10/
-                  {moment().year()} e 26/10/{moment().year()})
-                </Label>
-
-                <Field
-                  name="dataDaAcao"
-                  component={DateTimePicker}
-                  placeholder="Selecione uma data e hora"
-                />
-
-                {touched.dataDaAcao && errors.dataDaAcao && (
-                  <FieldError>{errors.dataDaAcao as string}</FieldError>
-                )}
-              </FormGroup>
-
-              {/* Forma de realização da atividade */}
-              <FormGroup>
-                <Label htmlFor="formaDeRealizacaoAtividade">Forma de realização da atividade</Label>
-
-                <Field
-                  as={Select}
-                  id="formaDeRealizacaoAtividade"
-                  name="formaDeRealizacaoAtividade"
-                  invalid={
-                    touched.formaDeRealizacaoAtividade && !!errors.formaDeRealizacaoAtividade
-                  }
-                >
-                  {renderizaFormaDeRealizacaoAtividade()}
-                </Field>
-
-                <CampoErro name="formaDeRealizacaoAtividade" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="linkDeDivulgacaoAcessoDoEvento">
-                  Link de divulgação de acesso ao evento
-                </Label>
-
-                <Input
-                  type="text"
-                  id="linkDeDivulgacaoAcessoDoEvento"
-                  name="linkDeDivulgacaoAcessoDoEvento"
-                  placeholder="Link de divulgação de acesso ao evento"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={
-                    touched.linkDeDivulgacaoAcessoDoEvento &&
-                    !!errors.linkDeDivulgacaoAcessoDoEvento
-                  }
-                />
-
-                <CampoErro name="linkDeDivulgacaoAcessoDoEvento" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="nomeDoLocalDoEvento">Nome do local do evento</Label>
-
-                <Input
-                  disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
-                  type="text"
-                  id="nomeDoLocalDoEvento"
-                  name="nomeDoLocalDoEvento"
-                  placeholder="Nome do local do evento"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.nomeDoLocalDoEvento && !!errors.nomeDoLocalDoEvento}
-                />
-
-                <CampoErro name="nomeDoLocalDoEvento" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="enderecoDoLocalDoEvento">Endereço do local do evento</Label>
-
-                <Input
-                  disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
-                  type="text"
-                  id="enderecoDoLocalDoEvento"
-                  name="enderecoDoLocalDoEvento"
-                  placeholder="Endereço do local do evento"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.enderecoDoLocalDoEvento && !!errors.enderecoDoLocalDoEvento}
-                />
-
-                <CampoErro name="enderecoDoLocalDoEvento" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="informacoesDeOndeOcorreraOEvento">
-                  Informações sobre como ocorrerá o evento
-                </Label>
-
-                <Textarea
-                  disabled={values.formaDeRealizacaoAtividade === FormaRealizacaoAcao.Online}
-                  id="informacoesDeOndeOcorreraOEvento"
-                  name="informacoesDeOndeOcorreraOEvento"
-                  placeholder="Informações sobre como ocorrerá o evento"
-                  rows={5}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={
-                    touched.informacoesDeOndeOcorreraOEvento &&
-                    !!errors.informacoesDeOndeOcorreraOEvento
-                  }
-                />
-
-                <CampoErro name="informacoesDeOndeOcorreraOEvento" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="linkParaInscricao">
-                  Link para inscrição (se não tiver, deixe em branco)
-                </Label>
-
-                <Input
-                  type="text"
-                  id="linkParaInscricao"
-                  name="linkParaInscricao"
-                  placeholder="Link para inscrição"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.linkParaInscricao && !!errors.linkParaInscricao}
-                />
-
-                <CampoErro name="linkParaInscricao" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="tipoDePublicoEvento">
-                  Evento será para o público externo ou interno?
-                </Label>
-
-                <Select
-                  id="tipoDePublicoEvento"
-                  name="tipoDePublicoEvento"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.tipoDePublicoEvento && !!errors.tipoDePublicoEvento}
-                >
-                  {renderizaOpcoesTipoDePublicoEvento()}
-                </Select>
-
-                <CampoErro name="tipoDePublicoEvento" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="descricaoDivulgacaoEvento">
-                  Descrição resumida de como você pretende divulgar o evento
-                </Label>
-
-                <Textarea
-                  id="descricaoDivulgacaoEvento"
-                  name="descricaoDivulgacaoEvento"
-                  placeholder="Descrição resumida de como você pretende divulgar o evento"
-                  rows={5}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.descricaoDivulgacaoEvento && !!errors.descricaoDivulgacaoEvento}
-                />
-
-                <CampoErro name="descricaoDivulgacaoEvento" />
-              </FormGroup>
-
-              <FormGroup>
-                <Label htmlFor="numeroDeOrganizadores">
-                  Quantas pessoas irão organizar essa ação? (Incluindo você)
-                </Label>
-
-                <HelpText>Se não tiver certeza, insira uma média</HelpText>
-
-                <Input
-                  id="numeroDeOrganizadores"
-                  name="numeroDeOrganizadores"
-                  type="number"
-                  placeholder="Número de participantes"
-                  min="0"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.numeroDeOrganizadores && !!errors.numeroDeOrganizadores}
-                />
-
-                <CampoErro name="numeroDeOrganizadores" />
-              </FormGroup>
-
-              <FormGroup className="mb-0">
-                <Checkbox
-                  id="termoDeCompromisso"
-                  name="termoDeCompromisso"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  invalid={touched.termoDeCompromisso && !!errors.termoDeCompromisso}
-                  label="Eu me comprometo a preencher o relatório de indicadores da atividade que desenvolvi ao final da SLZ. Você receberá um email com o formulário."
-                />
-
-                <CampoErro name="termoDeCompromisso" />
-              </FormGroup>
-            </CardBody>
-
-            <CardFooter className="justify-center">
-              <Button type="submit" size="lg">
-                Cadastrar ação
-              </Button>
-            </CardFooter>
-          </Card>
-        </Form>
-      )}
+      {(formik) => <FormularioCadastroAcao {...formik} listaDeCategorias={listaDeCategorias} />}
     </Formik>
   );
 

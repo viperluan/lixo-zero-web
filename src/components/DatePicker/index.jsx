@@ -12,8 +12,8 @@ const DateTimePicker = ({ field, form }) => {
 
   // Função para verificar se a data está no intervalo permitido
   const isValidDate = (current) => {
-    const start = moment(`${currentYear}-10-17`);
-    const end = moment(`${currentYear}-10-26`);
+    const start = moment(`${currentYear}-11-07`);
+    const end = moment(`${currentYear}-11-15`);
     return current.isBetween(start, end, 'day', '[]');
   };
 
@@ -26,11 +26,12 @@ const DateTimePicker = ({ field, form }) => {
   }, [value]);
 
   const handleDateChange = (date) => {
-    if (moment.isMoment(date) && isValidDate(date)) {
+    if (moment.isMoment(date) && date.isValid()) {
       setFieldValue(name, date);
-    } else {
-      setFieldValue(name, null);
+      return;
     }
+
+    setFieldValue(name, null);
   };
 
   const handleInputChange = (event) => {
@@ -38,11 +39,12 @@ const DateTimePicker = ({ field, form }) => {
     setInputValue(value);
 
     const formattedDate = moment(value, 'DD/MM/YYYY HH:mm', true);
-    if (formattedDate.isValid() && isValidDate(formattedDate)) {
+    if (formattedDate.isValid()) {
       setFieldValue(name, formattedDate);
-    } else {
-      setFieldValue(name, null);
+      return;
     }
+
+    setFieldValue(name, null);
   };
 
   const renderInput = (props, openCalendar) => (
@@ -53,7 +55,14 @@ const DateTimePicker = ({ field, form }) => {
       onFocus={openCalendar}
       placeholder="DD/MM/YYYY HH:mm"
     >
-      {(inputProps) => <Input {...inputProps} invalid={touched[name] && !!errors[name]} />}
+      {(inputProps) => (
+        <Input
+          {...inputProps}
+          id="dataDaAcao"
+          name={name}
+          invalid={touched[name] && !!errors[name]}
+        />
+      )}
     </InputMask>
   );
 
@@ -64,7 +73,7 @@ const DateTimePicker = ({ field, form }) => {
       value={value}
       inputProps={{ id: 'dataDaAcao' }}
       isValidDate={isValidDate}
-      initialViewDate={moment(`${currentYear}-10-18`)}
+      initialViewDate={moment(`${currentYear}-11-07`)}
       onChange={handleDateChange}
       locale="pt-br"
       dateFormat="DD/MM/YYYY"
