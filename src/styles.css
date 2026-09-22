@@ -72,31 +72,9 @@
 }
 
 /*
- * react-datetime e react-big-calendar trazem markup proprio e antes herdavam a
- * aparencia do Bootstrap. Sem ele, o alinhamento com a paleta da marca fica
- * aqui.
+ * react-big-calendar traz markup proprio e antes herdava a aparencia do
+ * Bootstrap. Sem ele, o alinhamento com a paleta da marca fica aqui.
  */
-.rdtPicker {
-  @apply mt-1 rounded-xl border border-brand-leaf/40 p-2 shadow-xl;
-}
-
-.rdtPicker td.rdtActive,
-.rdtPicker td.rdtActive:hover {
-  @apply bg-brand-forest text-white;
-}
-
-.rdtPicker td.rdtToday::before {
-  border-bottom-color: theme('colors.brand.forest');
-}
-
-.rdtPicker td.rdtDay:hover,
-.rdtPicker .rdtTimeToggle:hover,
-.rdtPicker th.rdtSwitch:hover,
-.rdtPicker th.rdtNext:hover,
-.rdtPicker th.rdtPrev:hover {
-  @apply rounded bg-brand-sage/20;
-}
-
 .rbc-calendar {
   @apply font-sans;
 }

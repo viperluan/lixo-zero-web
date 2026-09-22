@@ -28,13 +28,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // moment + react-big-calendar + react-datetime respondem pela maior
-        // fatia do bundle e so aparecem na agenda e no cadastro de acao. Isolar
-        // esses vendors evita reenviar tudo a cada deploy e deixa o chunk do
-        // app pequeno o bastante para ser revalidado sozinho.
+        // moment + react-big-calendar respondem pela maior fatia do bundle e
+        // so aparecem na agenda. Isolar esses vendors evita reenviar tudo a
+        // cada deploy e deixa o chunk do app pequeno o bastante para ser
+        // revalidado sozinho.
         manualChunks: {
           react: ['react', 'react-dom', 'react-router-dom'],
-          calendar: ['moment', 'react-big-calendar', 'react-datetime'],
+          calendar: ['moment', 'react-big-calendar'],
           forms: ['formik', 'yup', 'react-input-mask'],
         },
       },
