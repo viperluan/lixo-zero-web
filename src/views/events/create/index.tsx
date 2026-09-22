@@ -208,19 +208,8 @@ const ActionContainer = () => {
     const { data } = await api.post(`/acoes`, payload);
 
     if (data.id) {
-      toast.success(
-        'Recebemos a solicitação de cadastro da sua ação. Em breve você receberá um email com as informações de cadastro.',
-        {
-          autoClose: 10 * 1000, // 10 segundos
-        }
-      );
-
-      if (user.tipo === '0') {
-        navigate('/admin/events');
-        return;
-      }
-
-      navigate(`/auth/events/my-events/${user.id}`);
+      navigate('/auth/events/create/success', { state: { cadastroRealizado: true } });
+      return;
     }
 
     if (data.error) toast.error(data.error);
