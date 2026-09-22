@@ -25,13 +25,23 @@ interface InvalidProp {
   invalid?: boolean;
 }
 
+const RequiredMark = () => (
+  <span aria-hidden="true" className="ml-0.5 text-brand-danger">
+    *
+  </span>
+);
+
 const FormGroup = ({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div className={cn('mb-5', className)} {...props}>
     {children}
   </div>
 );
 
-const Label = ({ className, children, ...props }: LabelHTMLAttributes<HTMLLabelElement>) => (
+type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
+  required?: boolean;
+};
+
+const Label = ({ className, children, required, ...props }: LabelProps) => (
   <label
     className={cn(
       'block mb-1.5 font-condensed text-sm font-semibold uppercase tracking-wide text-brand-dark',
@@ -40,6 +50,7 @@ const Label = ({ className, children, ...props }: LabelHTMLAttributes<HTMLLabelE
     {...props}
   >
     {children}
+    {required && <RequiredMark />}
   </label>
 );
 
@@ -107,7 +118,7 @@ export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, In
 }
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, invalid = false, className, id, ...props }, ref) => (
+  ({ label, invalid = false, className, id, required, ...props }, ref) => (
     <div className={cn('flex items-start gap-3', className)}>
       <input
         ref={ref}
@@ -123,6 +134,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       {label && (
         <label htmlFor={id} className="cursor-pointer text-sm leading-relaxed text-brand-dark">
           {label}
+          {required && <RequiredMark />}
         </label>
       )}
     </div>
