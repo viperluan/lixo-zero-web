@@ -1,5 +1,4 @@
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-datetime/css/react-datetime.css';
 import './styles.css';
 
 import { StrictMode } from 'react';

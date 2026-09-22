@@ -2,7 +2,12 @@ import { FormaRealizacaoAcao, TipoPublico } from '~/Enumerados';
 import { listarEnumerados } from '~/Enumerados';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
-import moment, { Moment } from '~/lib/moment';
+import { type Moment } from '~/lib/moment';
+import {
+  mensagemDataForaDoPeriodo,
+  rotuloPeriodoSlz,
+  estaNoPeriodoSlz,
+} from '~/lib/periodoSlz';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import InputMask, { Props } from 'react-input-mask';
@@ -169,7 +174,7 @@ const FormularioCadastroAcao = ({
 
   return (
     <Form>
-      <Card overflowClip={false}>
+      <Card>
         <CardHeader className="space-y-5">
           <div>
             <CardTitle>Inscrição de ação</CardTitle>
@@ -308,7 +313,7 @@ const FormularioCadastroAcao = ({
               Data e horário
             </Label>
 
-            <HelpText>Entre 7 e 15 de novembro de 2026.</HelpText>
+            <HelpText>{rotuloPeriodoSlz}</HelpText>
 
             <Field name="dataDaAcao" component={DateTimePicker} />
 
@@ -581,13 +586,7 @@ const ActionContainer = () => {
     dataDaAcao: yup
       .date()
       .required('É necessário selecionar uma data e hora para realização da atividade.')
-      .test('is-valid-date', 'A data deve estar entre 7 e 15 de novembro de 2026.', (value) => {
-        const minDate = moment(`${moment().year()}-11-07`).format('YYYY-MM-DD');
-        const maxDate = moment(`${moment().year()}-11-15`).format('YYYY-MM-DD');
-        const recievedDate = moment(value).format('YYYY-MM-DD');
-
-        return moment(recievedDate).isBetween(minDate, maxDate, undefined, '[]');
-      }),
+      .test('is-valid-date', mensagemDataForaDoPeriodo, (value) => estaNoPeriodoSlz(value)),
     formaDeRealizacaoAtividade: yup
       .string()
       .required('É necessário selecionar uma forma de realização da atividade.'),
