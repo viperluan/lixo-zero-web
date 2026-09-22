@@ -74,7 +74,12 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & InvalidProp;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ invalid = false, className, ...props }, ref) => (
-    <input ref={ref} className={cn(CONTROL_BASE, controlState(invalid), className)} {...props} />
+    <input
+      ref={ref}
+      className={cn(CONTROL_BASE, controlState(invalid), className)}
+      {...props}
+      aria-invalid={invalid || undefined}
+    />
   )
 );
 Input.displayName = 'Input';
@@ -88,6 +93,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       rows={rows}
       className={cn(CONTROL_BASE, 'resize-none', controlState(invalid), className)}
       {...props}
+      aria-invalid={invalid || undefined}
     />
   )
 );
@@ -106,6 +112,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         className
       )}
       {...props}
+      aria-invalid={invalid || undefined}
     >
       {children}
     </select>
@@ -130,6 +137,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           invalid ? 'border-brand-danger' : 'border-gray-300'
         )}
         {...props}
+        aria-invalid={invalid || undefined}
       />
       {label && (
         <label htmlFor={id} className="cursor-pointer text-sm leading-relaxed text-brand-dark">

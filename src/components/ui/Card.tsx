@@ -3,10 +3,15 @@ import { cn } from './cn';
 
 type DivProps = HTMLAttributes<HTMLDivElement>;
 
-const Card = ({ className, children, ...props }: DivProps) => (
+type CardProps = DivProps & {
+  overflowClip?: boolean;
+};
+
+const Card = ({ className, children, overflowClip = true, ...props }: CardProps) => (
   <div
     className={cn(
-      'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden',
+      'bg-white rounded-xl shadow-sm border border-gray-100',
+      overflowClip && 'overflow-hidden',
       className
     )}
     {...props}
