@@ -8,11 +8,12 @@ import type { Edicao } from '~/lib/edicoes';
 import {
   diasDoPeriodo,
   estaNoPeriodo,
-  formatarDataCivil,
+  hojeCivil,
   mensagemDataForaDoPeriodo,
-  mensagemPeriodoRealizacao,
-  mensagemPrazoCadastro,
-  rotuloPeriodo,
+  mensagemPeriodoAcoesEdicao,
+  mensagemPrazoInscricaoEncerrado,
+  mensagemPrazoInscricaoFuturo,
+  mensagemPrazoInscricaoPausado,
   rotuloPeriodoSlz,
 } from '~/lib/periodoSlz';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
@@ -718,44 +719,70 @@ const ActionContainer = () => {
     </Formik>
   );
 
-  const renderizaMensagemCadastroFechado = () => (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle>
-          {semVigente
-            ? 'A programação desta edição ainda não está no ar.'
-            : 'O cadastro de ações desta edição está fechado'}
-        </CardTitle>
-      </CardHeader>
+  const renderizaMensagemCadastroFechado = () => {
+    const hoje = hojeCivil();
+    const cadastroAindaNaoAbriu = Boolean(
+      edicao && hoje < edicao.data_inicio_cadastro
+    );
+    const cadastroJaEncerrou = Boolean(edicao && hoje > edicao.data_fim_cadastro);
 
-      <CardBody className="space-y-6 px-6 py-10 text-center sm:px-12">
-        {edicao ? (
-          <>
-            <p className="text-lg text-gray-700">
-              {mensagemPrazoCadastro(edicao.data_fim_cadastro)}
+    const titulo = semVigente
+      ? 'A programação desta edição ainda não está no ar.'
+      : cadastroAindaNaoAbriu
+        ? `Inscrições da edição ${edicao?.ano} ainda não começaram`
+        : cadastroJaEncerrou
+          ? `Inscrições da edição ${edicao?.ano} encerradas`
+          : `Inscrições da edição ${edicao?.ano} encerradas no momento`;
+
+    const prazo = edicao
+      ? cadastroAindaNaoAbriu
+        ? mensagemPrazoInscricaoFuturo(edicao.data_inicio_cadastro, edicao.data_fim_cadastro)
+        : cadastroJaEncerrou
+          ? mensagemPrazoInscricaoEncerrado(edicao.data_inicio_cadastro, edicao.data_fim_cadastro)
+          : mensagemPrazoInscricaoPausado(edicao.data_fim_cadastro)
+      : null;
+
+    return (
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle>{titulo}</CardTitle>
+        </CardHeader>
+
+        <CardBody className="space-y-5 px-6 py-10 text-center sm:px-12">
+          {edicao && prazo ? (
+            <>
+              <p className="text-lg text-brand-dark">{prazo}</p>
+              <p className="text-base text-brand-dark/70">
+                {mensagemPeriodoAcoesEdicao(
+                  edicao.data_inicio_realizacao,
+                  edicao.data_fim_realizacao
+                )}
+              </p>
+            </>
+          ) : (
+            <p className="text-lg text-brand-dark">
+              Assim que a edição vigente for publicada, o formulário de cadastro volta a
+              aparecer aqui.
             </p>
-            <p className="text-lg text-gray-700">
-              {mensagemPeriodoRealizacao(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}
+          )}
+
+          {edicao && !cadastroAindaNaoAbriu && (
+            <p className="mx-auto max-w-lg rounded-lg border border-brand-leaf/40 bg-brand-cream/70 px-4 py-3 text-sm text-brand-dark">
+              Se a sua ação já foi inscrita, as orientações chegam no e-mail cadastrado.
             </p>
-            <p className="text-sm text-gray-500">
-              Inscrições de {formatarDataCivil(edicao.data_inicio_cadastro)} a{' '}
-              {formatarDataCivil(edicao.data_fim_cadastro)}. Ações entre{' '}
-              {rotuloPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}.
-            </p>
-          </>
-        ) : (
-          <p className="text-lg text-gray-700">
-            Assim que a edição vigente for publicada, o formulário de cadastro volta a aparecer
-            aqui.
-          </p>
+          )}
+        </CardBody>
+
+        {edicao && (
+          <CardFooter className="flex justify-center">
+            <Button size="lg" variant="outline" onClick={() => navigate('/auth/schedule')}>
+              Ver a programação
+            </Button>
+          </CardFooter>
         )}
-
-        <p className="text-lg text-gray-700">
-          Se você já inscreveu sua ação, confira seu e-mail cadastrado para orientações.
-        </p>
-      </CardBody>
-    </Card>
-  );
+      </Card>
+    );
+  };
 
   const cadastroAberto = Boolean(edicao?.cadastro_aberto);
 

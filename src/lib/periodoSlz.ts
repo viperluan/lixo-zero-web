@@ -61,11 +61,35 @@ export const rotuloPeriodoSlz = (inicio: string, fim: string) =>
 export const mensagemDataForaDoPeriodo = (inicio: string, fim: string) =>
   `A data deve estar entre ${rotuloPeriodo(inicio, fim)}.`;
 
+export const dataPorExtenso = (yyyyMmDd: string) =>
+  formatarDataCivil(yyyyMmDd, 'D [de] MMMM [de] YYYY');
+
 export const mensagemPrazoCadastro = (fim: string) =>
   `O cadastro desta edição vai até ${formatarDataCivil(fim)}.`;
 
 export const mensagemPeriodoRealizacao = (inicio: string, fim: string) =>
   `A ação precisa ocorrer entre ${rotuloPeriodo(inicio, fim)}.`;
+
+/** Tela de cadastro fechado: prazo no passado, sem repetir a regra do campo. */
+export const mensagemPrazoInscricaoEncerrado = (inicio: string, fim: string) => {
+  const a = parseDataCivil(inicio);
+  const b = parseDataCivil(fim);
+
+  if (a.isValid() && b.isValid() && a.isSame(b, 'day')) {
+    return `O prazo terminou em ${dataPorExtenso(fim)}.`;
+  }
+
+  return `O prazo foi de ${rotuloPeriodo(inicio, fim)}.`;
+};
+
+export const mensagemPrazoInscricaoFuturo = (inicio: string, fim: string) =>
+  `O prazo é de ${rotuloPeriodo(inicio, fim)}.`;
+
+export const mensagemPrazoInscricaoPausado = (fim: string) =>
+  `O prazo vai até ${dataPorExtenso(fim)}.`;
+
+export const mensagemPeriodoAcoesEdicao = (inicio: string, fim: string) =>
+  `As ações desta edição acontecem de ${rotuloPeriodo(inicio, fim)}.`;
 
 export const diasDoPeriodo = (inicio: string, fim: string): Moment[] => {
   const dias: Moment[] = [];
