@@ -2,19 +2,26 @@ import { FormaRealizacaoAcao, TipoPublico } from '~/Enumerados';
 import { listarEnumerados } from '~/Enumerados';
 import { DateTimePicker } from '~components/DatePicker';
 import { useAuth } from '~context/AuthContext';
+import { useEdicao } from '~context/EdicaoContext';
 import { type Moment } from '~/lib/moment';
+import type { Edicao } from '~/lib/edicoes';
 import {
+  diasDoPeriodo,
+  estaNoPeriodo,
+  formatarDataCivil,
   mensagemDataForaDoPeriodo,
+  mensagemPeriodoRealizacao,
+  mensagemPrazoCadastro,
+  rotuloPeriodo,
   rotuloPeriodoSlz,
-  estaNoPeriodoSlz,
 } from '~/lib/periodoSlz';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import InputMask, { Props } from 'react-input-mask';
 import { LoadingOverlay } from '~components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
-import api from '~api';
+import api, { mensagemErroApi } from '~api';
 import AdditionalInfoEventCreate from '~components/AdditionalInfoEventCreate';
 import {
   Button,
@@ -67,8 +74,6 @@ type DadosFormik = {
   termoDeCompromisso: boolean;
 };
 
-const INSCRICOES_ENCERRADAS = false;
-
 // O ErrorMessage do Formik so renderiza quando o campo foi tocado e tem erro,
 // entao envolve-lo no FieldError mantem o espacamento fora do fluxo quando nao
 // ha mensagem.
@@ -100,6 +105,7 @@ const CLASSE_TITULO_BLOCO =
 
 type FormularioCadastroAcaoProps = FormikProps<DadosFormik> & {
   listaDeCategorias: Categoria[];
+  edicao: Edicao;
 };
 
 const FormularioCadastroAcao = ({
@@ -111,6 +117,7 @@ const FormularioCadastroAcao = ({
   submitCount,
   setFieldValue,
   listaDeCategorias,
+  edicao,
 }: FormularioCadastroAcaoProps) => {
   const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
   const listaTipoPublico = listarEnumerados(TipoPublico);
@@ -181,7 +188,7 @@ const FormularioCadastroAcao = ({
             <p className="text-sm text-gray-500">Semana Lixo Zero Caxias do Sul</p>
           </div>
 
-          <AdditionalInfoEventCreate />
+          <AdditionalInfoEventCreate edicao={edicao} />
         </CardHeader>
 
         <CardBody>
@@ -313,9 +320,15 @@ const FormularioCadastroAcao = ({
               Data e horário
             </Label>
 
-            <HelpText>{rotuloPeriodoSlz}</HelpText>
+            <HelpText>
+              {rotuloPeriodoSlz(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}
+            </HelpText>
 
-            <Field name="dataDaAcao" component={DateTimePicker} />
+            <Field
+              name="dataDaAcao"
+              component={DateTimePicker}
+              dias={diasDoPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}
+            />
 
             {touched.dataDaAcao && errors.dataDaAcao && (
               <FieldError>{errors.dataDaAcao as string}</FieldError>
@@ -541,32 +554,8 @@ const FormularioCadastroAcao = ({
   );
 };
 
-const ActionContainer = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-  const [listaDeCategorias, setListaDeCategorias] = useState<Categoria[]>([]);
-
-  const valoresIniciaisFormik: DadosFormik = {
-    nomeDoOrganizador: '',
-    numeroDoWhatsapp: '',
-    tituloDaAtividade: '',
-    descricaoDaAtividade: '',
-    tipoDaAtividade: '',
-    dataDaAcao: null,
-    formaDeRealizacaoAtividade: '',
-    linkDeDivulgacaoAcessoDoEvento: '',
-    nomeDoLocalDoEvento: '',
-    enderecoDoLocalDoEvento: '',
-    informacoesDeOndeOcorreraOEvento: '',
-    linkParaInscricao: '',
-    tipoDePublicoEvento: '',
-    descricaoDivulgacaoEvento: '',
-    numeroDeOrganizadores: '',
-    termoDeCompromisso: false,
-  };
-
-  const schema = yup.object().shape({
+const criarSchema = (edicao: Edicao) =>
+  yup.object().shape({
     nomeDoOrganizador: yup.string().required('É necessário informar um nome de organizador.'),
     numeroDoWhatsapp: yup
       .string()
@@ -586,7 +575,11 @@ const ActionContainer = () => {
     dataDaAcao: yup
       .date()
       .required('É necessário selecionar uma data e hora para realização da atividade.')
-      .test('is-valid-date', mensagemDataForaDoPeriodo, (value) => estaNoPeriodoSlz(value)),
+      .test(
+        'is-valid-date',
+        mensagemDataForaDoPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao),
+        (value) => estaNoPeriodo(value, edicao.data_inicio_realizacao, edicao.data_fim_realizacao)
+      ),
     formaDeRealizacaoAtividade: yup
       .string()
       .required('É necessário selecionar uma forma de realização da atividade.'),
@@ -629,6 +622,33 @@ const ActionContainer = () => {
       .boolean()
       .oneOf([true], 'Você deve aceitar o termo de compromisso para cadastrar a ação.'),
   });
+
+const ActionContainer = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { edicao, loading: carregandoEdicao, semVigente } = useEdicao();
+  const [isLoading, setIsLoading] = useState(false);
+  const [listaDeCategorias, setListaDeCategorias] = useState<Categoria[]>([]);
+  const schema = useMemo(() => (edicao ? criarSchema(edicao) : null), [edicao]);
+
+  const valoresIniciaisFormik: DadosFormik = {
+    nomeDoOrganizador: '',
+    numeroDoWhatsapp: '',
+    tituloDaAtividade: '',
+    descricaoDaAtividade: '',
+    tipoDaAtividade: '',
+    dataDaAcao: null,
+    formaDeRealizacaoAtividade: '',
+    linkDeDivulgacaoAcessoDoEvento: '',
+    nomeDoLocalDoEvento: '',
+    enderecoDoLocalDoEvento: '',
+    informacoesDeOndeOcorreraOEvento: '',
+    linkParaInscricao: '',
+    tipoDePublicoEvento: '',
+    descricaoDivulgacaoEvento: '',
+    numeroDeOrganizadores: '',
+    termoDeCompromisso: false,
+  };
 
   const fetchCategories = async () => {
     const { data }: AxiosResponse<CategoriasResponseData> = await api.get(
@@ -675,47 +695,79 @@ const ActionContainer = () => {
       return;
     }
 
-    if (data.error) toast.error(data.error);
+    const erro = mensagemErroApi(data);
+
+    if (erro) toast.error(erro);
 
     setIsLoading(false);
   };
 
-  const renderizaFormulario = () => (
+  const renderizaFormulario = (edicaoAberta: Edicao) => (
     <Formik
       initialValues={valoresIniciaisFormik}
       validationSchema={schema}
       onSubmit={handleSubmitForm}
     >
-      {(formik) => <FormularioCadastroAcao {...formik} listaDeCategorias={listaDeCategorias} />}
+      {(formik) => (
+        <FormularioCadastroAcao
+          {...formik}
+          listaDeCategorias={listaDeCategorias}
+          edicao={edicaoAberta}
+        />
+      )}
     </Formik>
   );
 
-  const renderizaMensagemAcabouPrazo = () => (
+  const renderizaMensagemCadastroFechado = () => (
     <Card>
       <CardHeader className="text-center">
         <CardTitle>
-          As inscrições de ações para a 6ª Semana Lixo Zero estão encerradas! 💚
+          {semVigente
+            ? 'A programação desta edição ainda não está no ar.'
+            : 'O cadastro de ações desta edição está fechado'}
         </CardTitle>
       </CardHeader>
 
       <CardBody className="space-y-6 px-6 py-10 text-center sm:px-12">
-        <p className="text-lg text-gray-700">
-          Se você já inscreveu sua ação, confira seu email cadastrado para orientações. Em breve
-          divulgaremos a programação completa!
-        </p>
+        {edicao ? (
+          <>
+            <p className="text-lg text-gray-700">
+              {mensagemPrazoCadastro(edicao.data_fim_cadastro)}
+            </p>
+            <p className="text-lg text-gray-700">
+              {mensagemPeriodoRealizacao(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}
+            </p>
+            <p className="text-sm text-gray-500">
+              Inscrições de {formatarDataCivil(edicao.data_inicio_cadastro)} a{' '}
+              {formatarDataCivil(edicao.data_fim_cadastro)}. Ações entre{' '}
+              {rotuloPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}.
+            </p>
+          </>
+        ) : (
+          <p className="text-lg text-gray-700">
+            Assim que a edição vigente for publicada, o formulário de cadastro volta a aparecer
+            aqui.
+          </p>
+        )}
 
         <p className="text-lg text-gray-700">
-          Fiquem ligados na nossa página e nos vemos nas ações da Semana Lixo Zero!
+          Se você já inscreveu sua ação, confira seu e-mail cadastrado para orientações.
         </p>
       </CardBody>
     </Card>
   );
 
+  const cadastroAberto = Boolean(edicao?.cadastro_aberto);
+
   return (
     <Container className="max-w-4xl">
-      <LoadingOverlay isLoading={isLoading} />
+      <LoadingOverlay isLoading={isLoading || carregandoEdicao} />
 
-      {INSCRICOES_ENCERRADAS ? renderizaMensagemAcabouPrazo() : renderizaFormulario()}
+      {carregandoEdicao
+        ? null
+        : cadastroAberto && edicao && schema
+          ? renderizaFormulario(edicao)
+          : renderizaMensagemCadastroFechado()}
     </Container>
   );
 };

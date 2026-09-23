@@ -61,6 +61,9 @@ const HomeNavbar = () => {
       <Link to="/admin/categories" className="btn-primary text-sm">
         Tipo de Atividades
       </Link>
+      <Link to="/admin/editions" className="btn-primary text-sm">
+        Edições
+      </Link>
     </div>
   );
 

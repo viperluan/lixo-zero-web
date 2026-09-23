@@ -4,10 +4,11 @@ import { ArrowRight, MapPin } from 'lucide-react';
 import api from '~api';
 import { ActionLink, Badge } from '~components/ui';
 import { ActionFormatBadge } from '~components/ActionFormatBadge';
+import { useEdicao } from '~context/EdicaoContext';
 import { SituacaoAcao } from '~/Enumerados';
 import moment from '~/lib/moment';
+import { hojeCivil } from '~/lib/periodoSlz';
 import {
-  ehFutura,
   formatarChipDeData,
   formatarHora,
   obterLocalAcao,
@@ -18,25 +19,23 @@ import {
 
 const QUANTIDADE = 6;
 
-/** `limit` e truncado em 100 pelo back (normalizarPaginacao). */
-const LIMITE_BUSCA = 100;
-
 /**
  * Faixa de "proximas acoes" da home.
  *
- * Nao renderiza nada enquanto carrega, se a busca falhar ou se nao houver acao
- * futura aprovada — a home e a porta de entrada da campanha e nao pode
- * depender da API estar de pe.
- *
- * O recorte por data e feito no cliente porque a API nao tem filtro de
- * intervalo publico: `data_acao` compara timestamp por igualdade exata (bug
- * conhecido) e `GET /acoes/:dataInicial/:dataFinal` exige JWT.
+ * A API da edição vigente já corta anos anteriores. O recorte de "a partir de
+ * hoje" usa `data_acao_inicial` / `data_acao_final` (dia civil em São Paulo).
  */
 const UpcomingActions = () => {
   const navigate = useNavigate();
+  const { edicao, loading, semVigente } = useEdicao();
   const [acoes, setAcoes] = useState<Acao[]>([]);
 
   useEffect(() => {
+    if (loading || !edicao) {
+      setAcoes([]);
+      return;
+    }
+
     let ativo = true;
 
     api
@@ -44,17 +43,19 @@ const UpcomingActions = () => {
         // `situacao` nao muda nada para anonimo (a API ja forca aprovadas), mas
         // para um admin logado navegando na home ela tem efeito e evita
         // pendentes vazarem na vitrine publica.
-        params: { page: 1, limit: LIMITE_BUSCA, situacao: SituacaoAcao.Confirmada },
+        params: {
+          page: 1,
+          limit: 50,
+          situacao: SituacaoAcao.Confirmada,
+          data_acao_inicial: hojeCivil(),
+          data_acao_final: edicao.data_fim_realizacao,
+        },
         silenciarErro: true,
       })
       .then(({ data }) => {
         if (!ativo || !data?.actions) return;
 
-        setAcoes(
-          ordenarPorData(data.actions)
-            .filter((acao) => ehFutura(acao))
-            .slice(0, QUANTIDADE)
-        );
+        setAcoes(ordenarPorData(data.actions).slice(0, QUANTIDADE));
       })
       .catch(() => {
         // Silencio proposital: a home segue inteira sem esta faixa.
@@ -63,7 +64,25 @@ const UpcomingActions = () => {
     return () => {
       ativo = false;
     };
-  }, []);
+  }, [edicao, loading]);
+
+  if (loading) return null;
+
+  if (semVigente) {
+    return (
+      <section aria-labelledby="programacao-ausente" className="mx-auto mt-12 max-w-6xl">
+        <div className="rounded-3xl border border-brand-cream/20 bg-white/10 px-6 py-10 text-center text-brand-cream">
+          <p className="label-condensed text-sm text-brand-sage">Programação</p>
+          <h2 id="programacao-ausente" className="mt-1 text-2xl sm:text-3xl">
+            A programação desta edição ainda não está no ar.
+          </h2>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-brand-cream/80">
+            Assim que a edição vigente for publicada, as ações aprovadas aparecem aqui.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   if (acoes.length === 0) return null;
 

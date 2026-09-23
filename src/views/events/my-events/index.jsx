@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from '~components/Loading';
 import { ActionStatusBadge } from '~components/ActionStatusBadge';
-import { listarEnumerados, SituacaoAcao } from '~/Enumerados';
+import { listarEnumerados, SituacaoAcao, TipoUsuario } from '~/Enumerados';
+import { useAuth } from '~context/AuthContext';
+import { useEdicao } from '~context/EdicaoContext';
+import { listarEdicoes } from '~/lib/edicoes';
 import {
   Button,
   Card,
@@ -27,6 +30,8 @@ import {
 } from '~components/ui';
 
 const MyEventsContainer = () => {
+  const { user } = useAuth();
+  const { edicao } = useEdicao();
   const [isLoading, setIsLoading] = useState(false);
   const [listActions, setlistActions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,6 +41,8 @@ const MyEventsContainer = () => {
   const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
   const [situacaoFiltro, setSituacaoFiltro] = useState('');
   const [search, setSearch] = useState('');
+  const [anoFiltro, setAnoFiltro] = useState('');
+  const [anos, setAnos] = useState([]);
 
   const fetchCategories = () => {
     api.get(`/categorias?page=1&limit=150`).then((res) => {
@@ -58,6 +65,10 @@ const MyEventsContainer = () => {
       filters.search = search.trim();
     }
 
+    if (anoFiltro) {
+      filters.ano = anoFiltro;
+    }
+
     const queryString = new URLSearchParams(filters).toString();
 
     setIsLoading(true);
@@ -78,8 +89,23 @@ const MyEventsContainer = () => {
   }, []);
 
   useEffect(() => {
+    if (user?.tipo === TipoUsuario.Admin) {
+      listarEdicoes().then(({ data, status }) => {
+        if (status === 200) {
+          setAnos((data.editions || []).map((item) => item.ano));
+        }
+      });
+      return;
+    }
+
+    if (edicao?.ano) {
+      setAnos([edicao.ano]);
+    }
+  }, [user, edicao]);
+
+  useEffect(() => {
     fetchActions(currentPage);
-  }, [currentPage]);
+  }, [currentPage, anoFiltro]);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -98,7 +124,7 @@ const MyEventsContainer = () => {
           <div>
             <h3 className="label-condensed mb-3 text-sm text-brand-forest">Filtros</h3>
 
-            <div className="grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-4 sm:grid-cols-2 lg:grid-cols-4">
               <FormGroup className="mb-4">
                 <Label htmlFor="pesquisa">Pesquisa</Label>
                 <Input
@@ -122,6 +148,25 @@ const MyEventsContainer = () => {
                   {listCategories.map((categorie) => (
                     <option key={categorie.id} value={categorie.id}>
                       {categorie.descricao}
+                    </option>
+                  ))}
+                </Select>
+              </FormGroup>
+
+              <FormGroup className="mb-4">
+                <Label htmlFor="ano">Edição</Label>
+                <Select
+                  id="ano"
+                  value={anoFiltro}
+                  onChange={(e) => {
+                    setAnoFiltro(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <option value="">Todas</option>
+                  {anos.map((ano) => (
+                    <option key={ano} value={String(ano)}>
+                      {ano}
                     </option>
                   ))}
                 </Select>

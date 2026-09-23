@@ -102,6 +102,18 @@ export function mensagemLimite(status: number, data: unknown): string | null {
   return MENSAGEM_MUITAS_REQUISICOES;
 }
 
+/** Negócio/`500` usam `error`; auth e rate limit usam `message`. */
+export function mensagemErroApi(data: unknown): string | null {
+  if (!data || typeof data !== 'object') return null;
+
+  const corpo = data as ErrorResponseType;
+
+  if (typeof corpo.error === 'string' && corpo.error) return corpo.error;
+  if (typeof corpo.message === 'string' && corpo.message) return corpo.message;
+
+  return null;
+}
+
 function valorAuthorization(config: InternalAxiosRequestConfig | undefined): string | undefined {
   if (!config?.headers) return undefined;
 

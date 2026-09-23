@@ -3,12 +3,13 @@ import type { FieldProps } from 'formik';
 import moment, { type Moment } from '~/lib/moment';
 import { HelpText, Select } from '~components/ui';
 import { cn } from '~components/ui/cn';
-import { diasDaSlz } from '~/lib/periodoSlz';
 import { formatarDiaLongo, formatarHora } from '~/lib/acoes';
 
-type DateTimePickerProps = FieldProps<Moment | null>;
+type DateTimePickerProps = FieldProps<Moment | null> & {
+  /** Dias civis da realização da edição vigente — vêm da API, não do código. */
+  dias: Moment[];
+};
 
-const DIAS = diasDaSlz();
 const HORAS = Array.from({ length: 24 }, (_, indice) => String(indice).padStart(2, '0'));
 const MINUTOS = Array.from({ length: 60 }, (_, indice) => String(indice).padStart(2, '0'));
 
@@ -23,12 +24,11 @@ const extrairHora = (value: Moment | null) =>
 const extrairMinuto = (value: Moment | null) =>
   value && moment.isMoment(value) && value.isValid() ? value.format('mm') : '';
 
-const juntarHorario = (hora: string, minuto: string) =>
-  hora && minuto ? `${hora}:${minuto}` : '';
+const juntarHorario = (hora: string, minuto: string) => (hora && minuto ? `${hora}:${minuto}` : '');
 
 const capitalizar = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
-const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
+const DateTimePicker = ({ field, form, dias }: DateTimePickerProps) => {
   const { name, value } = field;
   const { setFieldValue, setFieldTouched, errors, touched } = form;
   const invalido = Boolean(touched[name] && errors[name]);
@@ -38,6 +38,7 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
   const [minuto, setMinuto] = useState(() => extrairMinuto(value));
 
   const horario = juntarHorario(hora, minuto);
+  const chavesValidasKey = dias.map(chaveDoDia).join(',');
 
   useEffect(() => {
     if (value && moment.isMoment(value) && value.isValid()) {
@@ -61,6 +62,15 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
     }
   }, [value, dia, hora, minuto]);
 
+  useEffect(() => {
+    const validas = chavesValidasKey.split(',').filter(Boolean);
+
+    if (dia && validas.length > 0 && !validas.includes(dia)) {
+      setDia('');
+      setFieldValue(name, null, false);
+    }
+  }, [chavesValidasKey, dia, name, setFieldValue]);
+
   const gravar = (proximoDia: string, proximaHora: string, proximoMinuto: string) => {
     setDia(proximoDia);
     setHora(proximaHora);
@@ -77,6 +87,16 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
     setFieldValue(name, null, false);
   };
 
+  const colunas = dias.length > 0 && dias.length <= 9 ? 'sm:grid-cols-9' : 'sm:grid-cols-7';
+
+  if (dias.length === 0) {
+    return (
+      <p className="text-sm text-gray-500">
+        O período de realização desta edição ainda não está disponível.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div>
@@ -85,9 +105,9 @@ const DateTimePicker = ({ field, form }: DateTimePickerProps) => {
         <div
           role="radiogroup"
           aria-label="Dia da ação"
-          className="grid grid-cols-3 gap-2 sm:grid-cols-9"
+          className={cn('grid grid-cols-3 gap-2', colunas)}
         >
-          {DIAS.map((diaMoment) => {
+          {dias.map((diaMoment) => {
             const chave = chaveDoDia(diaMoment);
             const selecionado = dia === chave;
 

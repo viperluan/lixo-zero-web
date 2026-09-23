@@ -3,11 +3,14 @@ import { ArrowRight, Clock } from 'lucide-react';
 import { ActionLink } from '~components/ui';
 import { HeroBanner } from '~components/HeroBanner';
 import { UpcomingActions } from '~components/UpcomingActions';
+import { useEdicao } from '~context/EdicaoContext';
+import { formatarDataCivil, rotuloPeriodo } from '~/lib/periodoSlz';
 import imageEvento from '~assets/img/acoes-palestra.webp';
 import imageAgenda from '~assets/img/agenda-calendario.webp';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { edicao } = useEdicao();
 
   return (
     <div className="w-full">
@@ -19,6 +22,15 @@ const Home = () => {
           <p className="text-lg sm:text-xl">
             Junte-se a nós na missão de transformar ideias em ações
           </p>
+
+          {edicao && (
+            <p className="mt-3 text-sm text-brand-cream/80 sm:text-base">
+              {rotuloPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}
+              {edicao.cadastro_aberto && (
+                <> · Inscrições até {formatarDataCivil(edicao.data_fim_cadastro, 'D [de] MMMM')}</>
+              )}
+            </p>
+          )}
 
           <div className="mt-5 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
             <ActionLink

@@ -1,11 +1,14 @@
-import api from '~api';
+import api, { mensagemErroApi } from '~api';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { FaCheck, FaTrash, FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from '~components/Loading';
 import { ActionStatusBadge } from '~components/ActionStatusBadge';
 import { useAuth } from '~context/AuthContext';
 import { listarEnumerados, SituacaoAcao, FormaRealizacaoAcao } from '~/Enumerados';
+import { listarEdicoes } from '~/lib/edicoes';
 import {
+  Badge,
   Button,
   Card,
   CardFooter,
@@ -45,6 +48,9 @@ const EventsContainer = () => {
   const [situacaoFiltro, setSituacaoFiltro] = useState('');
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('');
+  const [edicoes, setEdicoes] = useState([]);
+  const [edicaoFiltro, setEdicaoFiltro] = useState('');
+  const [pendentesAnoAnterior, setPendentesAnoAnterior] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
@@ -93,6 +99,12 @@ const EventsContainer = () => {
       filters.forma_realizacao_acao = filterType;
     }
 
+    if (edicaoFiltro === 'todos') {
+      filters.ano = 'todos';
+    } else if (edicaoFiltro) {
+      filters.id_edicao = edicaoFiltro;
+    }
+
     const queryString = new URLSearchParams(filters).toString();
 
     setIsLoading(true);
@@ -100,6 +112,14 @@ const EventsContainer = () => {
     api
       .get(`/acoes?page=${page}&limit=10&${queryString}`)
       .then((res) => {
+        if (res.status !== 200) {
+          const erro = mensagemErroApi(res.data);
+          if (erro) toast.error(erro);
+          setlistActions([]);
+          setTotalPages(1);
+          return;
+        }
+
         setlistActions(res.data.actions || []);
         setTotalPages(res.data.totalPages || 1);
       })
@@ -111,11 +131,31 @@ const EventsContainer = () => {
   useEffect(() => {
     fetchCategories();
     fetchUsers();
+
+    listarEdicoes().then(({ data, status }) => {
+      if (status !== 200) return;
+
+      const lista = data.editions || [];
+      setEdicoes(lista);
+
+      const vigente = lista.find((item) => item.vigente);
+      const anterior = lista.find((item) => !item.vigente && vigente && item.ano < vigente.ano);
+
+      if (!anterior) return;
+
+      api
+        .get(`/acoes?ano=${anterior.ano}&situacao=0&page=1&limit=1`, { silenciarErro: true })
+        .then((res) => {
+          if ((res.data.actions || []).length > 0) {
+            setPendentesAnoAnterior({ ano: anterior.ano, id: anterior.id });
+          }
+        });
+    });
   }, []);
 
   useEffect(() => {
     fetchActions(currentPage);
-  }, [currentPage]);
+  }, [currentPage, edicaoFiltro]);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -256,8 +296,48 @@ const EventsContainer = () => {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <CardTitle>Lista de Ações</CardTitle>
 
-              <Button onClick={exportToCSV}>Exportar para CSV</Button>
+              <div className="flex flex-wrap items-center gap-3">
+                <Select
+                  id="edicao-fila"
+                  aria-label="Edição"
+                  value={edicaoFiltro}
+                  onChange={(e) => {
+                    setEdicaoFiltro(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-auto min-w-44"
+                >
+                  <option value="">Edição vigente</option>
+                  {edicoes.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      Edição {item.ano}
+                      {item.vigente ? ' · vigente' : ''}
+                    </option>
+                  ))}
+                  <option value="todos">Todas</option>
+                </Select>
+
+                <Button onClick={exportToCSV}>Exportar para CSV</Button>
+              </div>
             </div>
+
+            {pendentesAnoAnterior && !edicaoFiltro && (
+              <div className="flex flex-wrap items-center gap-3 rounded-lg border border-brand-warning/40 bg-brand-warning/15 px-4 py-3 text-sm text-brand-dark">
+                <Badge variant="warning">Pendentes de {pendentesAnoAnterior.ano}</Badge>
+                <span>Há ações aguardando moderação em {pendentesAnoAnterior.ano}.</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEdicaoFiltro(pendentesAnoAnterior.id);
+                    setSituacaoFiltro(SituacaoAcao.AguardandoConfirmacao);
+                    setCurrentPage(1);
+                  }}
+                >
+                  Ver fila de {pendentesAnoAnterior.ano}
+                </Button>
+              </div>
+            )}
 
             <div>
               <h3 className="label-condensed mb-3 text-sm text-brand-forest">Filtros</h3>

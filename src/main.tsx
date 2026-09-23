@@ -11,30 +11,33 @@ import HomeLayout from '~layouts/Home';
 
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from '~context/AuthContext';
+import { EdicaoProvider } from '~context/EdicaoContext';
 import { CookiesProvider } from 'react-cookie';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <CookiesProvider defaultSetOptions={{ path: '/' }}>
       <AuthProvider>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/admin/*" element={<AdminLayout />} />
-            <Route path="/auth/*" element={<AuthLayout />} />
-            <Route path="/*" element={<HomeLayout />} />
-          </Routes>
-        </BrowserRouter>
+        <EdicaoProvider>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/admin/*" element={<AdminLayout />} />
+              <Route path="/auth/*" element={<AuthLayout />} />
+              <Route path="/*" element={<HomeLayout />} />
+            </Routes>
+          </BrowserRouter>
+        </EdicaoProvider>
       </AuthProvider>
     </CookiesProvider>
   </StrictMode>
