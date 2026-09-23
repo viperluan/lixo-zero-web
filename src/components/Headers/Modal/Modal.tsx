@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
-import { Lock, Mail } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Mail } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '~api';
+import api, { mensagemLimite } from '~api';
 import { useAuth } from '~context/AuthContext';
 import {
   Button,
@@ -10,6 +10,7 @@ import {
   FormGroup,
   Input,
   Label,
+  PasswordInput,
   Modal,
   ModalBody,
   ModalFooter,
@@ -30,6 +31,7 @@ type UserAuthenticateResponseType = {
     tipo: string;
   };
   error?: string;
+  message?: string;
 };
 
 type UserType = {
@@ -64,10 +66,21 @@ const ModalLogin = ({ isOpen, toggle }: IModalLoginProps) => {
     const { email, password } = values;
 
     try {
-      const { data } = await api.post<UserAuthenticateResponseType>('/usuarios/autenticar', {
-        email,
-        senha: password,
-      });
+      const { data, status } = await api.post<UserAuthenticateResponseType>(
+        '/usuarios/autenticar',
+        {
+          email,
+          senha: password,
+        }
+      );
+
+      const limite = mensagemLimite(status, data);
+
+      if (limite) {
+        toast.error(limite);
+        actions.setSubmitting(false);
+        return;
+      }
 
       if (data.token && data.usuario) {
         login({
@@ -131,24 +144,28 @@ const ModalLogin = ({ isOpen, toggle }: IModalLoginProps) => {
               <FormGroup className="mb-0">
                 <Label htmlFor="password">Senha</Label>
 
-                <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    className="pl-10"
-                    placeholder="Digite sua senha"
-                    autoComplete="current-password"
-                    value={values.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    invalid={touched.password && !!errors.password}
-                  />
-                </div>
+                <PasswordInput
+                  id="password"
+                  name="password"
+                  placeholder="Digite sua senha"
+                  autoComplete="current-password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  invalid={touched.password && !!errors.password}
+                />
 
                 <FieldError>{touched.password && errors.password}</FieldError>
+
+                <div className="mt-3 text-right">
+                  <Link
+                    to="/esqueci-senha"
+                    onClick={toggle}
+                    className="text-sm font-semibold text-brand-forest underline-offset-2 hover:underline"
+                  >
+                    Esqueci minha senha
+                  </Link>
+                </div>
               </FormGroup>
             </ModalBody>
 

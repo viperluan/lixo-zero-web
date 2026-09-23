@@ -4,6 +4,8 @@ import { Route, Routes } from 'react-router-dom';
 import Home from '~/views/home';
 import PageNotFound from '~/views/page-not-found';
 import { AboutContainer } from '~/views/about';
+import { EsqueciSenha } from '~/views/esqueci-senha';
+import { RedefinirSenha } from '~/views/redefinir-senha';
 
 const HomeContainer = () => {
   return (
@@ -14,6 +16,8 @@ const HomeContainer = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutContainer />} />
+          <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </main>

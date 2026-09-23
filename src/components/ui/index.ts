@@ -8,6 +8,8 @@ export { Collapse } from './Collapse';
 export { Container } from './Container';
 export { Dropdown, DropdownHeader, DropdownDivider, DropdownItem } from './Dropdown';
 export { FormGroup, Label, HelpText, FieldError, Input, Textarea, Select, Checkbox } from './Form';
+export { PasswordInput } from './PasswordInput';
+export type { PasswordInputProps } from './PasswordInput';
 export { Modal, ModalHeader, ModalBody, ModalFooter } from './Modal';
 export { Pagination } from './Pagination';
 export { Spinner } from './Spinner';

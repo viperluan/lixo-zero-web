@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import api from '~/api';
 import {
   assumirSessaoPersistida,
+  consumirAvisoSessaoInvalida,
   encerrarSeSessaoMorta,
   encerrarSessao,
   inscreverEncerramento,
@@ -30,6 +31,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const avisoSessaoInvalida = consumirAvisoSessaoInvalida();
+
+    if (avisoSessaoInvalida) toast.error(avisoSessaoInvalida);
+
     const unsubscribe = inscreverEncerramento((motivo) => {
       setUser(null);
 

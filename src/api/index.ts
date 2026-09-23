@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 import { toast } from 'react-toastify';
 import {
   encerrarSessao,
+  guardarAvisoSessaoInvalida,
   lerSessao,
   ligarAuthorization,
   sessaoAssumidaPelaUI,
@@ -30,6 +31,10 @@ const baseURL = isDevelopment ? `http://localhost:3000` : import.meta.env.VITE_A
 
 const MENSAGEM_SESSAO_INVALIDA = 'Sessão inválida.';
 const MENSAGEM_AUTH_NECESSARIA = 'Autenticação necessária para acessar o recurso.';
+const MENSAGEM_MUITAS_REQUISICOES = 'Muitas requisições. Tente novamente mais tarde.';
+const CODE_TOKEN_EXPIRED = 'TOKEN_EXPIRED';
+
+let indoParaLogin = false;
 
 const api = axios.create({
   baseURL,
@@ -75,6 +80,28 @@ function ehLogin(config: InternalAxiosRequestConfig | undefined): boolean {
   return pathnameDaConfig(config) === '/usuarios/autenticar';
 }
 
+/**
+ * Recuperacao de senha e publica, no mesmo estilo do login: o JWT da sessao
+ * nao vai no header. O token do e-mail viaja so no corpo do POST.
+ */
+function ehRecuperacaoSenha(config: InternalAxiosRequestConfig | undefined): boolean {
+  const path = pathnameDaConfig(config);
+
+  return path === '/usuarios/esqueci-senha' || path === '/usuarios/redefinir-senha';
+}
+
+export function mensagemLimite(status: number, data: unknown): string | null {
+  if (status !== 429) return null;
+
+  if (data && typeof data === 'object') {
+    const message = (data as ErrorResponseType).message;
+
+    if (typeof message === 'string' && message) return message;
+  }
+
+  return MENSAGEM_MUITAS_REQUISICOES;
+}
+
 function valorAuthorization(config: InternalAxiosRequestConfig | undefined): string | undefined {
   if (!config?.headers) return undefined;
 
@@ -101,17 +128,48 @@ function autenticacaoNecessariaNoCorpo(data: unknown): boolean {
   return (data as ErrorResponseType).message === MENSAGEM_AUTH_NECESSARIA;
 }
 
-function deveEncerrarSessaoPor401(response: AxiosResponse): boolean {
-  if (response.status !== 401) return false;
-  if (ehLogin(response.config)) return false;
+function codeDoCorpo(data: unknown): string | undefined {
+  if (!data || typeof data !== 'object') return undefined;
 
-  if (sessaoInvalidaNoCorpo(response.data)) return true;
+  const code = (data as ErrorResponseType).code;
 
-  if (autenticacaoNecessariaNoCorpo(response.data)) {
-    return Boolean(lerSessao()?.token) || requestTinhaBearer(response.config);
+  return typeof code === 'string' && code ? code : undefined;
+}
+
+/**
+ * `Sessão inválida.` sem `code` e o JWT rejeitado depois da troca de senha:
+ * logout e ida ao login. `TOKEN_EXPIRED` continua sendo so a expiracao de 24h.
+ */
+function motivoEncerramentoPor401(response: AxiosResponse): 'expirada' | 'invalida' | null {
+  if (response.status !== 401) return null;
+  if (ehLogin(response.config) || ehRecuperacaoSenha(response.config)) return null;
+
+  const code = codeDoCorpo(response.data);
+  const autenticada = Boolean(lerSessao()?.token) || requestTinhaBearer(response.config);
+
+  if (code === CODE_TOKEN_EXPIRED) {
+    return autenticada ? 'expirada' : null;
   }
 
-  return false;
+  if (sessaoInvalidaNoCorpo(response.data)) {
+    if (!code && autenticada) return 'invalida';
+
+    return 'expirada';
+  }
+
+  if (autenticacaoNecessariaNoCorpo(response.data) && autenticada) {
+    return 'expirada';
+  }
+
+  return null;
+}
+
+function irParaLoginPorSessaoInvalida() {
+  if (indoParaLogin || typeof window === 'undefined') return;
+
+  indoParaLogin = true;
+  guardarAvisoSessaoInvalida();
+  window.location.replace('/?entrar=1');
 }
 
 function deveEncerrarPorHeaderAcoes(response: AxiosResponse): boolean {
@@ -124,6 +182,11 @@ function deveEncerrarPorHeaderAcoes(response: AxiosResponse): boolean {
 }
 
 api.interceptors.request.use((config) => {
+  if (ehRecuperacaoSenha(config)) {
+    config.headers.delete('Authorization');
+    return config;
+  }
+
   if (!ehLogin(config) && sessaoAssumidaPelaUI() && (!lerSessao() || sessaoExpirada())) {
     encerrarSessao({ motivo: 'expirada' });
     config.headers.delete('Authorization');
@@ -142,7 +205,20 @@ api.interceptors.request.use((config) => {
 });
 
 const responseSuccessInterceptor = (response: AxiosResponse) => {
-  if (deveEncerrarPorHeaderAcoes(response) || deveEncerrarSessaoPor401(response)) {
+  if (deveEncerrarPorHeaderAcoes(response)) {
+    encerrarSessao({ motivo: 'expirada' });
+    return Promise.resolve(response);
+  }
+
+  const motivo = motivoEncerramentoPor401(response);
+
+  if (motivo === 'invalida') {
+    encerrarSessao({ motivo: 'invalida' });
+    irParaLoginPorSessaoInvalida();
+    return Promise.resolve(response);
+  }
+
+  if (motivo === 'expirada') {
     encerrarSessao({ motivo: 'expirada' });
   }
 

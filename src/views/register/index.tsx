@@ -1,12 +1,12 @@
 import api from '~api';
 import { useState } from 'react';
-import { IdCard, Lock, Mail, User } from 'lucide-react';
+import { IdCard, Mail, User } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { TipoUsuario } from '~/Enumerados';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~context/AuthContext';
 import { InputCpfCnpj } from '~components/Inputs/InputCpfCnpj';
-import { Button, Card, CardBody, FormGroup, Input, Label } from '~components/ui';
+import { Button, Card, CardBody, FormGroup, Input, Label, PasswordInput } from '~components/ui';
 import { AxiosResponse } from 'axios';
 
 type UserAuthenticateResponseType = {
@@ -153,35 +153,25 @@ const RegisterContainer = () => {
             <FormGroup>
               <Label htmlFor="senha">Senha</Label>
 
-              <div className="relative">
-                <Lock className={iconClass} />
-                <Input
-                  id="senha"
-                  type="password"
-                  className="pl-10"
-                  placeholder="Digite sua senha"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
+              <PasswordInput
+                id="senha"
+                placeholder="Digite sua senha"
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </FormGroup>
 
             <FormGroup className="mb-0">
               <Label htmlFor="confirmar-senha">Confirme sua senha</Label>
 
-              <div className="relative">
-                <Lock className={iconClass} />
-                <Input
-                  id="confirmar-senha"
-                  type="password"
-                  className="pl-10"
-                  placeholder="Confirme sua senha"
-                  autoComplete="new-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
+              <PasswordInput
+                id="confirmar-senha"
+                placeholder="Confirme sua senha"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </FormGroup>
 
             <Button className="mt-8 w-full" size="lg" onClick={handleRegister}>

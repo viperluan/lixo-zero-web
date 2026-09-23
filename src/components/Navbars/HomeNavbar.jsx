@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { ModalLogin } from '~components/Headers/Modal/Modal';
 import { useAuth } from '~context/AuthContext';
@@ -15,11 +15,40 @@ const LINKS = [
 
 const HomeNavbar = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleModal = () => setModalVisible(!modalVisible);
   const toggleNavbar = () => setIsOpen(!isOpen);
+
+  useEffect(() => {
+    const state = location.state;
+    const abrirPeloState = Boolean(state && state.abrirLogin);
+
+    if (abrirPeloState) {
+      setModalVisible(true);
+      navigate(
+        { pathname: location.pathname, search: location.search },
+        { replace: true, state: null }
+      );
+      return;
+    }
+
+    const params = new URLSearchParams(location.search);
+
+    if (params.get('entrar') !== '1') return;
+
+    setModalVisible(true);
+    params.delete('entrar');
+    const search = params.toString();
+
+    navigate(
+      { pathname: location.pathname, search: search ? `?${search}` : '' },
+      { replace: true }
+    );
+  }, [location.pathname, location.search, location.state, navigate]);
 
   const renderAdminButtons = () => (
     <div className="flex flex-wrap gap-2 border-t border-brand-sage/40 py-3">
