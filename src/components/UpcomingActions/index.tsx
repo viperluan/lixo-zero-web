@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, ChevronDown, MapPin } from 'lucide-react';
 import api from '~api';
-import { ActionLink, Badge } from '~components/ui';
+import { ActionLink, Badge, cn } from '~components/ui';
 import { ActionFormatBadge } from '~components/ActionFormatBadge';
+import { ActionDetails } from '~components/ActionDetails';
 import { useEdicao } from '~context/EdicaoContext';
 import { SituacaoAcao } from '~/Enumerados';
 import moment from '~/lib/moment';
@@ -29,6 +30,14 @@ const UpcomingActions = () => {
   const navigate = useNavigate();
   const { edicao, loading, semVigente } = useEdicao();
   const [acoes, setAcoes] = useState<Acao[]>([]);
+  const [abertas, setAbertas] = useState<Set<string>>(() => new Set());
+
+  const alternar = (id: string) =>
+    setAbertas((atuais) => {
+      const proximas = new Set(atuais);
+      if (!proximas.delete(id)) proximas.add(id);
+      return proximas;
+    });
 
   useEffect(() => {
     if (loading || !edicao) {
@@ -104,10 +113,14 @@ const UpcomingActions = () => {
         />
       </div>
 
-      <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {/* items-start: um card aberto nao estica os vizinhos da mesma linha. O
+          alinhamento dos fechados vem do titulo, que reserva duas linhas. */}
+      <ul className="mt-7 grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {acoes.map((acao, indice) => {
           const { dia, mes } = formatarChipDeData(acao.data_acao);
           const local = obterLocalAcao(acao);
+          const aberta = abertas.has(acao.id);
+          const idDetalhes = `detalhes-acao-${acao.id}`;
 
           return (
             <li
@@ -117,7 +130,7 @@ const UpcomingActions = () => {
             >
               {/* Padrao de superficie de marketing da home (rounded-3xl +
                   shadow-lg), nao o <Card> do ui, que e visual de tela admin. */}
-              <article className="flex h-full flex-col rounded-3xl bg-white p-5 shadow-lg transition-shadow hover:shadow-xl sm:p-6">
+              <article className="relative flex flex-col rounded-3xl bg-white p-5 shadow-lg transition-shadow hover:shadow-xl sm:p-6">
                 <div className="flex items-start gap-4">
                   <span
                     aria-hidden="true"
@@ -134,8 +147,21 @@ const UpcomingActions = () => {
                       {moment(acao.data_acao).format('ddd')} · {formatarHora(acao.data_acao)}
                     </p>
 
-                    <h3 className="mt-1 line-clamp-2 text-lg leading-snug text-brand-forest">
-                      {acao.titulo_acao}
+                    {/* O ::after do botao cobre o card inteiro: o card todo fica
+                        clicavel sem perder o <h3>, que nao pode ir dentro de <button>. */}
+                    <h3 className="mt-1 text-lg leading-snug text-brand-forest sm:min-h-[2lh]">
+                      <button
+                        type="button"
+                        onClick={() => alternar(acao.id)}
+                        aria-expanded={aberta}
+                        aria-controls={idDetalhes}
+                        className={cn(
+                          'text-left after:absolute after:inset-0 after:rounded-3xl focus:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand-sage',
+                          !aberta && 'line-clamp-2'
+                        )}
+                      >
+                        {acao.titulo_acao}
+                      </button>
                     </h3>
                   </div>
                 </div>
@@ -150,14 +176,39 @@ const UpcomingActions = () => {
                   </p>
                 )}
 
-                {/* mt-auto + h-full: os rodapes se alinham mesmo com titulos de
-                    alturas diferentes na mesma linha do grid. */}
-                <div className="mt-auto flex flex-wrap items-center gap-2 pt-5">
+                <div className="flex flex-wrap items-center gap-2 pt-5">
                   <ActionFormatBadge forma={acao.forma_realizacao_acao} />
 
                   {acao.categoria?.descricao && (
                     <Badge variant="primary">{acao.categoria.descricao}</Badge>
                   )}
+
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn(
+                      'ml-auto h-5 w-5 shrink-0 text-brand-forest transition-transform duration-300 motion-reduce:transition-none',
+                      aberta && 'rotate-180'
+                    )}
+                  />
+                </div>
+
+                {/* 0fr -> 1fr anima a altura sem medir o conteudo em JS. O
+                    `relative` sobe o painel acima do ::after do botao, para o
+                    texto ser selecionavel sem fechar o card. */}
+                <div
+                  id={idDetalhes}
+                  aria-hidden={!aberta}
+                  className={cn(
+                    'relative grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none',
+                    aberta ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                  )}
+                >
+                  <div className="overflow-hidden">
+                    <ActionDetails
+                      acao={acao}
+                      className="mt-5 border-t border-brand-leaf/30 pt-5"
+                    />
+                  </div>
                 </div>
               </article>
             </li>

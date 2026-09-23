@@ -9,6 +9,7 @@ import messages from './locales'; // Importar mensagens traduzidas
 import { LoadingOverlay } from '~components/Loading';
 import { getActionStatus } from '~components/ActionStatusBadge';
 import { ActionAgenda } from '~components/ActionAgenda';
+import { ActionDetailsModal } from '~components/ActionDetails';
 import { ordenarPorData } from '~/lib/acoes';
 import { useAuth } from '~context/AuthContext';
 import { useEdicao } from '~context/EdicaoContext';
@@ -24,10 +25,6 @@ import {
   FormGroup,
   Input,
   Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Select,
 } from '~components/ui';
 
@@ -58,7 +55,6 @@ const ActionCalendar = () => {
   const [filterType, setFilterType] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const listaFormaAcao = listarEnumerados(FormaRealizacaoAcao);
   const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
   const [situacaoFiltro, setSituacaoFiltro] = useState('');
@@ -183,16 +179,11 @@ const ActionCalendar = () => {
     }
   }, []);
 
-  const toggleModal = () => setModalOpen(!modalOpen);
-
   const eventPropGetter = (event) => ({
     style: { backgroundColor: getActionStatus(event.situacao_acao).color },
   });
 
-  const handleSelectEvent = (event) => {
-    setSelectedEvent(event);
-    toggleModal();
-  };
+  const handleSelectEvent = (event) => setSelectedEvent(event);
 
   return (
     <>
@@ -391,80 +382,7 @@ const ActionCalendar = () => {
         </Card>
       </Container>
 
-      <Modal isOpen={modalOpen} toggle={toggleModal}>
-        {selectedEvent && (
-          <>
-            <ModalHeader toggle={toggleModal}>{selectedEvent.titulo_acao}</ModalHeader>
-
-            <ModalBody className="space-y-2 text-sm text-brand-dark">
-              <p>
-                <b>Nome do organizador:</b> {selectedEvent.nome_organizador}
-              </p>
-              {/* A API sanitiza a saida para quem nao e admin: sem o guard, o
-                  rotulo aparece com o valor em branco. */}
-              {selectedEvent.celular && (
-                <p>
-                  <b>Celular organizador:</b> {selectedEvent.celular}
-                </p>
-              )}
-
-              <p>
-                <b>Data:</b> {moment(selectedEvent.data_acao).format('DD/MM/YYYY')}
-              </p>
-              <p>
-                <b>Horário:</b> {moment(selectedEvent.data_acao).format('HH:mm')}
-              </p>
-              <p>
-                <b>Forma de Realização:</b> {selectedEvent.forma_realizacao_acao}
-              </p>
-              {/* Os endpoints por data nao fazem `include` dos relacionamentos;
-                  sem o optional chaining, trocar de endpoint viraria tela branca. */}
-              {selectedEvent.categoria?.descricao && (
-                <p>
-                  <b>Atividade:</b> {selectedEvent.categoria.descricao}
-                </p>
-              )}
-
-              {selectedEvent.nome_local_acao && (
-                <p>
-                  <b>Nome do local:</b> {selectedEvent.nome_local_acao}
-                </p>
-              )}
-
-              {selectedEvent.endereco_local_acao && (
-                <p>
-                  <b>Endereço do local:</b> {selectedEvent.endereco_local_acao}
-                </p>
-              )}
-
-              {selectedEvent.link_para_inscricao_acao && (
-                <p>
-                  <b>Link para inscrição:</b> {selectedEvent.link_para_inscricao_acao}
-                </p>
-              )}
-
-              {selectedEvent.link_divulgacao_acesso_acao && (
-                <p>
-                  <b>Link para divulgação:</b> {selectedEvent.link_divulgacao_acesso_acao}
-                </p>
-              )}
-
-              <p>
-                <b>Número de organizadores:</b> {selectedEvent.numero_organizadores_acao}
-              </p>
-              <p>
-                <b>Descrição:</b> {selectedEvent.descricao_acao}
-              </p>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button variant="neutral" onClick={toggleModal}>
-                Fechar
-              </Button>
-            </ModalFooter>
-          </>
-        )}
-      </Modal>
+      <ActionDetailsModal acao={selectedEvent} onFechar={() => setSelectedEvent(null)} />
     </>
   );
 };
