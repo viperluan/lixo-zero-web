@@ -11,6 +11,8 @@ import { getActionStatus } from '~components/ActionStatusBadge';
 import { ActionAgenda } from '~components/ActionAgenda';
 import { ordenarPorData } from '~/lib/acoes';
 import { useAuth } from '~context/AuthContext';
+import { useEdicao } from '~context/EdicaoContext';
+import { rotuloPeriodo } from '~/lib/periodoSlz';
 import {
   Badge,
   Button,
@@ -48,6 +50,7 @@ const LIMITE_POR_PAGINA = 100;
 
 const ActionCalendar = () => {
   const { user } = useAuth();
+  const { edicao, semVigente } = useEdicao();
   const [isLoading, setIsLoading] = useState(false);
   const [acoes, setAcoes] = useState([]);
   const [visao, setVisao] = useState('lista');
@@ -287,77 +290,102 @@ const ActionCalendar = () => {
           </CardHeader>
 
           <CardBody>
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-              <p className="label-condensed text-sm text-brand-dark/60">
-                {acoesOrdenadas.length}{' '}
-                {acoesOrdenadas.length === 1 ? 'ação encontrada' : 'ações encontradas'}
-              </p>
-
-              <div
-                role="group"
-                aria-label="Modo de visualização"
-                className="inline-flex rounded-xl border border-brand-leaf/40 bg-brand-cream p-1"
-              >
-                {VISOES.map(({ id, rotulo, icone: Icone }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => setVisao(id)}
-                    aria-pressed={visao === id}
-                    className={cn(
-                      'inline-flex items-center gap-2 rounded-lg px-3 py-1.5 font-condensed text-sm font-semibold uppercase tracking-wide transition-colors',
-                      'focus:outline-none focus:ring-2 focus:ring-brand-forest focus:ring-offset-1',
-                      visao === id
-                        ? 'bg-brand-forest text-brand-cream'
-                        : 'text-brand-forest hover:bg-brand-sage/25'
-                    )}
-                  >
-                    <Icone className="h-4 w-4" aria-hidden="true" />
-                    {rotulo}
-                  </button>
-                ))}
+            {semVigente && (
+              <div className="rounded-2xl border border-dashed border-brand-leaf/60 bg-brand-cream/60 px-6 py-8 text-center">
+                <h3 className="text-lg text-brand-forest">
+                  A programação desta edição ainda não está no ar.
+                </h3>
+                <p className="mx-auto mt-2 max-w-md text-sm text-brand-dark/70">
+                  Quando houver edição vigente, as ações aprovadas aparecem nesta agenda.
+                </p>
               </div>
-            </div>
-
-            {visao === 'lista' ? (
-              <ActionAgenda
-                acoes={acoesOrdenadas}
-                onSelecionar={handleSelectEvent}
-                mostrarSituacao={isAdmin}
-              />
-            ) : (
-              <Calendar
-                localizer={localizer}
-                events={eventosCalendario}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 500 }}
-                popup
-                onSelectEvent={handleSelectEvent}
-                defaultView="month"
-                views={['month', 'day']}
-                date={dataCalendario}
-                onNavigate={setDataCalendario}
-                messages={messages}
-                eventPropGetter={eventPropGetter}
-              />
             )}
 
-            {/* A legenda explica as CORES do calendario. Na lista a situacao ja
-                aparece rotulada em cada linha, entao ali ela e redundante. */}
-            {isAdmin && visao === 'mes' && (
-              <div className="mt-6">
-                <h4 className="label-condensed mb-3 text-sm text-brand-forest">Legenda</h4>
+            {edicao && (
+              <p className="mb-4 text-sm text-brand-dark/70">
+                Edição {edicao.ano}:{' '}
+                {rotuloPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}
+              </p>
+            )}
 
-                <ul className="flex flex-wrap gap-x-6 gap-y-2">
-                  {LEGENDA.map(({ situacao, descricao }) => (
-                    <li key={situacao} className="flex items-center gap-2 text-sm text-gray-600">
-                      <Badge variant={getActionStatus(situacao).variant}>{situacao}</Badge>
-                      {descricao}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {!semVigente && (
+              <>
+                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                  <p className="label-condensed text-sm text-brand-dark/60">
+                    {acoesOrdenadas.length}{' '}
+                    {acoesOrdenadas.length === 1 ? 'ação encontrada' : 'ações encontradas'}
+                  </p>
+
+                  <div
+                    role="group"
+                    aria-label="Modo de visualização"
+                    className="inline-flex rounded-xl border border-brand-leaf/40 bg-brand-cream p-1"
+                  >
+                    {VISOES.map(({ id, rotulo, icone: Icone }) => (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => setVisao(id)}
+                        aria-pressed={visao === id}
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-lg px-3 py-1.5 font-condensed text-sm font-semibold uppercase tracking-wide transition-colors',
+                          'focus:outline-none focus:ring-2 focus:ring-brand-forest focus:ring-offset-1',
+                          visao === id
+                            ? 'bg-brand-forest text-brand-cream'
+                            : 'text-brand-forest hover:bg-brand-sage/25'
+                        )}
+                      >
+                        <Icone className="h-4 w-4" aria-hidden="true" />
+                        {rotulo}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {visao === 'lista' ? (
+                  <ActionAgenda
+                    acoes={acoesOrdenadas}
+                    onSelecionar={handleSelectEvent}
+                    mostrarSituacao={isAdmin}
+                  />
+                ) : (
+                  <Calendar
+                    localizer={localizer}
+                    events={eventosCalendario}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500 }}
+                    popup
+                    onSelectEvent={handleSelectEvent}
+                    defaultView="month"
+                    views={['month', 'day']}
+                    date={dataCalendario}
+                    onNavigate={setDataCalendario}
+                    messages={messages}
+                    eventPropGetter={eventPropGetter}
+                  />
+                )}
+
+                {/* A legenda explica as CORES do calendario. Na lista a situacao ja
+                aparece rotulada em cada linha, entao ali ela e redundante. */}
+                {isAdmin && visao === 'mes' && (
+                  <div className="mt-6">
+                    <h4 className="label-condensed mb-3 text-sm text-brand-forest">Legenda</h4>
+
+                    <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                      {LEGENDA.map(({ situacao, descricao }) => (
+                        <li
+                          key={situacao}
+                          className="flex items-center gap-2 text-sm text-gray-600"
+                        >
+                          <Badge variant={getActionStatus(situacao).variant}>{situacao}</Badge>
+                          {descricao}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
             )}
           </CardBody>
         </Card>

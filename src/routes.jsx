@@ -10,6 +10,7 @@ import { ActionCalendar } from '~views/events/schedule';
 import { PartnersCreateContainer } from '~views/partners/create';
 import { QuotasContainer } from '~views/quotas';
 import { MyEventsContainer } from '~views/events/my-events';
+import { EditionsContainer } from '~views/editions';
 
 const routes = [
   {
@@ -80,6 +81,13 @@ const routes = [
     name: 'Eventos',
     icon: 'ni ni-bullet-list-67 text-red',
     component: <EventsContainer />,
+    layout: '/admin',
+  },
+  {
+    path: '/editions',
+    name: 'Edições',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: <EditionsContainer />,
     layout: '/admin',
   },
   {

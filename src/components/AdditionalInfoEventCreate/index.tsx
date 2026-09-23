@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Collapse } from '~components/ui';
+import { formatarDataCivil, rotuloPeriodo } from '~/lib/periodoSlz';
+import type { Edicao } from '~/lib/edicoes';
+
+type AdditionalInfoEventCreateProps = {
+  edicao: Edicao;
+};
 
 const MIDIA_TELA_LARGA = '(min-width: 640px)';
 
-const AdditionalInfoEventCreate = () => {
+const AdditionalInfoEventCreate = ({ edicao }: AdditionalInfoEventCreateProps) => {
   const [listaAberta, setListaAberta] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(MIDIA_TELA_LARGA).matches
   );
@@ -29,7 +35,10 @@ const AdditionalInfoEventCreate = () => {
       <p>
         Mobilize sua empresa, escritório, estabelecimento, escola, grupo de amigos e familiares e
         cadastre sua ação{' '}
-        <mark className="bg-brand-warning/40 font-bold uppercase">até o dia 08 de outubro</mark>.
+        <mark className="bg-brand-warning/40 font-bold uppercase">
+          até o dia {formatarDataCivil(edicao.data_fim_cadastro, 'D [de] MMMM')}
+        </mark>
+        .
       </p>
 
       <p className="font-semibold">
@@ -72,9 +81,9 @@ const AdditionalInfoEventCreate = () => {
             className="list-decimal space-y-4 py-4 pl-5 marker:font-semibold marker:text-brand-forest"
           >
             <li>
-              As atividades cadastradas deverão ocorrer entre os dias 07 e 15 de novembro de 2026.
-              Todas as ações devem ser GRATUITAS, porém não precisam ser necessariamente abertas ao
-              público.
+              As atividades cadastradas deverão ocorrer entre{' '}
+              {rotuloPeriodo(edicao.data_inicio_realizacao, edicao.data_fim_realizacao)}. Todas as
+              ações devem ser GRATUITAS, porém não precisam ser necessariamente abertas ao público.
             </li>
 
             <li>
