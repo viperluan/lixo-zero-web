@@ -25,7 +25,24 @@ export type DadosSessao = {
   usuario: UsuarioSessao;
 };
 
-export type MotivoEncerramento = 'expirada' | 'logout';
+export type MotivoEncerramento = 'expirada' | 'logout' | 'invalida';
+
+const CHAVE_AVISO_SESSAO_INVALIDA = 'aviso-sessao-invalida';
+const TEXTO_AVISO_SESSAO_INVALIDA = 'Sessão inválida, entre novamente.';
+
+/** Sobrevive ao reload que manda a pessoa para o login depois do 401 sem `code`. */
+export function guardarAvisoSessaoInvalida() {
+  sessionStorage.setItem(CHAVE_AVISO_SESSAO_INVALIDA, TEXTO_AVISO_SESSAO_INVALIDA);
+}
+
+export function consumirAvisoSessaoInvalida() {
+  const aviso = sessionStorage.getItem(CHAVE_AVISO_SESSAO_INVALIDA);
+
+  if (!aviso) return null;
+
+  sessionStorage.removeItem(CHAVE_AVISO_SESSAO_INVALIDA);
+  return aviso;
+}
 
 type EncerramentoCallback = (motivo: MotivoEncerramento) => void;
 type AplicarAuthorization = (token: string | null) => void;
