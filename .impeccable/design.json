@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-26T03:15:00.000Z",
+  "title": "Design System: Semana Lixo Zero",
+  "extensions": {
+    "colorMeta": {
+      "forest": {
+        "role": "primary",
+        "displayName": "Verde-floresta",
+        "canonical": "oklch(45.4% 0.070 172.3)",
+        "tonalRamp": ["#001710", "#003325", "#074e3e", "#2c6b59", "#4b8876", "#6fad9a", "#95d3bf", "#d2f4e8"]
+      },
+      "forest-deep": {
+        "role": "primary",
+        "displayName": "Floresta profunda",
+        "canonical": "oklch(32.4% 0.049 171.9)",
+        "tonalRamp": ["#041510", "#073026", "#254b3f", "#40675a", "#5d8477", "#80a99b", "#a5cfc0", "#daf1e9"]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Creme",
+        "canonical": "oklch(98.8% 0.029 100.6)",
+        "tonalRamp": ["#13120a", "#2c2918", "#464331", "#615e4c", "#7e7b68", "#a29f8b", "#c8c5b0", "#edece0"]
+      },
+      "sage": {
+        "role": "primary",
+        "displayName": "Sálvia",
+        "canonical": "oklch(72.9% 0.063 158.6)",
+        "tonalRamp": ["#03160c", "#02321d", "#214c36", "#3d6950", "#5a866d", "#7dab90", "#a2d1b5", "#d9f3e3"]
+      },
+      "leaf": {
+        "role": "primary",
+        "displayName": "Folha",
+        "canonical": "oklch(75.7% 0.048 132.2)",
+        "tonalRamp": ["#0d1408", "#202e14", "#39482d", "#546448", "#708163", "#93a587", "#b9cbac", "#e5efdd"]
+      },
+      "primary-dark": {
+        "role": "secondary",
+        "displayName": "Azul institucional",
+        "canonical": "oklch(51.2% 0.084 227.3)",
+        "tonalRamp": ["#001521", "#002f48", "#004a65", "#1a6782", "#3d84a1", "#62a9c7", "#88d0ee", "#ccf2ff"]
+      },
+      "primary-light": {
+        "role": "secondary",
+        "displayName": "Azul claro institucional",
+        "canonical": "oklch(68.8% 0.093 247.0)",
+        "tonalRamp": ["#001326", "#002a53", "#0b4570", "#2c628f", "#4a7fae", "#6ea4d5", "#93cafd", "#d1efff"]
+      },
+      "secondary-dark": {
+        "role": "secondary",
+        "displayName": "Verde institucional",
+        "canonical": "oklch(63.6% 0.133 131.4)",
+        "tonalRamp": ["#051700", "#0b3300", "#264f00", "#416c00", "#5d8a2b", "#80af52", "#a5d678", "#daf6c3"]
+      },
+      "secondary-light": {
+        "role": "secondary",
+        "displayName": "Verde-amarelo institucional",
+        "canonical": "oklch(81.1% 0.148 115.2)",
+        "tonalRamp": ["#121400", "#292d00", "#424900", "#5c6500", "#788300", "#9ca824", "#c1cf53", "#e9f2b4"]
+      },
+      "accent": {
+        "role": "tertiary",
+        "displayName": "Acento vivo",
+        "canonical": "oklch(63.1% 0.175 143.5)",
+        "tonalRamp": ["#001a00", "#003a00", "#005600", "#007400", "#219327", "#4fb94f", "#77e075", "#c5fdc2"]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Âmbar",
+        "canonical": "oklch(79.7% 0.157 79.2)",
+        "tonalRamp": ["#240800", "#4e1200", "#6c3000", "#8b4d00", "#ab6b00", "#d29000", "#fab631", "#ffe5a9"]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Vermelho campanha",
+        "canonical": "oklch(58.1% 0.201 30.4)",
+        "tonalRamp": ["#340000", "#6d0000", "#900000", "#b40000", "#d73523", "#ff614b", "#ff8971", "#ffd0bf"]
+      },
+      "purple": {
+        "role": "tertiary",
+        "displayName": "Roxo institucional",
+        "canonical": "oklch(62.0% 0.094 302.6)",
+        "tonalRamp": ["#160b24", "#32194e", "#4c346b", "#685089", "#856ca8", "#aa90cf", "#d0b6f7", "#f2e4ff"]
+      },
+      "dark": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "oklch(28.8% 0.009 340.9)",
+        "tonalRamp": ["#131112", "#2c272a", "#464144", "#615c5f", "#7e787c", "#a39ca0", "#c8c2c6", "#eeeaec"]
+      },
+      "light": {
+        "role": "neutral",
+        "displayName": "Papel",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": ["#121212", "#292929", "#424242", "#5d5d5d", "#7a7a7a", "#9e9e9e", "#c4c4c4", "#ebebeb"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Assinatura", "purpose": "Shrikhand só na assinatura da marca." },
+      "headline": { "displayName": "Título de seção", "purpose": "Barlow Black no site público." },
+      "title": { "displayName": "Título de cartão", "purpose": "Barlow Black em blocos e cartões." },
+      "body": { "displayName": "Corpo", "purpose": "Barlow Light no texto corrido." },
+      "label": { "displayName": "Rótulo", "purpose": "Barlow Condensed em navegação, campo e tabela." },
+      "accent": { "displayName": "Manuscrito", "purpose": "Caveat, raro, no lugar de Dreaming Outloud Sans." }
+    },
+    "shadows": [
+      {
+        "name": "painel",
+        "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "purpose": "Cartão administrativo em repouso."
+      },
+      {
+        "name": "campanha",
+        "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        "purpose": "Cartão público de campanha."
+      },
+      {
+        "name": "campanha-hover",
+        "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+        "purpose": "Hover do cartão público."
+      }
+    ],
+    "motion": [
+      { "name": "colors", "value": "200ms ease", "purpose": "Troca de cor em links." },
+      { "name": "fade-in", "value": "200ms ease-out", "purpose": "Entrada curta." },
+      { "name": "fade-in-up", "value": "600ms ease-out", "purpose": "Entrada de bloco, 20px para cima." },
+      { "name": "modal-in", "value": "200ms ease-out", "purpose": "Abertura de modal." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão primário",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal. Sálvia com texto floresta profunda.",
+      "html": "<button class=\"ds-btn-primary\">Criar ação</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #86B499; color: #153C31; padding: 10px 20px; border: none; border-radius: 12px; font-family: Barlow, system-ui, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; } .ds-btn-primary:hover { background: rgb(134 180 153 / 0.8); } .ds-btn-primary:focus-visible { outline: 2px solid #246352; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão secundário",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ação de apoio. Fundo floresta e texto creme.",
+      "html": "<button class=\"ds-btn-secondary\">Ver agenda</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #246352; color: #FFFCE6; padding: 10px 20px; border: none; border-radius: 12px; font-family: Barlow, system-ui, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; } .ds-btn-secondary:hover { background: rgb(36 99 82 / 0.9); } .ds-btn-secondary:focus-visible { outline: 2px solid #246352; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão outline",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Ação terciária com borda floresta.",
+      "html": "<button class=\"ds-btn-outline\">Cancelar</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #fff; color: #246352; padding: 10px 20px; border: 2px solid #246352; border-radius: 12px; font-family: Barlow, system-ui, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s; } .ds-btn-outline:hover { background: #246352; color: #FFFCE6; } .ds-btn-outline:focus-visible { outline: 2px solid #246352; outline-offset: 2px; }"
+    },
+    {
+      "name": "Campo",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Texto, área e select compartilham altura, borda e foco.",
+      "html": "<label class=\"ds-label\">Nome da ação<span aria-hidden=\"true\"> *</span></label><input class=\"ds-input\" placeholder=\"Mutirão no bairro\" />",
+      "css": ".ds-label { display: block; margin-bottom: 6px; font-family: \"Barlow Condensed\", Barlow, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.025em; text-transform: uppercase; color: #2E292C; } .ds-label span { color: #D83624; } .ds-input { width: 100%; box-sizing: border-box; background: #fff; color: #2E292C; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: Barlow, system-ui, sans-serif; font-size: 14px; font-weight: 300; } .ds-input:focus { outline: none; border-color: #246352; box-shadow: 0 0 0 2px rgb(36 99 82 / 0.3); }"
+    },
+    {
+      "name": "Cartão",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Superfície do painel, com fio e sombra curta.",
+      "html": "<article class=\"ds-card\"><h2 class=\"ds-card-title\">Ações da semana</h2><p class=\"ds-card-body\">Mutirões, oficinas e palestras confirmadas.</p></article>",
+      "css": ".ds-card { background: #fff; border: 1px solid #f3f4f6; border-radius: 12px; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); padding: 24px; } .ds-card-title { margin: 0 0 8px; font-family: Barlow, system-ui, sans-serif; font-size: 20px; font-weight: 900; letter-spacing: -0.025em; color: #246352; } .ds-card-body { margin: 0; font-family: Barlow, system-ui, sans-serif; font-size: 16px; font-weight: 300; color: #2E292C; }"
+    },
+    {
+      "name": "Selo",
+      "kind": "chip",
+      "refersTo": "badge-primary",
+      "description": "Estado compacto em tabela e cartão.",
+      "html": "<span class=\"ds-badge\">Confirmada</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; background: rgb(36 99 82 / 0.1); color: #246352; padding: 4px 10px; border-radius: 9999px; font-family: \"Barlow Condensed\", Barlow, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.025em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Navegação",
+      "kind": "nav",
+      "refersTo": "button-secondary",
+      "description": "Faixa floresta do site público, com a ação em sálvia.",
+      "html": "<header class=\"ds-nav\"><span class=\"ds-nav-brand\">Semana Lixo Zero</span><nav class=\"ds-nav-links\"><a href=\"#agenda\">Agenda</a><a href=\"#sobre\">Sobre</a></nav><a class=\"ds-nav-cta\" href=\"#criar\">Criar ação</a></header>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 24px; background: #246352; color: #FFFCE6; padding: 16px 32px; font-family: Barlow, system-ui, sans-serif; } .ds-nav-brand { font-weight: 900; letter-spacing: -0.025em; } .ds-nav-links { display: flex; gap: 16px; } .ds-nav-links a { color: rgb(255 252 230 / 0.9); text-decoration: none; } .ds-nav-links a:hover { color: #fff; } .ds-nav-cta { margin-left: auto; background: #86B499; color: #153C31; text-decoration: none; padding: 10px 24px; border-radius: 12px; font-weight: 600; } .ds-nav-cta:hover { background: rgb(134 180 153 / 0.8); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O cartaz da campanha",
+    "overview": "A interface parte da arte oficial da Semana Lixo Zero 2026 e do manual institucional do ILZB. O fundo é creme, as faixas e o rodapé são verde-floresta, e os botões de ação são verde-sálvia. A tipografia pesada dos títulos imita o cartaz: Barlow Black, com Shrikhand reservada à assinatura da marca. Há duas superfícies no mesmo sistema. O site público pode ter mais respiro, cartaz e imagem. O painel é uma ferramenta: tabelas, formulários e cartões planos, com a marca nos detalhes.",
+    "keyCharacteristics": [
+      "Paleta amostrada da arte da campanha, mais as cores semânticas do manual do ILZB.",
+      "Barlow Black nos títulos, Barlow Light no corpo, Barlow Condensed nos rótulos.",
+      "Cantos generosos nos botões e cartões; nada de retângulo afiado nem pílula genérica de SaaS.",
+      "Profundidade curta: sombra leve no painel, sombra mais alta só no cartão de campanha."
+    ],
+    "rules": [
+      {
+        "name": "The Sage Text Rule",
+        "body": "Texto sobre sálvia usa floresta profunda. Não use floresta nem branco nesse fundo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Campaign First Rule",
+        "body": "Uma tela nova usa floresta, creme, sálvia e folha. As cores institucionais só aparecem quando o estado semântico pede.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signature Rule",
+        "body": "Shrikhand não substitui Barlow nos títulos. Se o texto informa, é Barlow. Se o texto assina a marca, é Shrikhand.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Tool Rule",
+        "body": "Tabela, formulário e navbar não ganham sombra decorativa. Sombra é do cartão.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do reutilizar Button, Card, Form, Badge, Table, Modal e Container antes de criar markup solto.",
+      "Do manter texto sobre sálvia em floresta profunda.",
+      "Do usar lucide-react quando precisar de um ícone novo.",
+      "Do tratar o painel como ferramenta: hierarquia curta, estados vazio, erro e carregando visíveis."
+    ],
+    "donts": [
+      "Don't introduzir outra fonte, outra paleta ou uma biblioteca de componentes paralela.",
+      "Don't usar Shrikhand em título de seção, tabela ou formulário.",
+      "Don't pintar tela com gradiente roxo, glow ou cartão de vidro. Isso não está no manual.",
+      "Don't colocar texto floresta direto sobre sálvia."
+    ]
+  }
+}
