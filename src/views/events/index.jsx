@@ -1,12 +1,15 @@
 import api, { mensagemErroApi } from '~api';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { FaCheck, FaTrash, FaWhatsapp } from 'react-icons/fa';
+import { X } from 'lucide-react';
+import { FaCheck, FaWhatsapp } from 'react-icons/fa';
 import { LoadingOverlay } from '~components/Loading';
+import { ActionFormatBadge } from '~components/ActionFormatBadge';
 import { ActionStatusBadge } from '~components/ActionStatusBadge';
 import { useAuth } from '~context/AuthContext';
 import { listarEnumerados, SituacaoAcao, FormaRealizacaoAcao } from '~/Enumerados';
 import { listarEdicoes } from '~/lib/edicoes';
+import { obterLocalAcao } from '~/lib/acoes';
 import {
   Badge,
   Button,
@@ -34,6 +37,64 @@ import {
   Tr,
 } from '~components/ui';
 
+const SITUACOES_FILTRO = [
+  { value: SituacaoAcao.AguardandoConfirmacao, label: 'Pendente' },
+  { value: SituacaoAcao.Confirmada, label: 'Aprovada' },
+  { value: SituacaoAcao.Cancelada, label: 'Reprovada' },
+];
+
+const COLUNAS_TABELA = 8;
+
+const classeAcoesCabecalho =
+  'sticky left-0 z-10 w-[8.5rem] min-w-[8.5rem] max-w-[8.5rem] border-r border-gray-100 bg-brand-cream';
+const classeTituloCabecalho = 'sticky left-[8.5rem] z-10 border-r border-gray-100 bg-brand-cream';
+const classeAcoesCelula =
+  'sticky left-0 z-10 w-[8.5rem] min-w-[8.5rem] max-w-[8.5rem] border-r border-gray-100 bg-white group-hover:bg-brand-cream';
+const classeTituloCelula =
+  'sticky left-[8.5rem] z-10 border-r border-gray-100 bg-white group-hover:bg-brand-cream';
+
+const formatarDataAcao = (data) =>
+  new Date(data).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+const ehLinkHttp = (valor) => typeof valor === 'string' && valor.startsWith('http');
+
+const TextoOuLink = ({ valor }) => {
+  if (!valor) return null;
+
+  if (ehLinkHttp(valor)) {
+    return (
+      <a
+        href={valor}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="break-all text-brand-forest hover:underline"
+      >
+        {valor}
+      </a>
+    );
+  }
+
+  return <span className="break-words">{valor}</span>;
+};
+
+const LinhaDetalhe = ({ rotulo, children }) => {
+  if (children == null || children === '' || children === false) return null;
+
+  return (
+    <div>
+      <dt className="label-condensed text-xs text-brand-forest">{rotulo}</dt>
+      <dd className="mt-1 whitespace-pre-wrap break-words text-sm text-brand-dark">{children}</dd>
+    </div>
+  );
+};
+
 const EventsContainer = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,13 +105,15 @@ const EventsContainer = () => {
   const [listUsers, setListUsers] = useState([]);
   const [userFilter, setUserFilter] = useState('');
   const [activityType, setActivityType] = useState('');
-  const listaSituacaoAcao = listarEnumerados(SituacaoAcao);
   const [situacaoFiltro, setSituacaoFiltro] = useState('');
   const [search, setSearch] = useState('');
+  const [searchAplicada, setSearchAplicada] = useState('');
   const [filterType, setFilterType] = useState('');
   const [edicoes, setEdicoes] = useState([]);
   const [edicaoFiltro, setEdicaoFiltro] = useState('');
   const [pendentesAnoAnterior, setPendentesAnoAnterior] = useState(null);
+  const [filtrosAbertos, setFiltrosAbertos] = useState(false);
+  const [acaoDetalhe, setAcaoDetalhe] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
@@ -74,58 +137,6 @@ const EventsContainer = () => {
     api.get(`/usuarios?page=1&limit=150`).then((res) => {
       setListUsers(res.data.users || []);
     });
-  };
-
-  const fetchActions = (page) => {
-    const filters = {};
-
-    if (activityType) {
-      filters.id_categoria = activityType;
-    }
-
-    if (situacaoFiltro) {
-      filters.situacao = situacaoFiltro;
-    }
-
-    if (userFilter) {
-      filters.id_usuario = userFilter;
-    }
-
-    if (search) {
-      filters.search = search.trim();
-    }
-
-    if (filterType) {
-      filters.forma_realizacao_acao = filterType;
-    }
-
-    if (edicaoFiltro === 'todos') {
-      filters.ano = 'todos';
-    } else if (edicaoFiltro) {
-      filters.id_edicao = edicaoFiltro;
-    }
-
-    const queryString = new URLSearchParams(filters).toString();
-
-    setIsLoading(true);
-
-    api
-      .get(`/acoes?page=${page}&limit=10&${queryString}`)
-      .then((res) => {
-        if (res.status !== 200) {
-          const erro = mensagemErroApi(res.data);
-          if (erro) toast.error(erro);
-          setlistActions([]);
-          setTotalPages(1);
-          return;
-        }
-
-        setlistActions(res.data.actions || []);
-        setTotalPages(res.data.totalPages || 1);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
   };
 
   useEffect(() => {
@@ -154,13 +165,96 @@ const EventsContainer = () => {
   }, []);
 
   useEffect(() => {
-    fetchActions(currentPage);
-  }, [currentPage, edicaoFiltro]);
+    let cancelado = false;
+    const filters = {};
+
+    if (activityType) {
+      filters.id_categoria = activityType;
+    }
+
+    if (situacaoFiltro) {
+      filters.situacao = situacaoFiltro;
+    }
+
+    if (userFilter) {
+      filters.id_usuario = userFilter;
+    }
+
+    if (searchAplicada) {
+      filters.search = searchAplicada;
+    }
+
+    if (filterType) {
+      filters.forma_realizacao_acao = filterType;
+    }
+
+    if (edicaoFiltro === 'todos') {
+      filters.ano = 'todos';
+    } else if (edicaoFiltro) {
+      filters.id_edicao = edicaoFiltro;
+    }
+
+    const queryString = new URLSearchParams(filters).toString();
+
+    setIsLoading(true);
+
+    api
+      .get(`/acoes?page=${currentPage}&limit=10&${queryString}`)
+      .then((res) => {
+        if (cancelado) return;
+
+        if (res.status !== 200) {
+          const erro = mensagemErroApi(res.data);
+          if (erro) toast.error(erro);
+          setlistActions([]);
+          setTotalPages(1);
+          return;
+        }
+
+        setlistActions(res.data.actions || []);
+        setTotalPages(res.data.totalPages || 1);
+      })
+      .finally(() => {
+        if (!cancelado) setIsLoading(false);
+      });
+
+    return () => {
+      cancelado = true;
+    };
+  }, [
+    currentPage,
+    activityType,
+    situacaoFiltro,
+    userFilter,
+    filterType,
+    edicaoFiltro,
+    searchAplicada,
+  ]);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const aplicarSelect = (definir) => (evento) => {
+    definir(evento.target.value);
+    setCurrentPage(1);
+  };
+
+  const aplicarPesquisa = () => {
+    setSearchAplicada(search.trim());
+    setCurrentPage(1);
+  };
+
+  const limparFiltros = () => {
+    setActivityType('');
+    setSituacaoFiltro('');
+    setUserFilter('');
+    setFilterType('');
+    setSearch('');
+    setSearchAplicada('');
+    setCurrentPage(1);
   };
 
   const handleChangeActionStatus = async () => {
@@ -267,20 +361,100 @@ const EventsContainer = () => {
     toggleModal();
   };
 
+  const fecharDetalhe = () => setAcaoDetalhe(null);
+
+  const filtrosPreenchidos = Boolean(
+    activityType || situacaoFiltro || userFilter || filterType || search || searchAplicada
+  );
+  const filtrosAtivos = [
+    activityType,
+    situacaoFiltro,
+    userFilter,
+    filterType,
+    searchAplicada,
+  ].filter(Boolean).length;
+
+  const rotuloEdicao = () => {
+    if (edicaoFiltro === 'todos') return 'Todas as edições';
+
+    const edicao = edicoes.find((item) => String(item.id) === String(edicaoFiltro));
+    return edicao ? `Edição ${edicao.ano}` : 'Edição';
+  };
+
+  const chips = [
+    searchAplicada && {
+      id: 'search',
+      rotulo: `Pesquisa: ${searchAplicada}`,
+      limpar: () => {
+        setSearch('');
+        setSearchAplicada('');
+        setCurrentPage(1);
+      },
+    },
+    activityType && {
+      id: 'categoria',
+      rotulo:
+        listCategories.find((item) => String(item.id) === String(activityType))?.descricao ||
+        'Categoria',
+      limpar: () => {
+        setActivityType('');
+        setCurrentPage(1);
+      },
+    },
+    situacaoFiltro && {
+      id: 'situacao',
+      rotulo: SITUACOES_FILTRO.find((item) => item.value === situacaoFiltro)?.label || 'Situação',
+      limpar: () => {
+        setSituacaoFiltro('');
+        setCurrentPage(1);
+      },
+    },
+    userFilter && {
+      id: 'usuario',
+      rotulo: listUsers.find((item) => String(item.id) === String(userFilter))?.nome || 'Usuário',
+      limpar: () => {
+        setUserFilter('');
+        setCurrentPage(1);
+      },
+    },
+    filterType && {
+      id: 'forma',
+      rotulo:
+        listaFormaAcao.find((item) => item.value === filterType)?.label || 'Forma de realização',
+      limpar: () => {
+        setFilterType('');
+        setCurrentPage(1);
+      },
+    },
+    edicaoFiltro && {
+      id: 'edicao',
+      rotulo: rotuloEdicao(),
+      limpar: () => {
+        setEdicaoFiltro('');
+        setCurrentPage(1);
+      },
+    },
+  ].filter(Boolean);
+
+  const localDetalhe = acaoDetalhe ? obterLocalAcao(acaoDetalhe) : '';
+
   return (
     <>
       <LoadingOverlay isLoading={isLoading} />
 
       <Modal isOpen={isModalOpen} size="sm">
-        <ModalHeader>{modalInfo['header']}</ModalHeader>
+        <ModalHeader>{modalInfo.header}</ModalHeader>
 
         <ModalBody className="text-center">
-          <p className="text-brand-dark">{modalInfo['body']}</p>
+          <p className="text-brand-dark">{modalInfo.body}</p>
           <p className="mt-2 text-sm text-gray-500">Será enviado um email informando o usuário!</p>
         </ModalBody>
 
         <ModalFooter className="justify-center">
-          <Button variant="danger" onClick={handleChangeActionStatus}>
+          <Button
+            variant={modalInfo.situation === SituacaoAcao.Confirmada ? 'success' : 'danger'}
+            onClick={handleChangeActionStatus}
+          >
             Sim
           </Button>
 
@@ -290,35 +464,71 @@ const EventsContainer = () => {
         </ModalFooter>
       </Modal>
 
+      <Modal isOpen={acaoDetalhe != null} toggle={fecharDetalhe} size="lg">
+        {acaoDetalhe && (
+          <>
+            <ModalHeader toggle={fecharDetalhe}>{acaoDetalhe.titulo_acao}</ModalHeader>
+
+            <ModalBody>
+              <dl className="space-y-4">
+                <LinhaDetalhe rotulo="Descrição">{acaoDetalhe.descricao_acao}</LinhaDetalhe>
+                <LinhaDetalhe rotulo="Informações">{acaoDetalhe.informacoes_acao}</LinhaDetalhe>
+                <LinhaDetalhe rotulo="Orientação de divulgação">
+                  {acaoDetalhe.orientacao_divulgacao_acao}
+                </LinhaDetalhe>
+                <LinhaDetalhe rotulo="Local">{localDetalhe}</LinhaDetalhe>
+                <LinhaDetalhe rotulo="Endereço">{acaoDetalhe.endereco_local_acao}</LinhaDetalhe>
+                {acaoDetalhe.link_divulgacao_acesso_acao && (
+                  <LinhaDetalhe rotulo="Link de divulgação">
+                    <TextoOuLink valor={acaoDetalhe.link_divulgacao_acesso_acao} />
+                  </LinhaDetalhe>
+                )}
+                {acaoDetalhe.link_para_inscricao_acao && (
+                  <LinhaDetalhe rotulo="Link para inscrição">
+                    <TextoOuLink valor={acaoDetalhe.link_para_inscricao_acao} />
+                  </LinhaDetalhe>
+                )}
+                <LinhaDetalhe rotulo="Público">{acaoDetalhe.tipo_publico_acao}</LinhaDetalhe>
+                <LinhaDetalhe rotulo="Número de organizadores">
+                  {acaoDetalhe.numero_organizadores_acao}
+                </LinhaDetalhe>
+                <LinhaDetalhe rotulo="Usuário de alteração">
+                  {acaoDetalhe.usuario_alteracao?.nome}
+                </LinhaDetalhe>
+              </dl>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button variant="neutral" onClick={fecharDetalhe}>
+                Fechar
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </Modal>
+
       <Container>
         <Card>
           <CardHeader className="space-y-5">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <CardTitle>Lista de Ações</CardTitle>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <Select
-                  id="edicao-fila"
-                  aria-label="Edição"
-                  value={edicaoFiltro}
-                  onChange={(e) => {
-                    setEdicaoFiltro(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="w-auto min-w-44"
-                >
-                  <option value="">Edição vigente</option>
-                  {edicoes.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      Edição {item.ano}
-                      {item.vigente ? ' · vigente' : ''}
-                    </option>
-                  ))}
-                  <option value="todos">Todas</option>
-                </Select>
-
-                <Button onClick={exportToCSV}>Exportar para CSV</Button>
-              </div>
+              <Select
+                id="edicao-fila"
+                aria-label="Edição"
+                value={edicaoFiltro}
+                onChange={aplicarSelect(setEdicaoFiltro)}
+                className="w-full sm:w-auto sm:min-w-44"
+              >
+                <option value="">Edição vigente</option>
+                {edicoes.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    Edição {item.ano}
+                    {item.vigente ? ' · vigente' : ''}
+                  </option>
+                ))}
+                <option value="todos">Todas</option>
+              </Select>
             </div>
 
             {pendentesAnoAnterior && !edicaoFiltro && (
@@ -339,122 +549,180 @@ const EventsContainer = () => {
               </div>
             )}
 
-            <div>
-              <h3 className="label-condensed mb-3 text-sm text-brand-forest">Filtros</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="label-condensed text-sm text-brand-forest">Filtros</h3>
 
-              <div className="grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                <FormGroup className="mb-4">
-                  <Label htmlFor="pesquisa">Pesquisa</Label>
-                  <Input
-                    id="pesquisa"
-                    name="pesquisa"
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </FormGroup>
-
-                <FormGroup className="mb-4">
-                  <Label htmlFor="tipo_atividade">Tipo da Atividade</Label>
-                  <Select
-                    id="tipo_atividade"
-                    name="activityType"
-                    value={activityType}
-                    onChange={(e) => setActivityType(e.target.value)}
-                  >
-                    <option value="">Todos</option>
-                    {listCategories.map((categorie) => (
-                      <option key={categorie.id} value={categorie.id}>
-                        {categorie.descricao}
-                      </option>
-                    ))}
-                  </Select>
-                </FormGroup>
-
-                <FormGroup className="mb-4">
-                  <Label htmlFor="situacao">Situação</Label>
-                  <Select
-                    id="situacao"
-                    value={situacaoFiltro}
-                    onChange={(e) => setSituacaoFiltro(e.target.value)}
-                  >
-                    <option value="">Todos</option>
-                    {listaSituacaoAcao.map((forma) => (
-                      <option key={forma.value} value={forma.value}>
-                        {forma.label}
-                      </option>
-                    ))}
-                  </Select>
-                </FormGroup>
-
-                <FormGroup className="mb-4">
-                  <Label htmlFor="id_usuario">Usuário</Label>
-                  <Select
-                    id="id_usuario"
-                    name="id_usuario"
-                    value={userFilter}
-                    onChange={(e) => setUserFilter(e.target.value)}
-                  >
-                    <option value="">Todos</option>
-                    {listUsers.map((usuario) => (
-                      <option key={usuario.id} value={usuario.id}>
-                        {usuario.nome}
-                      </option>
-                    ))}
-                  </Select>
-                </FormGroup>
-
-                <FormGroup className="mb-4">
-                  <Label htmlFor="filterType">Tipo de Ação</Label>
-                  <Select
-                    id="filterType"
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                  >
-                    <option value="">Todos</option>
-                    {listaFormaAcao.map((forma) => (
-                      <option key={forma.value} value={forma.value}>
-                        {forma.label}
-                      </option>
-                    ))}
-                  </Select>
-                </FormGroup>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="lg:hidden"
+                  aria-expanded={filtrosAbertos}
+                  aria-controls="filtros-acoes"
+                  onClick={() => setFiltrosAbertos((aberto) => !aberto)}
+                >
+                  {filtrosAbertos ? 'Ocultar' : 'Filtros'}
+                  {filtrosAtivos > 0 ? ` (${filtrosAtivos})` : ''}
+                </Button>
               </div>
 
-              <Button onClick={() => fetchActions(currentPage)}>Filtrar</Button>
+              <div id="filtros-acoes" className={filtrosAbertos ? 'lg:block' : 'hidden lg:block'}>
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+                    <FormGroup className="!mb-0 w-full sm:flex-1">
+                      <Label htmlFor="pesquisa">Pesquisa</Label>
+                      <Input
+                        id="pesquisa"
+                        name="pesquisa"
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            aplicarPesquisa();
+                          }
+                        }}
+                      />
+                    </FormGroup>
+
+                    <Button
+                      onClick={aplicarPesquisa}
+                      className="w-full border border-transparent !rounded-lg sm:w-auto"
+                    >
+                      Buscar
+                    </Button>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <FormGroup className="mb-0">
+                      <Label htmlFor="tipo_atividade">Categoria</Label>
+                      <Select
+                        id="tipo_atividade"
+                        name="activityType"
+                        value={activityType}
+                        onChange={aplicarSelect(setActivityType)}
+                      >
+                        <option value="">Todos</option>
+                        {listCategories.map((categorie) => (
+                          <option key={categorie.id} value={categorie.id}>
+                            {categorie.descricao}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormGroup>
+
+                    <FormGroup className="mb-0">
+                      <Label htmlFor="situacao">Situação</Label>
+                      <Select
+                        id="situacao"
+                        value={situacaoFiltro}
+                        onChange={aplicarSelect(setSituacaoFiltro)}
+                      >
+                        <option value="">Todos</option>
+                        {SITUACOES_FILTRO.map((forma) => (
+                          <option key={forma.value} value={forma.value}>
+                            {forma.label}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormGroup>
+
+                    <FormGroup className="mb-0">
+                      <Label htmlFor="id_usuario">Usuário</Label>
+                      <Select
+                        id="id_usuario"
+                        name="id_usuario"
+                        value={userFilter}
+                        onChange={aplicarSelect(setUserFilter)}
+                      >
+                        <option value="">Todos</option>
+                        {listUsers.map((usuario) => (
+                          <option key={usuario.id} value={usuario.id}>
+                            {usuario.nome}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormGroup>
+
+                    <FormGroup className="mb-0">
+                      <Label htmlFor="filterType">Forma de realização</Label>
+                      <Select
+                        id="filterType"
+                        value={filterType}
+                        onChange={aplicarSelect(setFilterType)}
+                      >
+                        <option value="">Todos</option>
+                        {listaFormaAcao.map((forma) => (
+                          <option key={forma.value} value={forma.value}>
+                            {forma.label}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormGroup>
+                  </div>
+                </div>
+              </div>
+
+              {chips.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {chips.map((chip) => (
+                    <Badge
+                      key={chip.id}
+                      variant="neutral"
+                      className="gap-1 normal-case tracking-normal"
+                    >
+                      {chip.rotulo}
+                      <button
+                        type="button"
+                        aria-label={`Remover filtro ${chip.rotulo}`}
+                        onClick={chip.limpar}
+                        className="rounded-full p-0.5 hover:bg-black/10"
+                      >
+                        <X className="h-3.5 w-3.5" aria-hidden="true" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Button
+                  variant="neutral"
+                  onClick={limparFiltros}
+                  disabled={!filtrosPreenchidos}
+                  className="w-full sm:w-auto"
+                >
+                  Limpar filtros
+                </Button>
+
+                <Button variant="outline" onClick={exportToCSV} className="w-full sm:w-auto">
+                  Exportar página
+                </Button>
+              </div>
             </div>
           </CardHeader>
 
           <Table>
             <Thead>
               <Tr>
-                <Th>Ações</Th>
-                <Th>Título da ação</Th>
-                <Th>Situação da ação</Th>
-                <Th>Nome do organizador</Th>
-                <Th>WhatsApp do responsável</Th>
-                <Th>Descrição ação</Th>
-                <Th>Tipo da atividade</Th>
-                <Th>Data da ação</Th>
-                <Th>Forma de realização</Th>
-                <Th>Link de divulgação</Th>
-                <Th>Nome do local</Th>
-                <Th>Endereço do local</Th>
-                <Th>Informações ação</Th>
-                <Th>Link para inscrição</Th>
-                <Th>Público</Th>
-                <Th>Descrição divulgação</Th>
-                <Th>Usuário responsável</Th>
-                <Th>Usuário alteração</Th>
+                <Th className={classeAcoesCabecalho}>Ações</Th>
+                <Th className={classeTituloCabecalho}>Título</Th>
+                <Th>Situação</Th>
+                <Th>Data e hora</Th>
+                <Th>Categoria</Th>
+                <Th>Forma</Th>
+                <Th>Organizador</Th>
+                <Th>Responsável</Th>
               </Tr>
             </Thead>
 
             <Tbody>
-              {listActions.length === 0 && <TableEmpty colSpan={18} />}
+              {listActions.length === 0 && <TableEmpty colSpan={COLUNAS_TABELA} />}
 
               {listActions.map((action) => (
-                <Tr key={action.id}>
-                  <Td>
+                <Tr key={action.id} className="group">
+                  <Td className={classeAcoesCelula}>
                     <div className="flex items-center gap-1">
                       <Button
                         variant="icon"
@@ -462,6 +730,7 @@ const EventsContainer = () => {
                         title="Aprovar ação"
                         disabled={action.situacao_acao === 'Aprovada'}
                         onClick={() => handleActionSituation(SituacaoAcao.Confirmada, action)}
+                        className="min-h-11 min-w-11"
                       >
                         <FaCheck
                           size={18}
@@ -479,9 +748,11 @@ const EventsContainer = () => {
                         title="Reprovar ação"
                         disabled={action.situacao_acao === 'Reprovada'}
                         onClick={() => handleActionSituation(SituacaoAcao.Cancelada, action)}
+                        className="min-h-11 min-w-11"
                       >
-                        <FaTrash
+                        <X
                           size={18}
+                          aria-hidden="true"
                           className={
                             action.situacao_acao === 'Reprovada'
                               ? 'text-gray-400'
@@ -490,62 +761,61 @@ const EventsContainer = () => {
                         />
                       </Button>
                     </div>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-1 h-auto min-h-11 w-full whitespace-normal px-1 py-1 text-xs"
+                      onClick={() => setAcaoDetalhe(action)}
+                    >
+                      Ver detalhes
+                    </Button>
                   </Td>
-                  <Tdh>{action.titulo_acao}</Tdh>
+                  <Tdh className={classeTituloCelula}>
+                    <div className="w-[9rem] truncate sm:w-48" title={action.titulo_acao}>
+                      {action.titulo_acao}
+                    </div>
+                  </Tdh>
                   <Td>
                     <ActionStatusBadge situacao={action.situacao_acao} />
                   </Td>
-                  <Td>{action.nome_organizador}</Td>
-                  <Td>
-                    <span className="inline-flex items-center gap-2">
-                      {action.celular}
-                      <a
-                        href={`https://wa.me/${action.celular}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Abrir conversa no WhatsApp"
-                      >
-                        <FaWhatsapp size={18} className="text-[#25D366]" />
-                      </a>
-                    </span>
-                  </Td>
-                  <Td className="max-w-96 truncate" title={action.descricao_acao}>
-                    {action.descricao_acao}
-                  </Td>
+                  <Td className="whitespace-nowrap">{formatarDataAcao(action.data_acao)}</Td>
                   <Td>{action.categoria.descricao}</Td>
                   <Td>
-                    {new Date(action.data_acao).toLocaleString('pt-BR', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false,
-                    })}
-                  </Td>
-                  <Td>{action.forma_realizacao_acao}</Td>
-                  <Td>{action.link_divulgacao_acesso_acao}</Td>
-                  <Td>{action.nome_local_acao}</Td>
-                  <Td>{action.endereco_local_acao}</Td>
-                  <Td className="max-w-96 truncate" title={action.informacoes_acao}>
-                    {action.informacoes_acao}
-                  </Td>
-                  <Td>{action.link_para_inscricao_acao}</Td>
-                  <Td>{action.tipo_publico_acao}</Td>
-                  <Td className="max-w-96 truncate" title={action.orientacao_divulgacao_acao}>
-                    {action.orientacao_divulgacao_acao}
+                    <ActionFormatBadge forma={action.forma_realizacao_acao} />
                   </Td>
                   <Td>
-                    {action.usuario_responsavel.nome}
-                    <br />
-                    <a
-                      href={`mailto:${action.usuario_responsavel.email}`}
-                      className="text-brand-forest hover:underline"
-                    >
-                      {action.usuario_responsavel.email}
-                    </a>
+                    <div className="flex max-w-[14rem] flex-col gap-1">
+                      <span className="truncate" title={action.nome_organizador}>
+                        {action.nome_organizador}
+                      </span>
+                      <span className="inline-flex items-center gap-2">
+                        {action.celular}
+                        <a
+                          href={`https://wa.me/${action.celular}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Abrir conversa no WhatsApp"
+                        >
+                          <FaWhatsapp size={18} className="text-[#25D366]" />
+                        </a>
+                      </span>
+                    </div>
                   </Td>
-                  <Td>{action?.usuario_alteracao?.nome}</Td>
+                  <Td>
+                    <div className="max-w-[14rem]">
+                      <span className="block truncate" title={action.usuario_responsavel.nome}>
+                        {action.usuario_responsavel.nome}
+                      </span>
+                      <a
+                        href={`mailto:${action.usuario_responsavel.email}`}
+                        className="block truncate text-brand-forest hover:underline"
+                        title={action.usuario_responsavel.email}
+                      >
+                        {action.usuario_responsavel.email}
+                      </a>
+                    </div>
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
