@@ -1,0 +1,16 @@
+---
+description: Convenções de React, Tailwind e pastas deste cliente
+globs: src/**/*.{js,jsx,ts,tsx,css}
+alwaysApply: false
+---
+
+# Código
+
+- React 18 e Vite. Sem API de React 19 e sem padrão de Next.js.
+- Importe com os alias já definidos: `~`, `~components`, `~views`, `~api`, `~context`, `~layouts`, `~assets`.
+- Tela nova usa `Button`, `Card`, `Form`, `Table`, `Modal`, `Badge` e `Container`. Cor nova não entra solta: use `brand-*` de `tailwind.config.js`.
+- Classe condicional passa por `cn` em `src/components/ui/cn.ts`.
+- Texto visível em português do Brasil. Na interface, a atividade da campanha se chama ação.
+- Formulário existente usa Formik e Yup. Não troque a biblioteca num ajuste pontual.
+- Comentário só para o porquê que o código não mostra, em português.
+- Não reformatar arquivo que a tarefa não precisa alterar.

@@ -1,0 +1,16 @@
+---
+description: Quando especificar, como documentar e o que não reescrever
+alwaysApply: true
+---
+
+# Entregas
+
+Leia `AGENTS.md` para o vocabulário e o mapa do app. Visual em `DESIGN.md`.
+
+- Funcionalidade nova, mudança ambígua ou que atravessa módulos: spec em `docs/specs/<slug>/` e revisão antes do código. Siga `docs/specs/README.md`.
+- Correção local e pedido já fechado: implemente direto, sem pasta de spec.
+- Arquitetura (rota, sessão, contrato da API, estado global): `docs/decisions/NNNN-titulo.md`.
+- Efeito visível para quem usa o site: uma entrada no `CHANGELOG.md`.
+- A spec muda quando a decisão muda, e muda antes de o código continuar.
+
+Pergunte antes de acrescentar dependência, mexer em autenticação ou alterar o formato que a API devolve. Não grave segredo e não invente campo de API.

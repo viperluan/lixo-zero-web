@@ -1,0 +1,17 @@
+---
+description: Mantém UI e layout na marca da Semana Lixo Zero
+alwaysApply: true
+---
+
+# UI da Semana Lixo Zero
+
+Antes de criar ou alterar layout, leia `DESIGN.md`. Use os tokens de `tailwind.config.js` (`brand-*`) e os primitivos de `src/components/ui`.
+
+- Site público (início, agenda, sobre): campanha. Fundo `brand-cream`, faixas `brand-forest`, título em Barlow Black.
+- Painel, formulário e tabela: ferramenta. Reutilize `Button`, `Card`, `Form`, `Table` e `Modal`. Não redesenhe o painel como landing.
+- Texto sobre `brand-sage` usa `brand-forest-deep`.
+- Shrikhand só na assinatura. Caveat só no acento manuscrito. Rótulos em Barlow Condensed.
+- Ícone novo vem de `lucide-react`.
+- Não adicione outra fonte, paleta, gradiente ou biblioteca de componentes.
+
+Ao fechar uma tela, confira contraste, foco visível, estado vazio, erro e alvo de toque.
