@@ -44,6 +44,38 @@ const SITUACOES_FILTRO = [
 ];
 
 const COLUNAS_TABELA = 8;
+const MENSAGEM_FALHA_PLANILHA = 'Não foi possível baixar a planilha.';
+
+const paramsPlanilha = (edicaoFiltro) => {
+  if (edicaoFiltro === 'todos') return { ano: 'todos' };
+  if (edicaoFiltro) return { id_edicao: edicaoFiltro };
+
+  return {};
+};
+
+const nomeArquivoPlanilha = (headers, edicaoFiltro) => {
+  const disposicao = headers?.['content-disposition'] ?? '';
+  const encontrado = /filename="([^"]+)"/.exec(String(disposicao));
+
+  if (encontrado?.[1]) return encontrado[1];
+  if (edicaoFiltro === 'todos') return 'acoes-todas-edicoes.xlsx';
+
+  return 'acoes.xlsx';
+};
+
+const mensagemDoBlob = async (data) => {
+  if (!data) return null;
+  if (!(data instanceof Blob)) return mensagemErroApi(data);
+
+  const texto = await data.text();
+  if (!texto) return null;
+
+  try {
+    return mensagemErroApi(JSON.parse(texto));
+  } catch {
+    return null;
+  }
+};
 
 const classeAcoesCabecalho =
   'sticky left-0 z-10 w-[8.5rem] min-w-[8.5rem] max-w-[8.5rem] border-r border-gray-100 bg-brand-cream';
@@ -111,6 +143,7 @@ const EventsContainer = () => {
   const [filterType, setFilterType] = useState('');
   const [edicoes, setEdicoes] = useState([]);
   const [edicaoFiltro, setEdicaoFiltro] = useState('');
+  const [baixandoPlanilha, setBaixandoPlanilha] = useState(false);
   const [pendentesAnoAnterior, setPendentesAnoAnterior] = useState(null);
   const [filtrosAbertos, setFiltrosAbertos] = useState(false);
   const [acaoDetalhe, setAcaoDetalhe] = useState(null);
@@ -277,63 +310,40 @@ const EventsContainer = () => {
     setIsLoading(false);
   };
 
-  const exportToCSV = () => {
-    const headers = [
-      'Título da ação',
-      'Situação',
-      'Nome do Organizador',
-      'Celular',
-      'Descrição da atividade',
-      'Tipo da atividade',
-      'Data da ação',
-      'Forma de realização',
-      'Link de divulgação',
-      'Nome do local',
-      'Endereço do local',
-      'Informações',
-      'Link para inscrição',
-      'Tipo de público',
-      'Descrição sobre divulgação',
-      'Número de participantes',
-      'Nome usuário responsável',
-      'Email usuário responsável',
-    ];
+  const baixarPlanilha = async () => {
+    if (baixandoPlanilha) return;
 
-    const rows = listActions.map((action) => [
-      action.titulo_acao,
-      action.situacao_acao,
-      action.nome_organizador,
-      action.celular,
-      `"${action.descricao_acao}"`,
-      action.categoria.descricao,
-      new Date(action.data_acao).toLocaleDateString('pt-BR'),
-      action.forma_realizacao_acao,
-      action.link_divulgacao_acesso_acao,
-      action.nome_local_acao,
-      action.endereco_local_acao,
-      `"${action.informacoes_acao}"`,
-      action.link_para_inscricao_acao,
-      action.tipo_publico_acao,
-      `"${action.orientacao_divulgacao_acao}"`,
-      action.numero_organizadores_acao,
-      action.usuario_responsavel.nome,
-      action.usuario_responsavel.email,
-    ]);
+    setBaixandoPlanilha(true);
 
-    let csvContent =
-      'data:text/csv;charset=utf-8,' +
-      headers.join(',') +
-      '\n' +
-      rows.map((e) => e.join(',')).join('\n');
+    try {
+      // O interceptor não lê message/error de um Blob; o toast fica nesta chamada.
+      const res = await api.get('/acoes/planilha', {
+        params: paramsPlanilha(edicaoFiltro),
+        responseType: 'blob',
+        timeout: 60000,
+        silenciarErro: true,
+      });
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'acoes.csv');
-    document.body.appendChild(link); // Required for FF
+      if (res.status !== 200) {
+        const erro = await mensagemDoBlob(res.data);
+        toast.error(erro || MENSAGEM_FALHA_PLANILHA);
+        return;
+      }
 
-    link.click();
-    document.body.removeChild(link);
+      const url = URL.createObjectURL(res.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = nomeArquivoPlanilha(res.headers, edicaoFiltro);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      const erro = await mensagemDoBlob(error?.response?.data);
+      toast.error(erro || MENSAGEM_FALHA_PLANILHA);
+    } finally {
+      setBaixandoPlanilha(false);
+    }
   };
 
   const handleActionSituation = (situation, action) => {
@@ -696,8 +706,13 @@ const EventsContainer = () => {
                   Limpar filtros
                 </Button>
 
-                <Button variant="outline" onClick={exportToCSV} className="w-full sm:w-auto">
-                  Exportar página
+                <Button
+                  variant="outline"
+                  onClick={baixarPlanilha}
+                  disabled={baixandoPlanilha}
+                  className="w-full sm:w-auto"
+                >
+                  {edicaoFiltro === 'todos' ? 'Exportar todas as edições' : 'Exportar edição'}
                 </Button>
               </div>
             </div>
