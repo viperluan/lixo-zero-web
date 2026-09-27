@@ -11,6 +11,7 @@ import { PartnersCreateContainer } from '~views/partners/create';
 import { QuotasContainer } from '~views/quotas';
 import { MyEventsContainer } from '~views/events/my-events';
 import { EditionsContainer } from '~views/editions';
+import { EmailTemplatesContainer } from '~views/email-templates';
 
 const routes = [
   {
@@ -88,6 +89,13 @@ const routes = [
     name: 'Edições',
     icon: 'ni ni-bullet-list-67 text-red',
     component: <EditionsContainer />,
+    layout: '/admin',
+  },
+  {
+    path: '/email-templates',
+    name: 'E-mails',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: <EmailTemplatesContainer />,
     layout: '/admin',
   },
   {

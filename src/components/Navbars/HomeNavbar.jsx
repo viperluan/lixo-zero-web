@@ -64,6 +64,9 @@ const HomeNavbar = () => {
       <Link to="/admin/editions" className="btn-primary text-sm">
         Edições
       </Link>
+      <Link to="/admin/email-templates" className="btn-primary text-sm">
+        E-mails
+      </Link>
     </div>
   );
 
