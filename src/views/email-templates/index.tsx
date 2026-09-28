@@ -52,6 +52,32 @@ type Previa = {
   html: string;
 };
 
+const AJUDA_PARAGRAFOS = 'Um parágrafo por linha.';
+const AJUDA_HASHTAGS = 'Uma tag por linha.';
+const AJUDA_URL = 'Comece com http:// ou https://.';
+
+const url = (chave: string, rotulo: string): Campo => ({
+  chave,
+  rotulo,
+  ajuda: AJUDA_URL,
+  linhaUnica: true,
+});
+
+const RODAPE: Campo[] = [
+  {
+    chave: 'texto_assinatura',
+    rotulo: 'Assinatura',
+    ajuda: AJUDA_PARAGRAFOS,
+    linhas: 3,
+  },
+  { chave: 'texto_instagram', rotulo: 'Texto do Instagram', linhas: 2 },
+  url('url_instagram', 'Endereço do Instagram'),
+  { chave: 'texto_site', rotulo: 'Texto do site', linhas: 2 },
+  url('url_site', 'Endereço do site'),
+  { chave: 'texto_duvida', rotulo: 'Texto de dúvida', linhas: 3 },
+  { chave: 'texto_copyright', rotulo: 'Copyright', linhas: 2 },
+];
+
 const FICHAS: Ficha[] = [
   {
     codigo: 'acao_cadastrada',
@@ -61,26 +87,34 @@ const FICHAS: Ficha[] = [
       {
         chave: 'paragrafos_abertura',
         rotulo: 'Parágrafos de abertura',
-        ajuda: 'Um parágrafo por linha.',
+        ajuda: AJUDA_PARAGRAFOS,
         linhas: 5,
       },
       { chave: 'faixa', rotulo: 'Faixa', linhas: 3 },
       { chave: 'texto_antes_ficha', rotulo: 'Texto antes da ficha', linhas: 4 },
+      { chave: 'texto_aviso_ficha', rotulo: 'Aviso da ficha', linhas: 3 },
+      { chave: 'texto_responsabilidade', rotulo: 'Responsabilidade', linhas: 3 },
+      { chave: 'paragrafo_cards', rotulo: 'Texto dos cards', linhas: 4 },
+      { chave: 'chamada_pasta', rotulo: 'Chamada da pasta', linhas: 3 },
       { chave: 'rotulo_botao', rotulo: 'Rótulo do botão', linhaUnica: true },
-      {
-        chave: 'url_pasta',
-        rotulo: 'Endereço da pasta',
-        ajuda: 'Comece com http:// ou https://.',
-        linhaUnica: true,
-      },
+      url('url_pasta', 'Endereço da pasta'),
       { chave: 'texto_depois_botao', rotulo: 'Texto depois do botão', linhas: 3 },
       { chave: 'convite_redes', rotulo: 'Convite às redes', linhas: 4 },
+      { chave: 'chamada_tags', rotulo: 'Chamada das tags', linhas: 3 },
       {
         chave: 'hashtags',
         rotulo: 'Hashtags',
-        ajuda: 'Uma tag por linha.',
+        ajuda: AJUDA_HASHTAGS,
         linhas: 5,
       },
+      { chave: 'texto_programacao', rotulo: 'Programação', linhas: 3 },
+      {
+        chave: 'texto_despedida',
+        rotulo: 'Despedida',
+        ajuda: AJUDA_PARAGRAFOS,
+        linhas: 4,
+      },
+      ...RODAPE,
     ],
   },
   {
@@ -90,21 +124,21 @@ const FICHAS: Ficha[] = [
     campos: [
       { chave: 'faixa', rotulo: 'Faixa', linhas: 3 },
       { chave: 'paragrafo_cards', rotulo: 'Texto dos cards', linhas: 4 },
+      { chave: 'chamada_pasta', rotulo: 'Chamada da pasta', linhas: 3 },
       { chave: 'rotulo_botao', rotulo: 'Rótulo do botão', linhaUnica: true },
-      {
-        chave: 'url_pasta',
-        rotulo: 'Endereço da pasta',
-        ajuda: 'Comece com http:// ou https://.',
-        linhaUnica: true,
-      },
+      url('url_pasta', 'Endereço da pasta'),
       { chave: 'texto_depois_botao', rotulo: 'Texto depois do botão', linhas: 3 },
       { chave: 'paragrafo_redes', rotulo: 'Texto das redes', linhas: 4 },
+      { chave: 'chamada_tags', rotulo: 'Chamada das tags', linhas: 3 },
       {
         chave: 'hashtags',
         rotulo: 'Hashtags',
-        ajuda: 'Uma tag por linha.',
+        ajuda: AJUDA_HASHTAGS,
         linhas: 5,
       },
+      { chave: 'texto_programacao', rotulo: 'Programação', linhas: 3 },
+      { chave: 'texto_contato', rotulo: 'Contato', linhas: 3 },
+      ...RODAPE,
     ],
   },
   {
@@ -114,6 +148,13 @@ const FICHAS: Ficha[] = [
     campos: [
       { chave: 'faixa', rotulo: 'Faixa', linhas: 3 },
       { chave: 'corpo', rotulo: 'Corpo', linhas: 5 },
+      {
+        chave: 'texto_despedida',
+        rotulo: 'Despedida',
+        ajuda: AJUDA_PARAGRAFOS,
+        linhas: 4,
+      },
+      ...RODAPE,
     ],
   },
 ];

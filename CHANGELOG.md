@@ -6,6 +6,7 @@ Mudança que a pessoa percebe no site entra aqui, a mais recente primeiro. Corre
 
 ### Alterado
 
+- No painel, cada e-mail da ação passa a editar também o rodapé e os textos de pasta, tags, programação e despedida.
 - No painel, o botão da listagem de ações baixa a planilha da edição escolhida (ou de todas), no lugar do CSV da página visível.
 
 ### Adicionado
