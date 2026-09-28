@@ -5,7 +5,7 @@ import { ModalLogin } from '~components/Headers/Modal/Modal';
 import { useAuth } from '~context/AuthContext';
 import { UserLoggedDropDown } from '~components/UserComponent';
 import { TipoUsuario } from '~/Enumerados';
-import iconeLixoZero from '~assets/img/brand/icone-lixo-zero.png';
+import iconeLixoZero from '~assets/img/theme/lixo-zero.png';
 
 const LINKS = [
   { to: '/auth/events/create', label: 'Criar ação' },
@@ -88,8 +88,8 @@ const HomeNavbar = () => {
                 src={iconeLixoZero}
                 alt="Caxias Lixo Zero"
                 className="h-9 w-auto sm:h-10"
-                width="369"
-                height="320"
+                width="192"
+                height="192"
               />
             </Link>
 
