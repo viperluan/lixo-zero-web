@@ -29,6 +29,7 @@ import {
   ModalFooter,
   ModalHeader,
   Select,
+  TextoOuLink,
 } from '~components/ui';
 
 // O locale pt-br ja vem aplicado por ~/lib/moment
@@ -439,13 +440,15 @@ const ActionCalendar = () => {
 
               {selectedEvent.link_para_inscricao_acao && (
                 <p>
-                  <b>Link para inscrição:</b> {selectedEvent.link_para_inscricao_acao}
+                  <b>Link para inscrição:</b>{' '}
+                  <TextoOuLink valor={selectedEvent.link_para_inscricao_acao} />
                 </p>
               )}
 
               {selectedEvent.link_divulgacao_acesso_acao && (
                 <p>
-                  <b>Link para divulgação:</b> {selectedEvent.link_divulgacao_acesso_acao}
+                  <b>Link para divulgação:</b>{' '}
+                  <TextoOuLink valor={selectedEvent.link_divulgacao_acesso_acao} />
                 </p>
               )}
 

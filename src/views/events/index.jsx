@@ -35,6 +35,7 @@ import {
   Th,
   Thead,
   Tr,
+  TextoOuLink,
 } from '~components/ui';
 
 const SITUACOES_FILTRO = [
@@ -94,27 +95,6 @@ const formatarDataAcao = (data) =>
     minute: '2-digit',
     hour12: false,
   });
-
-const ehLinkHttp = (valor) => typeof valor === 'string' && valor.startsWith('http');
-
-const TextoOuLink = ({ valor }) => {
-  if (!valor) return null;
-
-  if (ehLinkHttp(valor)) {
-    return (
-      <a
-        href={valor}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="break-all text-brand-forest hover:underline"
-      >
-        {valor}
-      </a>
-    );
-  }
-
-  return <span className="break-words">{valor}</span>;
-};
 
 const LinhaDetalhe = ({ rotulo, children }) => {
   if (children == null || children === '' || children === false) return null;

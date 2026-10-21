@@ -14,3 +14,5 @@ export { Modal, ModalHeader, ModalBody, ModalFooter } from './Modal';
 export { Pagination } from './Pagination';
 export { Spinner } from './Spinner';
 export { Table, Thead, Th, Tbody, Tr, Td, Tdh, TableEmpty } from './Table';
+export { TextoOuLink } from './TextoOuLink';
+export type { TextoOuLinkProps } from './TextoOuLink';

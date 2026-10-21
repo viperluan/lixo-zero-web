@@ -6,6 +6,7 @@ Mudança que a pessoa percebe no site entra aqui, a mais recente primeiro. Corre
 
 ### Alterado
 
+- Na agenda, o link de divulgação e o de inscrição do resumo da ação abrem ao clique.
 - O ícone da aba e o da barra passam a ser o mesmo da campanha, sem o recorte.
 - No painel, cada e-mail da ação passa a editar também o rodapé e os textos de pasta, tags, programação e despedida.
 - No painel, o botão da listagem de ações baixa a planilha da edição escolhida (ou de todas), no lugar do CSV da página visível.
